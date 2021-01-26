@@ -27,31 +27,30 @@ def surcurv(isMale: bool, age: int):
     return surv
 
 
-def premium_cf(surv, pr, r_free: float = 0.1) -> float:
+def pv_pr(surv, pr, r_free: float = 0.1) -> float:
     cf = 0
 
     if isinstance(pr, (int, float)):
-        for i, s in enumerate(surv):
+        for i in surv.index:
             cf += surv[i]/(1+r_free)**i
         cf *= pr
 
     else:
         assert len(surv) == len(
             pr), 'survial curve and premium curve must have the same length'
-        for i, s in enumerate(surv):
+        for i in surv.index:
             cf += (surv[i] * pr[i])/(1+r_free)**i
 
     return cf
 
 
-def pv_premium(pr, r_free: float = 0.1) -> float:
-    # entry = nquad(entryint, [
-    #     lambda phi, tee: [lstar(tee, phi), np.inf],
-    #     [0, upperbound],
-    #     [0, np.inf]
-    # ], opts=[quadoptions, quadoptions, quadoptions])[0]
+def pv_db(surv, db, r_free: float = 0.1) -> float:
+    cf = 0
+    oneperiod_mort = -surv.diff()[1:]
+    for i in oneperiod_mort.index:
+        cf += oneperiod_mort[i]/(1+r_free)**i
+    cf *= db
+    return cf
 
-    # return dict(plotdata=df, entrydata=entry)
 
-
-if __name__ == "__main__":
+# if __name__ == "__main__":
