@@ -54,16 +54,22 @@ def explore_plot(rFree, age_v, pr_v):
     plt.close()
 
 
-# risk-free rate
-# rFree = 0.005
-# age_v = 75
-# pr_v = 0.002
-explore_plot(rFree=0.005, age_v=75, pr_v=0.002)
-explore_plot(rFree=0.01, age_v=75, pr_v=0.002)
+if __name__ == '__main__':
+    ages = range(100)
+    flatrates = [getFlatpr(
+        isMale=True, age=age, r_free=fetchdata.getAnnualYield()
+    ) for age in ages]
+    plt.plot(ages, flatrates)
+    # risk-free rate
+    # rFree = 0.005
+    # age_v = 75
+    # pr_v = 0.002
+    explore_plot(rFree=0.005, age_v=75, pr_v=0.002)
+    explore_plot(rFree=0.01, age_v=75, pr_v=0.002)
 
-explore_plot(rFree=0.01, age_v=85, pr_v=0.02)
+    explore_plot(rFree=0.01, age_v=85, pr_v=0.02)
 
-explore_plot(rFree=0.01, age_v=55, pr_v=0.0001)
+    explore_plot(rFree=0.01, age_v=55, pr_v=0.0001)
 
-explore_plot(rFree=0.07, age_v=85, pr_v=0.02)
-explore_plot(rFree=0.01, age_v=85, pr_v=0.02)
+    explore_plot(rFree=0.07, age_v=85, pr_v=0.02)
+    explore_plot(rFree=0.01, age_v=85, pr_v=flatrates[50])

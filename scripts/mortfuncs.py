@@ -1,42 +1,73 @@
-from pandas import read_excel, Series
-from numpy import cumprod
-from pickle import load
-from CONST import *
+import pandas as pd
+import numpy as np
+import pickle
+from constants import FIN_OPTIONS, DATA_FOLDER
+from scipy import optimize
+import fetchdata
+import matplotlib.pyplot as plt
 
-vbt = load(open(DATA_FOLDER + 'vbt', 'rb'))
+
+vbt = pickle.load(open(DATA_FOLDER + 'vbt', 'rb'))
 
 # need to `pip install openpyxl`
-malevbt = read_excel(
+malevbt = pd.read_excel(
     vbt, sheet_name='2015 Male Unismoke ANB', header=2, index_col=0
 )
-femavbt = read_excel(
+femavbt = pd.read_excel(
     vbt, sheet_name='2015 Female Unismoke ANB', header=2, index_col=0
 )
 
 
-# survival curve
-def getSurcurv(isMale: bool, age: int, mortrate=1):
+# conditional 1-period mortality curve
+def getCondMortCurv(isMale: bool, age: int, mortrate=1):
     tbl = malevbt if isMale else femavbt
     maxage = max(tbl.index)
     if age <= maxage:
         curv = tbl.loc[age][:25].append(tbl['Ult.'][age:])
     else:
         curv = tbl.loc[maxage][(age-maxage):26]
-    mort = Series([0]).append(curv, ignore_index=True)
-    surv = cumprod(1-mort/1000)
+    mort = pd.Series([0]).append(curv/1000, ignore_index=True)
+
+    # adjust mortality rate with multiplier
+    condMort = pd.Series(min(1, mortrate*q) for q in mort)
+    return condMort
+
+
+def getCondSurvCurv(isMale: bool, age: int, mortrate=1):
+    condMort = getCondMortCurv(isMale, age, mortrate)
+    condSurv = 1-condMort
+    return condSurv
+
+
+# survival curve
+def getSurcurv(isMale: bool, age: int, mortrate=1):
+    condSurv = getCondSurvCurv(isMale, age, mortrate)
+    surv = np.cumprod(condSurv)
     return surv
 
 
+def getVariablePr(isMale: bool, age: int, mortrate=1, spread=0):
+    condMort = getCondMortCurv(isMale, age, mortrate)
+    condSurv = 1-condMort
+    breakevenPr = condMort/condSurv
+    pr = breakevenPr + spread
+    return pr
+
+
 # `pr` is premium rate: premium / deth benefit
-def getPV_pr(pr, surv=None, isMale=None, age=None, r_free: float = 0.1) -> float:
+def getPV_pr(pr, surv=None, isMale=None, age=None, mortrate=1, r_free=0.005) -> float:
+
     if surv is None:
-        surv = surcurv(isMale, age)
+        surv = getSurcurv(isMale, age, mortrate)
+
+    if isinstance(r_free, (int, float)):
+        r_free = [r_free] * len(surv)
 
     cf = 0
     if isinstance(pr, (int, float)):
         # assert pr < 1, 'premium rate must be below 1'
         for i in surv.index:
-            cf += surv[i] / (1+r_free)**i
+            cf += surv[i] / (1+r_free[i])**i
         cf *= pr
 
     else:
@@ -44,25 +75,46 @@ def getPV_pr(pr, surv=None, isMale=None, age=None, r_free: float = 0.1) -> float
             pr), 'survial curve and premium curve must have the same length'
         # assert all(p < 1 for p in pr), 'premium rates must be all below 1'
         for i in surv.index:
-            cf += (surv[i] * pr[i]) / (1+r_free)**i
+            cf += (surv[i] * pr[i]) / (1+r_free[i])**i
 
     return cf
 
 
-def getPV_db(surv=None, isMale=None, age=None, r_free: float = 0.1) -> float:
+def getPV_db(surv=None, isMale=None, age=None, mortrate=1, r_free=0.005) -> float:
     if surv is None:
-        surv = surcurv(isMale, age)
+        surv = getSurcurv(isMale, age, mortrate)
+
+    if isinstance(r_free, (int, float)):
+        r_free = [r_free] * len(surv)
 
     cf = 0
     oneperiod_mort = -surv.diff()[1:]
     for i in oneperiod_mort.index:
-        cf += oneperiod_mort[i] / (1+r_free)**i
+        cf += oneperiod_mort[i] / (1+r_free[i])**i
     return cf
 
 
-def getPV_endpay(pr, surv=None, isMale=None, age=None, r_b: float = 0.2, r_free: float = 0.1) -> float:
+def insurerProfit(pr, surv=None, isMale=None, age=None, mortrate=1, r_free=0.005):
+    PVdb = getPV_db(surv=surv, isMale=isMale, age=age,
+                    mortrate=mortrate, r_free=r_free)
+    PVpr = getPV_pr(pr, surv=surv, isMale=isMale, age=age,
+                    mortrate=mortrate, r_free=r_free)
+    pft = PVpr - PVdb
+    return pft
+
+
+def getFlatpr(surv=None, isMale=None, age=None, mortrate=1, r_free=0.005):
+    sol = optimize.root_scalar(lambda pr: insurerProfit(
+        pr, surv, isMale, age, mortrate, r_free), x0=0.004, bracket=[0, 1], method='brentq')
+    return sol.root
+
+
+def getPV_endpay(pr, surv=None, isMale=None, age=None, mortrate=1, r_b: float = 0.2, r_free=0.005) -> float:
     if surv is None:
-        surv = surcurv(isMale, age)
+        surv = getSurcurv(isMale, age, mortrate)
+
+    if isinstance(r_free, (int, float)):
+        r_free = [r_free] * len(surv)
 
     cf = 0
     oneperiod_mort = -surv.diff()[1:]
@@ -80,7 +132,7 @@ def getPV_endpay(pr, surv=None, isMale=None, age=None, r_b: float = 0.2, r_free:
             for j in range(i):
                 debt += pr[j] * (1+r_b)**(i-j)
 
-        cf += oneperiod_mort[i] * debt / (1+r_free)**i
+        cf += oneperiod_mort[i] * debt / (1+r_free[i])**i
 
     return cf
 
@@ -109,3 +161,19 @@ def getPV_agents(finop: str, pv_db_value=None, pv_pr_value=None, pv_debt_value=N
         polhol = tp
 
     return financ, polhol
+
+
+if __name__ == '__main__':
+    ages = range(100)
+    flatrates = [getFlatpr(
+        isMale=True, age=age, r_free=fetchdata.getAnnualYield()
+    ) for age in ages]
+    plt.plot(ages, flatrates)
+
+    age = 20
+    plt.plot(getVariablePr(isMale=True, age=age))
+    plt.axhline(y=flatrates[age], c='orange')
+    # plt.xlim(0, 99-age)
+    # plt.ylim(0, 0.99)
+
+    # print(f'age: {age}, rate: {flatrate}')
