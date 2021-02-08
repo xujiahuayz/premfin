@@ -109,6 +109,35 @@ def getFlatpr(surv=None, isMale=None, age=None, mortrate=1, r_free=0.005):
     return sol.root
 
 
+def getIRR(enterage, surv=None, isMale=None, age=None, mortrate=1, r_free=fetchdata.getAnnualYield()):
+    breakEvenFlatpr = getFlatpr(
+        surv=surv, isMale=isMale, age=enterage, mortrate=mortrate, r_free=r_free)
+    sol = optimize.root_scalar(
+        lambda r: insurerProfit(
+            pr=breakEvenFlatpr, surv=surv, isMale=isMale, age=age, mortrate=mortrate, r_free=r
+        ), x0=0.0001, bracket=[0, 0.99], method='brentq')
+    return sol.root
+
+
+def getEquivYield(surv=None, isMale=None, age=None, mortrate=1, r_free=fetchdata.getAnnualYield(), doplot: bool = False):
+    breakEvenFlatpr = getFlatpr(
+        surv=surv, isMale=isMale, age=age, mortrate=mortrate, r_free=r_free)
+    sol = optimize.root_scalar(
+        lambda r: insurerProfit(
+            pr=breakEvenFlatpr, surv=surv, isMale=isMale, age=age, mortrate=mortrate, r_free=r
+        ), x0=0.0001, bracket=[0, 0.99], method='brentq')
+
+    if doplot:
+        rs = np.arange(0, 0.5, 0.01)
+        plt.plot(rs, [
+            insurerProfit(
+                pr=breakEvenFlatpr, surv=surv, isMale=isMale, age=age, mortrate=mortrate, r_free=r
+            ) for r in rs
+        ])
+        plt.show()
+    return sol.root
+
+
 def getPV_endpay(pr, surv=None, isMale=None, age=None, mortrate=1, r_b: float = 0.2, r_free=0.005) -> float:
     if surv is None:
         surv = getSurcurv(isMale, age, mortrate)
@@ -165,12 +194,24 @@ def getPV_agents(finop: str, pv_db_value=None, pv_pr_value=None, pv_debt_value=N
 
 if __name__ == '__main__':
     ages = range(100)
-    flatrates = [getFlatpr(
+    flatrates_svr = [getFlatpr(
+        isMale=True, age=age, r_free=0.0375
+    ) for age in ages]
+    flatrates_stableyield = [getFlatpr(
+        isMale=True, age=age, r_free=0.1
+    ) for age in ages]
+    flatrate_yc = [getFlatpr(
         isMale=True, age=age, r_free=fetchdata.getAnnualYield()
     ) for age in ages]
-    plt.plot(ages, flatrates)
 
-    age = 20
+    plt.plot(ages, flatrates_svr, label='SVR, 0.0375')
+    plt.plot(ages, flatrate_yc, c='red', label='YC')
+    plt.plot(ages, flatrates_stableyield, c='green', label='stable 0.1')
+
+    plt.legend()
+    plt.show()
+
+    age = 50
     plt.plot(getVariablePr(isMale=True, age=age))
     plt.axhline(y=flatrates[age], c='orange')
     # plt.xlim(0, 99-age)
