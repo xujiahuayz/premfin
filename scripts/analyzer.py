@@ -16,49 +16,67 @@ def explore_plot(rFree, age_v, pr_v):
     pv_financer_fr = []
     pv_polholder_fr = []
     # borrow rate
-    rB_vs = rFree+linspace(0, 0.3, 101)
+    rB_vs = rFree + linspace(0, 0.3, 101)
 
     for rB in rB_vs:
         pv_debt = getPV_endpay(pr=pr_v, surv=surv_v, r_b=rB)
-        pv_financer, pv_polholder = getPV_agents(finop='nonrecourse', pv_db_value=pv_db,
-                                                 pv_pr_value=pv_pr, pv_debt_value=pv_debt)
+        pv_financer, pv_polholder = getPV_agents(
+            finop="nonrecourse",
+            pv_db_value=pv_db,
+            pv_pr_value=pv_pr,
+            pv_debt_value=pv_debt,
+        )
         pv_financer_nr.append(pv_financer)
         pv_polholder_nr.append(pv_polholder)
 
-        pv_financer, pv_polholder = getPV_agents(finop='fullrecourse', pv_db_value=pv_db,
-                                                 pv_pr_value=pv_pr, pv_debt_value=pv_debt)
+        pv_financer, pv_polholder = getPV_agents(
+            finop="fullrecourse",
+            pv_db_value=pv_db,
+            pv_pr_value=pv_pr,
+            pv_debt_value=pv_debt,
+        )
         pv_financer_fr.append(pv_financer)
         pv_polholder_fr.append(pv_polholder)
 
     # fig, ax = plt.subplots()
-    plt.plot(rB_vs, pv_financer_nr, label='Nonrecourse financer', c='green')
-    plt.plot(rB_vs, pv_polholder_nr,
-             label='Nonrecourse policyholder', c='orange')
+    plt.plot(rB_vs, pv_financer_nr, label="Nonrecourse financer", c="green")
+    plt.plot(rB_vs, pv_polholder_nr, label="Nonrecourse policyholder", c="orange")
 
-    plt.plot(rB_vs, pv_financer_fr, linestyle='--',
-             label='Fullrecourse financer', c='green')
-    plt.plot(rB_vs, pv_polholder_fr, linestyle='--',
-             label='Fullrecourse policyholder', c='orange')
+    plt.plot(
+        rB_vs, pv_financer_fr, linestyle="--", label="Fullrecourse financer", c="green"
+    )
+    plt.plot(
+        rB_vs,
+        pv_polholder_fr,
+        linestyle="--",
+        label="Fullrecourse policyholder",
+        c="orange",
+    )
 
-    plt.axhline(pv_pr - pv_db, c='red', label='Insurer')
+    plt.axhline(pv_pr - pv_db, c="red", label="Insurer")
 
-    plt.axhline(0, c='grey', linewidth=0.5)
-    plt.xlabel('borrow rate')
-    plt.ylabel('present value')
+    plt.axhline(0, c="grey", linewidth=0.5)
+    plt.xlabel("borrow rate")
+    plt.ylabel("present value")
     plt.legend()
     plt.title(
-        'risk-free rate: ' + str(rFree) + '\n annual premium rate: ' +
-        str(pr_v) + '\n age: ' + str(age_v)
+        "risk-free rate: "
+        + str(rFree)
+        + "\n annual premium rate: "
+        + str(pr_v)
+        + "\n age: "
+        + str(age_v)
     )
     plt.show()
     plt.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ages = range(100)
-    flatrates = [getFlatpr(
-        isMale=True, age=age, r_free=fetchdata.getAnnualYield()
-    ) for age in ages]
+    flatrates = [
+        getFlatpr(isMale=True, age=age, r_free=fetchdata.getAnnualYield())
+        for age in ages
+    ]
     plt.plot(ages, flatrates)
     # risk-free rate
     # rFree = 0.005
@@ -73,5 +91,4 @@ if __name__ == '__main__':
 
     # explore_plot(rFree=0.07, age_v=85, pr_v=0.02)
 
-    explore_plot(rFree=fetchdata.getAnnualYield(),
-                 age_v=85, pr_v=flatrates[25])
+    explore_plot(rFree=fetchdata.getAnnualYield(), age_v=85, pr_v=flatrates[25])
