@@ -5,6 +5,8 @@ import constants
 from os import path
 import matplotlib.pyplot as plt
 
+EPSILON = 1e-10
+
 
 @dataclass
 class Mortality:
@@ -45,7 +47,7 @@ class Mortality:
     def condMortCurv(self, doplot=False):
         mort = self.basemortCurv()
         # adjust mortality rate with multiplier
-        condMort = pd.Series(min(1, self.mortrate * q) for q in mort)
+        condMort = pd.Series(min(1 - EPSILON, self.mortrate * q) for q in mort)
         if doplot:
             plt.plot(condMort)
         return condMort
