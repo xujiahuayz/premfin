@@ -1,14 +1,20 @@
 from dataclasses import dataclass
 import pandas as pd
 import numpy as np
-import constants
 from os import path
 import matplotlib.pyplot as plt
 from scipy import optimize
+from typing import Any
 
-from insured import Insured
 
-pers_file = path.join(constants.DATA_FOLDER, "persistency.xlsx")
+from premiumFinance.constants import DATA_FOLDER
+from premiumFinance.insured import Insured
+from premiumFinance.settings import PROJECT_ROOT
+from premiumFinance.fetchdata import getAnnualYield
+
+# need to `pip install openpyxl`
+
+pers_file = path.join(PROJECT_ROOT, DATA_FOLDER, "persistency.xlsx")
 tbl = pd.read_excel(
     pers_file,
     sheet_name="Universal Life",
@@ -24,53 +30,57 @@ class InsurancePolicy:
     insrd: Insured
     lapse_assumption: bool = True
     spread: float = 0
+    r_free: Any = 0.01
+    pr: Any = 0.02
 
-    def __post_init__(self, r_free=0, pr=0.02):
-        self.r_free = r_free
-        # r_free=fetchdata.getAnnualYield()
-        self.pr = pr
-
+    # lapse rate dependent on gender; lapse == 0 with no lapse assumption
     def lapseRate(self, doplot=False):
+        lapse_rate = pd.Series([0])
         if self.lapse_assumption:
             col_ind = 0 if self.insrd.isMale else 1
-            lapse_rate = pd.Series([0]).append(
+            lapse_rate = lapse_rate.append(
                 tbl.iloc[:, col_ind] / 100, ignore_index=True
             )
-        else:
-            lapse_rate = [0]
         if doplot:
             plt.plot(lapse_rate)
         return lapse_rate
 
-    def condPersRate(self, doplot=False):
-        condSurv = self.insrd.issueMort().condSurvCurv()
-        lapse_rate = self.lapseRate()
+    def inforceRate(self):
+        inforcerate = (1 - self.lapseRate()).to_list()
+        inforcerate.extend([inforcerate[-1]] * 200)
+        return inforcerate[1:]
 
-        n = len(lapse_rate)
+    def condPersRate(self, doplot: bool = False, atIssue: bool = True):
+        inforcerate = self.inforceRate()
+        if atIssue:
+            condSurv = self.insrd.issueMort().condSurvCurv()
+        else:
+            condSurv = self.insrd.currentMort().condSurvCurv()
+            inforcerate = inforcerate[(self.insrd.currentage - self.insrd.issueage) :]
+        print(inforcerate)
+        inforcerate = [1] + inforcerate
         persrate = []
         i = 0
-        for w in condSurv:
-            if i < n:
-                lapserate = 1 - lapse_rate[i]
-                i += 1
-            rate = w * lapserate
-            persrate.append(rate)
+        for i, w in enumerate(condSurv):
+            persrate.append(w * inforcerate[i])
 
         if doplot:
             plt.plot(persrate)
         return persrate
 
-    def persRate(self):
-        persrate = self.condPersRate()
+    def persRate(self, atIssue: bool = True):
+        persrate = self.condPersRate(atIssue=atIssue)
         pers = np.cumprod(persrate)
         return pers
 
-    def plotPersRate(self):
-        pers = self.persRate()
-        plt.plot(
-            np.arange(len(pers)) + self.insrd.currentage, pers, label="Persistency rate"
+    def plotPersRate(self, atIssue: bool = True):
+        pers = self.persRate(atIssue=atIssue)
+        mort = self.insrd.issueMort() if atIssue else self.insrd.currentMort()
+        ageaxis = np.arange(len(pers)) + (
+            self.insrd.issueage if atIssue else self.insrd.currentage
         )
-        self.insrd.issueMort().plotSurvCurv()
+        plt.plot(ageaxis, pers, label="Persistency rate")
+        mort.plotSurvCurv()
 
     def dbPayRate(self, doplot=False):
         pers = self.persRate()

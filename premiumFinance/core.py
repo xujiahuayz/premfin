@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 import pandas as pd
 import numpy as np
-import constants
 from os import path
 import matplotlib.pyplot as plt
+
+from premiumFinance.constants import DATA_FOLDER
+from premiumFinance.settings import PROJECT_ROOT
 
 EPSILON = 1e-10
 
@@ -30,7 +32,7 @@ class Mortality:
             smoker = "SM" if self.isSmoker else "NS"
             gender = gender[0]
             sheetname = f"2015 {gender}{smoker} ANB"
-        vbt_file = path.join(constants.DATA_FOLDER, filename + ".xlsx")
+        vbt_file = path.join(PROJECT_ROOT, DATA_FOLDER, filename + ".xlsx")
         tbl = pd.read_excel(vbt_file, sheet_name=sheetname, header=2, index_col=0)
         maxage = max(tbl.index)
         if self.issueage <= maxage:
@@ -73,13 +75,14 @@ class Mortality:
         surv = self.survCurv()
         le = self.lifeExpectancy()
         leage = le + self.currentage
-        plt.plot(surv.index + self.currentage, surv)
+        plt.plot(surv.index + self.currentage, surv, label="Survival rate")
         plt.xlabel("Age")
-        plt.ylabel("Survival probability")
-        plt.axvline(leage, color="orange", label=f"LE: {round(leage,1)}")
+        plt.ylabel("Cumulative probability")
+        plt.axvline(leage, color="red", label=f"LE: {round(leage,1)}")
         plt.title(
             f"issue age: {self.issueage}, gender: {self.gender()}, smoker: {self.isSmoker}"
         )
         plt.axvline(self.currentage, ls="--", lw=0.5, color="gray")
         plt.axhline(0, ls="--", lw=0.5, color="gray")
+        plt.axhline(1, ls="--", lw=0.5, color="gray")
         plt.legend()

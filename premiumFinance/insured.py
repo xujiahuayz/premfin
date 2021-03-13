@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 import pandas as pd
 import numpy as np
-import constants
 from os import path
 
-from core import Mortality
+from premiumFinance.core import Mortality
 
 
 @dataclass

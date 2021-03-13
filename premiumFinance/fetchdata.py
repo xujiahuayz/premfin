@@ -9,13 +9,15 @@ from pprint import pprint
 import xml.etree.ElementTree as ET
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
+
 from premiumFinance import constants
+from premiumFinance.settings import PROJECT_ROOT
 
 
 # retrieve SOA data
 def getSOAdata(url: str, filename: str):
     r_vbt = requests.get(url)
-    vbt_path = path.join(constants.DATA_FOLDER, filename + ".xlsx")
+    vbt_path = path.join(PROJECT_ROOT, constants.DATA_FOLDER, filename + ".xlsx")
     with open(vbt_path, "wb") as f:
         f.write(r_vbt.content)
 
@@ -30,7 +32,8 @@ def getYieldData(
         url = (
             f"{rooturl}?$filter=month(NEW_DATE) eq {month} and year(NEW_DATE) eq {year}"
         )
-    url = f"{rooturl}({entryindex})"
+    else:
+        url = f"{rooturl}({entryindex})"
     r_yield = requests.get(url)
     content = r_yield.content.decode("utf-8")
     root = ET.fromstring(content)
@@ -62,8 +65,6 @@ def getAnnualYield(yieldTable=None, durange=range(150), intertype: str = "linear
 
 
 # retrieve the huge mortality data set from the SOA
-
-
 def getMortData(url: str = constants.MORT_URL):
     r_mort = requests.get(url)
 
@@ -115,10 +116,10 @@ def getMortData(url: str = constants.MORT_URL):
 
 
 if __name__ == "__main__":
-    # getYieldData()
+    getYieldData(entryindex=7790)
     # getSOAdata(url=constants.VBT_UNISMOKE_URL, filename="unismoke")
     # getSOAdata(url=constants.VBT_SMOKEDISTINCT_URL, filename="smokedistinct")
-    getSOAdata(url=constants.PERSIST_URL, filename="persistency")
+    # getSOAdata(url=constants.PERSIST_URL, filename="persistency")
     # durange = range(40)
     # plt.plot(durange, getAnnualYield(durange=durange, intertype="linear"))
     # plt.plot(durange, getAnnualYield(durange=durange, intertype="quadratic"))

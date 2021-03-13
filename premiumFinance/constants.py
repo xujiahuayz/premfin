@@ -4,7 +4,7 @@ PERSIST_URL = "https://www.soa.org/globalassets/assets/files/resources/research-
 
 MORT_URL = "http://cdn-files.soa.org/research/2009-15_Data_20180601.zip"
 YIELD_URL = "https://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData"
-DATA_FOLDER = "../data/"
+DATA_FOLDER = "data/"
 
 YIELD_DURATION = {
     "1MONTH": 1 / 12,
