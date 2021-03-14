@@ -44,13 +44,13 @@ class InsurancePolicy:
     prmarkup: float = 0
     surrender_penalty_rate: float = 0
     cash_interest: float = 0
-    statutory_rate: Any = field(default=0.03)
+    statutory_interest: Any = field(default=0.03)
     policyholder_rate: Any = field(default=0.01)  # should be some risk free rate
     pr: Any = field(default=0.002)
 
     def __post_init__(self):
         self.pr = extendarray(self.pr)
-        self.statutory_rate = extendarray(self.statutory_rate)
+        self.statutory_interest = extendarray(self.statutory_interest)
         self.policyholder_rate = extendarray(self.policyholder_rate)
 
     # lapse rate dependent on gender; lapse == 0 with no lapse assumption
@@ -134,7 +134,7 @@ class InsurancePolicy:
         pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
         if issuerPerspective is not None:
             discount_rate = (
-                self.statutory_rate if issuerPerspective else self.policyholder_rate
+                self.statutory_interest if issuerPerspective else self.policyholder_rate
             )
 
         if pr is None:
@@ -164,7 +164,7 @@ class InsurancePolicy:
 
         if issuerPerspective is not None:
             discount_rate = (
-                self.statutory_rate if issuerPerspective else self.policyholder_rate
+                self.statutory_interest if issuerPerspective else self.policyholder_rate
             )
 
         cf = 0

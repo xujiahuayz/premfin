@@ -31,7 +31,7 @@ insPol0 = InsurancePolicy(
     surrender_penalty_rate=0.1,
     cash_interest=0.05,
     prmarkup=0.2,
-    statutory_rate=0.03,
+    statutory_interest=0.03,
 )
 
 insPol0.getLevelpr()
@@ -52,7 +52,7 @@ lapse_range = [True, False]
 bkv_r_statratelevel = list()
 pr_statratelevel = list()
 for sr in statrate_range:
-    insPol0.statutory_rate = extendarray(sr)
+    insPol0.statutory_interest = extendarray(sr)
     bkv_r_lapselevel = list()
     pr_lapselevel = list()
     for assumelapse in lapse_range:
