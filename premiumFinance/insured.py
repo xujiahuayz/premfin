@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from os import path
 
-from premiumFinance.core import Mortality
+from premiumFinance.mortality import Mortality
 
 
 @dataclass

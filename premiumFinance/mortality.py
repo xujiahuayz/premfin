@@ -23,6 +23,7 @@ class Mortality:
         return mf
 
     def basemortCurv(self, doplot=False):
+        #  TODO: fetch directly from https://mort.soa.org/
         gender = self.gender()
         if self.isSmoker is None:
             filename = "unismoke"
