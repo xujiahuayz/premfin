@@ -29,9 +29,12 @@ insPol0 = InsurancePolicy(
     lapse_assumption=True,
     policyholder_rate=getAnnualYield(),
     surrender_penalty_rate=0.1,
+    cash_interest=0.05,
+    prmarkup=0.2,
+    statutory_rate=0.03,
 )
 
-
+insPol0.getLevelpr()
 insPol0.plotPersRate()
 plt.close()
 insPol0.plotPersRate(atIssue=False)
@@ -47,9 +50,11 @@ statrate_range = [0.01, 0.1]
 lapse_range = [True, False]
 
 bkv_r_statratelevel = list()
+pr_statratelevel = list()
 for sr in statrate_range:
     insPol0.statutory_rate = extendarray(sr)
     bkv_r_lapselevel = list()
+    pr_lapselevel = list()
     for assumelapse in lapse_range:
         insPol0.lapse_assumption = assumelapse
         pr = financing0.policy.getLevelpr(assumeLapse=assumelapse, newPolicy=False)
@@ -65,7 +70,9 @@ for sr in statrate_range:
             bkv_r_mortlevel.append(bkv_r_currentagelevel)
             print(str(mort) + "========")
         bkv_r_lapselevel.append(bkv_r_mortlevel)
+        pr_lapselevel.extend([pr])
     bkv_r_statratelevel.append(bkv_r_lapselevel)
+    pr_statratelevel.append(pr_lapselevel)
 
 for k, v in enumerate(bkv_r_statratelevel):
     for j, w in enumerate(v):
@@ -77,10 +84,10 @@ for k, v in enumerate(bkv_r_statratelevel):
         plt.ylabel("Breakeven loan rate p.a.")
         plt.title(
             f"""
-            State at issue: {insrd_benchmark.issueage}-year-old {'' if insrd_benchmark.isSmoker else 'non-'}smoking {insrd_benchmark.issueMort().gender()}
+            At issue: {insrd_benchmark.issueage}-year-old, {'' if insrd_benchmark.isSmoker else 'non-'}smoking, {insrd_benchmark.issueMort().gender()}, mortality factor: {insrd_benchmark.issuemort}
             """
             f"""
-            Lapse-based pricing: {lapse_range[j]}, statutory rate: {statrate_range[k]}
+            Lapse-based pricing: {lapse_range[j]}, statutory interest rate: {statrate_range[k]}, premium rate: {pr_statratelevel[k][j]}
             """
         )
         plt.show()
@@ -122,19 +129,6 @@ print(time() - sttime)
 financing0.surrender_value(levelPr=True)
 financing0.PV_borrower(levelPr=False, loanrate=0.01, nonrecourse=False)
 financing0.PV_lender(levelPr=False, loanrate=0.01, nonrecourse=True)
-
-
-r_range = np.arange(0, 1, 0.05)
-pv_b = [
-    financing3.PV_borrower(levelPr=True, loanrate=r, nonrecourse=False) for r in r_range
-]
-sv = financing3.surrender_value(levelPr=True)
-bkv_r = financing3.breakevenLoanRate()
-
-plt.plot(r_range, pv_b)
-plt.axhline(sv, c="green")
-plt.axvline(bkv_r)
-plt.ylim([-1, 1])
 
 
 insrd_oldcurrent = deepcopy(insrd_benchmark)

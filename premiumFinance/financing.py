@@ -142,7 +142,7 @@ class PolicyFinancingScheme:
             )
             - sv,
             x0=0.001,
-            bracket=[0, 99],
+            bracket=[-0.5, 3],
             method="brentq",
         )
         return sol.root
