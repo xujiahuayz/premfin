@@ -1,0 +1,193 @@
+Table Name:,"American Men Table with Bowerman’s Extension, ANB",,,,
+Table Identity:,301,,,,
+Provider Domain:,soa.org,,,,
+Provider Name:,Stephen J. Strommen,,,,
+Table Reference:,"The Actuarial Society of America with the Cooperation of the American Institute of Actuaries, “American-Canadian Mortality Investigation Based on the Experience of Life Insurance Companies of the United States and Canada During the Years 1900 to 1915 Inclusive: on Policies Issued from 1843 to 1914 Inclusive, Volume I”, Actuarial Society of America, (1918) p. 182-183. Reprinted with Bowerman’s Extension by Nelson and Warren, Inc, “Principal Mortality Tables, Old and New”, (St. Louis, MO, 1957) p. 4-5",,,,
+Content Type:,Insured Lives Mortality,,,,
+Table Description:,American Men Table with Bowerman’s Extension to Age 0 for Ultimate Rates. Basis: Age Nearest Birthday. Minimum Select Age: 15. Maximum Select Age: 65. Minimum Ultimate Age: 0. Maximum Ultimate Age: 103,,,,
+EffDate:,,,,,
+Comments:,"Study Data: Prepared by The Committee on Rates of Mortality and Interest at the request of National Convention of Insurance Commissioners. Two tables were compiled: The American Men Table and The Canadian Men Table (See SOA Table Identity 457).  Although experience of American women and Canadian women was investigated, tables were not produced. The committee relied on the legal reserve life insurance experience of 59 companies in the United States and Canada between 1900 and 1915 policy anniversaries from contracts issued from 1843 to 1914, inclusive. In order that due weight should be given to the smaller companies, a rule was adopted: companies with $50,000,000 or less of insurance in force submit their entire data while companies with more than that were to give data based on $50,000,000. To obtain sufficient data at the older ages, companies contributed their entire data on policies other than deferred dividend. Industrial policies were excluded entirely. As mortality table in current use assumed the last death occurs at age 96, a number of companies paid the face amount as an endowment at that age. Thus, in order to have material at ages above 96, companies were asked to obtain a history of the policyholder. Care was taken to account for separate policies issued on the same person. Methodology: Mortality for the first five years was recorded separately while mortality for the sixth and subsequent years was combined and used as the basis for the ultimate section of the table. Thus the ultimate table does not reflect the light mortality experience usually seen due to medical selection and underwriting. After the submitted cards were separated by residency, they were sorted by sex and plan of insurance. Contracts written on a ten-year non-renewable basis and on a ten-year renewable term plan were eliminate. A Tabulator-Printer machine was employed to detect errors in sorting. An “exposed to risk” value was calculated by a simple formula for each of the years 1900-1914, inclusive. The rate of mortality, q(x + n - 1), was then calculated as the death claims, d(x + n), divided by the exposed at risk, E(x + n – 1). After crude rates were calculated, a variety of graduation techniques (Spencer, Makeham, Gompertz, Larus, Hardy, King’s osculatory and graphic) were employed in an effort to smooth the data. Ultimately Makeham’s second modification of Gompertz law was adopted with modification. One formula was used for ages 15-20, another for 20-30 inclusive and a third for ages over 30. The same general three-part formula was used in the graduation of experience over the first five years. The original table was only for ages 15 and over. Subsequently a number of extensions were done to age zero (Draper, Hooker, Bowerman, Davis). The version adopted in this table is by Bowerman. NOTE: An earlier generation of this table only included the ultimate rates (with Bowerman’s extension). The full select table is now also available. The ultimate portion of the table is commonly referred to as AM^(5).  Data Transcription Errors: None. Data Certified: 03/2013",,,,
+Keywords:,"Select,Insured Lives Mortality,United States of America",,,,
+
+Table # ,1,,,,
+Table Description:,American Men Table with Bowerman’s Extension to Age 0 for Ultimate Rates. Basis: Age Nearest Birthday. Minimum Select Age:  15. Maximum Select Age: 65.,,,,
+Nation:,United States of America,,,,
+Scaling Factor:,0,,,,
+Data Type:,Floating Point,,,,
+"Row, Column (if applicable)->id:",Age,Duration,,,
+"Row, Column (if applicable)->ScaleType:",Age,Ordinal Date,,,
+"Row, Column (if applicable)->AxisName:",Age,Duration,,,
+"Row, Column (if applicable)->MinScaleValue:",15,1,,,
+"Row, Column (if applicable)->MaxScaleValue:",65,5,,,
+"Row, Column (if applicable)->Increment:",1,1,,,
+
+Row\Column,1,2,3,4,5
+15,0.00247,0.00324,0.00341,0.00355,0.00372
+16,0.00252,0.00331,0.00348,0.00363,0.00382
+17,0.00256,0.00337,0.00355,0.00373,0.00392
+18,0.00261,0.00344,0.00364,0.00381,0.00400
+19,0.00266,0.00352,0.00372,0.00389,0.00407
+20,0.00273,0.00359,0.00380,0.00396,0.00413
+21,0.00278,0.00366,0.00386,0.00401,0.00418
+22,0.00283,0.00372,0.00391,0.00406,0.00421
+23,0.00286,0.00376,0.00396,0.00408,0.00424
+24,0.00291,0.00380,0.00399,0.00411,0.00426
+25,0.00293,0.00384,0.00402,0.00412,0.00427
+26,0.00295,0.00386,0.00404,0.00413,0.00428
+27,0.00298,0.00388,0.00406,0.00414,0.00429
+28,0.00298,0.00391,0.00406,0.00414,0.00432
+29,0.00299,0.00392,0.00408,0.00417,0.00437
+30,0.00301,0.00393,0.00411,0.00422,0.00445
+31,0.00301,0.00397,0.00416,0.00429,0.00454
+32,0.00302,0.00402,0.00424,0.00438,0.00467
+33,0.00306,0.00409,0.00432,0.00450,0.00482
+34,0.00311,0.00418,0.00443,0.00464,0.00501
+35,0.00316,0.00429,0.00457,0.00480,0.00523
+36,0.00323,0.00442,0.00473,0.00501,0.00548
+37,0.00333,0.00457,0.00493,0.00524,0.00577
+38,0.00344,0.00474,0.00516,0.00550,0.00610
+39,0.00358,0.00494,0.00542,0.00581,0.00648
+40,0.00371,0.00519,0.00570,0.00617,0.00690
+41,0.00388,0.00545,0.00604,0.00657,0.00738
+42,0.00408,0.00575,0.00641,0.00701,0.00792
+43,0.00430,0.00609,0.00684,0.00750,0.00851
+44,0.00455,0.00647,0.00731,0.00804,0.00919
+45,0.00482,0.00690,0.00782,0.00866,0.00992
+46,0.00514,0.00737,0.00841,0.00935,0.01073
+47,0.00549,0.00789,0.00905,0.01010,0.01163
+48,0.00587,0.00847,0.00975,0.01094,0.01261
+49,0.00630,0.00910,0.01055,0.01184,0.01370
+50,0.00678,0.00979,0.01141,0.01285,0.01489
+51,0.00729,0.01057,0.01235,0.01395,0.01618
+52,0.00787,0.01141,0.01339,0.01516,0.01761
+53,0.00850,0.01234,0.01452,0.01649,0.01916
+54,0.00920,0.01335,0.01577,0.01792,0.02086
+55,0.00994,0.01447,0.01712,0.01951,0.02271
+56,0.01078,0.01566,0.01860,0.02122,0.02472
+57,0.01167,0.01699,0.02021,0.02310,0.02691
+58,0.01267,0.01844,0.02195,0.02512,0.02929
+59,0.01374,0.02000,0.02387,0.02734,0.03188
+60,0.01492,0.02170,0.02595,0.02974,0.03468
+61,0.01620,0.02355,0.02820,0.03236,0.03772
+62,0.01760,0.02556,0.03065,0.03518,0.04102
+63,0.01911,0.02776,0.03329,0.03825,0.04460
+64,0.02074,0.03012,0.03618,0.04158,0.04845
+65,0.02252,0.03267,0.03931,0.04517,0.05268
+
+Table # ,2,,,,
+Table Description:,American Men Table with Bowerman’s Extension to Age 0 for Ultimate Rates. Basis: Age Nearest Birthday. Minimum Ultimate Age: 0. Maximum Ultimate Age: 103,,,,
+Nation:,United States of America,,,,
+Scaling Factor:,0,,,,
+Data Type:,Floating Point,,,,
+"Row, Column (if applicable)->id:",Age,,,,
+"Row, Column (if applicable)->ScaleType:",Age,,,,
+"Row, Column (if applicable)->AxisName:",Age,,,,
+"Row, Column (if applicable)->MinScaleValue:",0,,,,
+"Row, Column (if applicable)->MaxScaleValue:",103,,,,
+"Row, Column (if applicable)->Increment:",1,,,,
+
+Row\Column,1,,,,
+0,0.11246,,,,
+1,0.02639,,,,
+2,0.01187,,,,
+3,0.00709,,,,
+4,0.00491,,,,
+5,0.00394,,,,
+6,0.00338,,,,
+7,0.00305,,,,
+8,0.00293,,,,
+9,0.00296,,,,
+10,0.00307,,,,
+11,0.00317,,,,
+12,0.00326,,,,
+13,0.00332,,,,
+14,0.00339,,,,
+15,0.00346,,,,
+16,0.00353,,,,
+17,0.00363,,,,
+18,0.00371,,,,
+19,0.00381,,,,
+20,0.00392,,,,
+21,0.00402,,,,
+22,0.00412,,,,
+23,0.00418,,,,
+24,0.00425,,,,
+25,0.00431,,,,
+26,0.00435,,,,
+27,0.00439,,,,
+28,0.00441,,,,
+29,0.00443,,,,
+30,0.00446,,,,
+31,0.00448,,,,
+32,0.00451,,,,
+33,0.00459,,,,
+34,0.00468,,,,
+35,0.00478,,,,
+36,0.00494,,,,
+37,0.00512,,,,
+38,0.00532,,,,
+39,0.00556,,,,
+40,0.00584,,,,
+41,0.00616,,,,
+42,0.00654,,,,
+43,0.00694,,,,
+44,0.00742,,,,
+45,0.00794,,,,
+46,0.00852,,,,
+47,0.00918,,,,
+48,0.00989,,,,
+49,0.01070,,,,
+50,0.01158,,,,
+51,0.01254,,,,
+52,0.01362,,,,
+53,0.01478,,,,
+54,0.01608,,,,
+55,0.01747,,,,
+56,0.01902,,,,
+57,0.02069,,,,
+58,0.02251,,,,
+59,0.02449,,,,
+60,0.02668,,,,
+61,0.02903,,,,
+62,0.03158,,,,
+63,0.03437,,,,
+64,0.03738,,,,
+65,0.04066,,,,
+66,0.04418,,,,
+67,0.04803,,,,
+68,0.05216,,,,
+69,0.05664,,,,
+70,0.06147,,,,
+71,0.06670,,,,
+72,0.07233,,,,
+73,0.07839,,,,
+74,0.08492,,,,
+75,0.09194,,,,
+76,0.09951,,,,
+77,0.10765,,,,
+78,0.11631,,,,
+79,0.12569,,,,
+80,0.13574,,,,
+81,0.14642,,,,
+82,0.15787,,,,
+83,0.17005,,,,
+84,0.18315,,,,
+85,0.19707,,,,
+86,0.21180,,,,
+87,0.22729,,,,
+88,0.24408,,,,
+89,0.26170,,,,
+90,0.28035,,,,
+91,0.29946,,,,
+92,0.32108,,,,
+93,0.34188,,,,
+94,0.36364,,,,
+95,0.38776,,,,
+96,0.41111,,,,
+97,0.44340,,,,
+98,0.45763,,,,
+99,0.50000,,,,
+100,0.56250,,,,
+101,0.57143,,,,
+102,0.66667,,,,
+103,1.00000,,,,

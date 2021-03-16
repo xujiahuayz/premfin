@@ -22,3 +22,15 @@ YIELD_DURATION = {
 }
 
 FIN_OPTIONS = ["lapse", "nonrecourse", "fullrecourse", "sale"]
+
+VBT_TABLES = {
+    "VBT01": {
+        "m": {"unism": 1148, "nonsm": 1149, "smoke": 1150},
+        "f": {"unism": 1151, "nonsm": 1152, "smoke": 1153},
+    },
+    "VBT08": {"m": {"nonsm": 1003, "smoke": 1005}, "f": {"nonsm": 997, "smoke": 999}},
+    "VBT15": {
+        "m": {"unism": 3273, "nonsm": 3265, "smoke": 3267},
+        "f": {"unism": 3274, "nonsm": 3266, "smoke": 3268},
+    },
+}

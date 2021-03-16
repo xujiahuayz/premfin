@@ -14,21 +14,13 @@ class Insured:
     currentage: int = None
     issuemort: float = 1
     currentmort: float = 1
+    issueVBT: str = "VBT01"
+    currentVBT: str = "VBT15"
 
     def __post_init__(self):
         if self.currentage is None:
             self.currentage = self.issueage
         assert self.issueage <= self.currentage, "Issue age must not exceed current age"
-
-    def baseMort(self):
-        bm = Mortality(
-            issueage=self.issueage,
-            currentage=self.currentage,
-            isMale=self.isMale,
-            isSmoker=self.isSmoker,
-            mortrate=1,
-        )
-        return bm
 
     def issueMort(self):
         im = Mortality(
@@ -37,6 +29,7 @@ class Insured:
             isMale=self.isMale,
             isSmoker=self.isSmoker,
             mortrate=self.issuemort,
+            whichVBT=self.issueVBT,
         )
         return im
 
@@ -47,11 +40,6 @@ class Insured:
             isMale=self.isMale,
             isSmoker=self.isSmoker,
             mortrate=self.currentmort,
+            whichVBT=self.currentVBT,
         )
         return cm
-
-    def updateAge(self, age: int):
-        self.currentage = age
-
-    def updateMort(self, mort: float):
-        self.currentmort = mort

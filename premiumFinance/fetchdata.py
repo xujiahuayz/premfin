@@ -9,9 +9,58 @@ from pprint import pprint
 import xml.etree.ElementTree as ET
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
+from lxml import etree
+from urllib.request import urlopen
+import xmltodict
 
 from premiumFinance import constants
 from premiumFinance.settings import PROJECT_ROOT
+from xml.dom import minidom
+
+
+def getVBTdata(
+    vbt: str = "VBT15",
+    isMale: bool = True,
+    isSmoker: bool = False,
+    issueage: int = 50,
+    currentage: int = 70,
+):
+
+    tbl_index = constants.VBT_TABLES[vbt]["m" if isMale else "f"][
+        "unism" if isSmoker is None else "smoke" if isSmoker else "nonsm"
+    ]
+
+    tbl_file = path.join(
+        PROJECT_ROOT, constants.DATA_FOLDER, f"VBTXML/t{tbl_index}.xml"
+    )
+    vbt_tbl = ET.parse(tbl_file)
+    root = vbt_tbl.getroot()
+    [sel, ult] = root.findall("Table/Values")
+    ult_mort = pd.Series(
+        {m.get("t"): float(m.text) for m in ult.find("Axis").findall("Y")}
+    )
+
+    start_age = int(sel.find("Axis").get("t"))
+    sel_mort = (
+        pd.Series(
+            {
+                m.get("t"): m.text
+                for m in sel[issueage - start_age].find("Axis").findall("Y")
+            }
+        )
+        .dropna()
+        .astype(float)
+    )
+    ult_start = issueage + int(sel_mort.index[-1])
+
+    if ult_start <= int(ult_mort.index[-1]):
+        curv = sel_mort.append(ult_mort[str(ult_start) :], ignore_index=True)
+    else:
+        curv = sel_mort.reset_index(drop=True)
+
+    mort = pd.Series(0).append(curv[(currentage - issueage) :], ignore_index=True)
+
+    return mort
 
 
 # retrieve SOA data

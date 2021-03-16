@@ -22,6 +22,8 @@ insrd_benchmark = Insured(
     currentage=70,
     issuemort=1.0,
     currentmort=1.0,
+    issueVBT="VBT15",
+    currentVBT="VBT15",
 )
 
 insPol0 = InsurancePolicy(
@@ -76,6 +78,7 @@ for sr in statrate_range:
 
 for k, v in enumerate(bkv_r_statratelevel):
     for j, w in enumerate(v):
+        plt.close()
         for i, x in enumerate(w):
             plt.plot(current_age_range, x, label=round(current_mort_range[i], 1))
             plt.ylim([0, 1])
@@ -87,11 +90,10 @@ for k, v in enumerate(bkv_r_statratelevel):
             At issue: {insrd_benchmark.issueage}-year-old, {'' if insrd_benchmark.isSmoker else 'non-'}smoking, {insrd_benchmark.issueMort().gender()}, mortality factor: {insrd_benchmark.issuemort}
             """
             f"""
-            Lapse-based pricing: {lapse_range[j]}, statutory interest rate: {statrate_range[k]}, premium rate: {pr_statratelevel[k][j]}
+            Lapse-based pricing: {lapse_range[j]}, statutory interest rate: {statrate_range[k]}, premium rate: {round(pr_statratelevel[k][j],4)}
             """
         )
         plt.show()
-        plt.close()
 
 
 # with open(path.join(PROJECT_ROOT, DATA_FOLDER, "bkv_r_matrix.json"), "w") as f:

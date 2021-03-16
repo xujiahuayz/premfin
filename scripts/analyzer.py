@@ -123,56 +123,56 @@ if __name__ == '__main__':
     plotEmpPrembyMethod([40, 55, 70, 85], 'FA-weighted', prem_tbl = prem_tbl_seldate)
 
 
-        durange = range(40)
-        plt.plot(durange, getAnnualYield(durange=durange, intertype='linear'))
-        plt.plot(durange, getAnnualYield(durange=durange, intertype='quadratic'))
-        ages = range(100)
-        flatrates = [
-            getFlatpr(isMale=True, age=age, r_free=fetchdata.getAnnualYield())
-            for age in ages
-        ]
-        plt.plot(ages, flatrates)
-        
-        ages = range(100)
-        flatrates_svr = [getFlatpr(
-            isMale=True, age=age, r_free=0.0375
-        ) for age in ages]
-        flatrates_stableyield = [getFlatpr(
-            isMale=True, age=age, r_free=0.1
-        ) for age in ages]
-        flatrate_yc = [getFlatpr(
-            isMale=True, age=age, r_free=fetchdata.getAnnualYield()
-        ) for age in ages]
+    durange = range(40)
+    plt.plot(durange, getAnnualYield(durange=durange, intertype='linear'))
+    plt.plot(durange, getAnnualYield(durange=durange, intertype='quadratic'))
+    ages = range(100)
+    flatrates = [
+        getFlatpr(isMale=True, age=age, r_free=fetchdata.getAnnualYield())
+        for age in ages
+    ]
+    plt.plot(ages, flatrates)
+    
+    ages = range(100)
+    flatrates_svr = [getFlatpr(
+        isMale=True, age=age, r_free=0.0375
+    ) for age in ages]
+    flatrates_stableyield = [getFlatpr(
+        isMale=True, age=age, r_free=0.1
+    ) for age in ages]
+    flatrate_yc = [getFlatpr(
+        isMale=True, age=age, r_free=fetchdata.getAnnualYield()
+    ) for age in ages]
 
-        plt.plot(ages, flatrates_svr, label='SVR, 0.0375')
-        plt.plot(ages, flatrate_yc, c='red', label='YC')
-        plt.plot(ages, flatrates_stableyield, c='green', label='stable 0.1')
+    plt.plot(ages, flatrates_svr, label='SVR, 0.0375')
+    plt.plot(ages, flatrate_yc, c='red', label='YC')
+    plt.plot(ages, flatrates_stableyield, c='green', label='stable 0.1')
 
-        plt.legend()
-        plt.show()
+    plt.legend()
+    plt.show()
 
-        age = 50
-        plt.plot(getVariablePr(isMale=True, age=age))
-        plt.axhline(y=flatrates[age], c='orange')
-        plt.xlim(0, 99-age)
-        plt.ylim(0, 0.99)
+    age = 50
+    plt.plot(getVariablePr(isMale=True, age=age))
+    plt.axhline(y=flatrates[age], c='orange')
+    plt.xlim(0, 99-age)
+    plt.ylim(0, 0.99)
 
-        print(f'age: {age}, rate: {flatrate}')
-        risk-free rate
-        rFree = 0.005
-        age_v = 75
-        pr_v = 0.002
-        explore_plot(rFree=0.005, age_v=80, pr_v=0.002)
-        explore_plot(rFree=0.01, age_v=75, pr_v=0.002)
+    print(f'age: {age}, rate: {flatrate}')
+    risk-free rate
+    rFree = 0.005
+    age_v = 75
+    pr_v = 0.002
+    explore_plot(rFree=0.005, age_v=80, pr_v=0.002)
+    explore_plot(rFree=0.01, age_v=75, pr_v=0.002)
 
-        explore_plot(rFree=0.01, age_v=75, pr_v=0.05)
-        explore_plot(rFree=0.01, age_v=75, pr_v=0.014)
-        explore_plot(rFree=0.01, age_v=75, pr_v=0.009)
-
-
-        explore_plot(rFree=0.01, age_v=55, pr_v=0.0001)
-
-        explore_plot(rFree=0.07, age_v=85, pr_v=0.02)
+    explore_plot(rFree=0.01, age_v=75, pr_v=0.05)
+    explore_plot(rFree=0.01, age_v=75, pr_v=0.014)
+    explore_plot(rFree=0.01, age_v=75, pr_v=0.009)
 
 
-        explore_plot(rFree=fetchdata.getAnnualYield(), age_v=85, pr_v=flatrates[25])
+    explore_plot(rFree=0.01, age_v=55, pr_v=0.0001)
+
+    explore_plot(rFree=0.07, age_v=85, pr_v=0.02)
+
+
+    explore_plot(rFree=fetchdata.getAnnualYield(), age_v=85, pr_v=flatrates[25])

@@ -1,0 +1,36 @@
+Table Name:,"1925-39 Basic Table, ANB",,,,,,,,,,,,,
+Table Identity:,2153,,,,,,,,,,,,,
+Provider Domain:,soa.org,,,,,,,,,,,,,
+Provider Name:,Susie Lee,,,,,,,,,,,,,
+Table Reference:,"Joint Committee on Mortality, “1925-39 Basic Table”, Transactions of the Society of Actuaries Vol. 41, (1940) ",,,,,,,,,,,,,
+Content Type:,Insured Lives Mortality,,,,,,,,,,,,,
+Table Description:,1925-39 Basic Table. Basis: Age Nearest Birthday. Minimum Select Age: 10-14. Maximum Select Age: 65 and over.,,,,,,,,,,,,,
+EffDate:,,,,,,,,,,,,,,
+Comments:,"Study Data: Based on Standard Ordinary issues from the 16 companies which had been contributing to the Joint Committee on Mortality’s regular annual studies for the period 1925-38 carried to anniversaries in 1939. Data includes more than $296 billions of exposures and more than $1½ billions of death losses. NOTE: Only a quinquennial age select table was developed; it is presented below based on the central age of the quinquennial age band. Methodology: Table was not expected to be used for calculating premiums or reserves, thus emphasis was placed upon fidelity to the original data to a greater extent than upon smoothness. Graduation of final rates compared to select rates of American Men Table (See SOA Table Identity 301). Data Transcription Errors: None. Data Certified: 08/2013",,,,,,,,,,,,,
+Keywords:,"Select,Insured Lives Mortality,United States of America",,,,,,,,,,,,,
+
+Table # ,1,,,,,,,,,,,,,
+Table Description:,1925-39 Basic Table. Basis: Age Nearest Birthday. Minimum Select Age: 10-14. Maximum Select Age: 65 and over.,,,,,,,,,,,,,
+Nation:,United States of America,,,,,,,,,,,,,
+Scaling Factor:,0,,,,,,,,,,,,,
+Data Type:,Floating Point,,,,,,,,,,,,,
+"Row, Column (if applicable)->id:",Age,Duration,,,,,,,,,,,,
+"Row, Column (if applicable)->ScaleType:",Age,Ordinal Date,,,,,,,,,,,,
+"Row, Column (if applicable)->AxisName:",Age,Duration,,,,,,,,,,,,
+"Row, Column (if applicable)->MinScaleValue:",12,1,,,,,,,,,,,,
+"Row, Column (if applicable)->MaxScaleValue:",67,14,,,,,,,,,,,,
+"Row, Column (if applicable)->Increment:",5,1,,,,,,,,,,,,
+
+Row\Column,1,2,3,4,5,6,7,8,9,10,11,12,13,14
+12,0.00079,0.00104,0.00112,0.00122,0.00133,0.00146,0.00157,0.00171,0.00185,0.00197,0.00212,0.00228,0.00236,0.00248
+17,0.00137,0.00175,0.00182,0.00187,0.00194,0.00199,0.00199,0.00197,0.00197,0.00196,0.00195,0.00194,0.00193,0.00189
+22,0.00136,0.00176,0.00183,0.00190,0.00197,0.00205,0.00206,0.00208,0.00212,0.00217,0.00217,0.00219,0.00221,0.00221
+27,0.00131,0.00175,0.00191,0.00203,0.00219,0.00238,0.00246,0.00253,0.00262,0.00279,0.00295,0.00313,0.00332,0.00350
+32,0.00150,0.00209,0.00234,0.00255,0.00285,0.00324,0.00346,0.00370,0.00397,0.00430,0.00468,0.00500,0.00526,0.00545
+37,0.00212,0.00306,0.00347,0.00384,0.00432,0.00491,0.00521,0.00556,0.00598,0.00646,0.00699,0.00749,0.00799,0.00846
+42,0.00294,0.00439,0.00515,0.00575,0.00648,0.00738,0.00783,0.00847,0.00931,0.01031,0.01148,0.01252,0.01356,0.01444
+47,0.00438,0.00644,0.00752,0.00849,0.00979,0.01138,0.01227,0.01335,0.01475,0.01656,0.01861,0.02064,0.02236,0.02406
+52,0.00695,0.01004,0.01173,0.01319,0.01508,0.01724,0.01823,0.01936,0.02089,0.02303,0.02595,0.02964,0.03429,0.03924
+57,0.00972,0.01396,0.01644,0.01855,0.02116,0.02430,0.02594,0.02811,0.03069,0.03383,0.03784,0.04263,0.04788,0.05460
+62,0.01456,0.02036,0.02347,0.02597,0.02957,0.03446,0.03774,0.04205,0.04694,0.05283,0.05991,0.06777,0.07649,0.08616
+67,0.02226,0.02911,0.03237,0.03637,0.04330,0.05180,0.05653,0.06113,0.06856,0.07678,0.08291,0.09266,0.10347,0.11551

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 from premiumFinance.constants import DATA_FOLDER
 from premiumFinance.settings import PROJECT_ROOT
+from premiumFinance.fetchdata import getVBTdata
 
 EPSILON = 1e-10
 
@@ -17,13 +18,25 @@ class Mortality:
     isMale: bool
     isSmoker: bool = None
     mortrate: float = 1
+    whichVBT: str = "VBT01"
+
+    def basemortCurv(self, doplot=False):
+        mort = getVBTdata(
+            vbt=self.whichVBT,
+            isMale=self.isMale,
+            isSmoker=self.isSmoker,
+            issueage=self.issueage,
+            currentage=self.currentage,
+        )
+        if doplot:
+            plt.plot(mort)
+        return mort
 
     def gender(self):
         mf = "Male" if self.isMale else "Female"
         return mf
 
-    def basemortCurv(self, doplot=False):
-        #  TODO: fetch directly from https://mort.soa.org/
+    def basemortCurv_deprecated(self, doplot=False):
         gender = self.gender()
         if self.isSmoker is None:
             filename = "unismoke"
