@@ -22,7 +22,7 @@ insrd_benchmark = Insured(
     currentage=70,
     issuemort=1.0,
     currentmort=1.0,
-    issueVBT="VBT15",
+    issueVBT="VBT01",
     currentVBT="VBT15",
 )
 

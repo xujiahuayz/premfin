@@ -1,5 +1,8 @@
 {
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.pythonPath": "venv/bin/python",
+    "python.linting.pylintPath": "venv/bin/pylint"
 }
