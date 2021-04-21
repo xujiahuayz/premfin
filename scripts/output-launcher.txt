@@ -1,0 +1,282 @@
+User belongs to experiment group 'pythonJediLSP'
+User belongs to experiment group 'jupyterTest'
+User belongs to experiment group 'pythonDiscoveryModuleWithoutWatcher'
+User belongs to experiment group 'jupyterEnhancedDataViewer'
+Info 2021-04-14 15:09:24: ZMQ install verified.
+Info 2021-04-14 15:09:24: id is d1d1fc10-e8df-4531-a49f-5b69bad52b2c
+Info 2021-04-14 15:09:24: Attempting to start a server because of preload conditions ...
+Info 2021-04-14 15:09:25: Found existing keyfile at /Users/jiahuaxu/Library/Application Support/Code/User/globalStorage/ms-toolsai.jupyter/nbsecret
+Info 2021-04-14 15:09:28: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/normalizeSelection.py
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/normalizeSelection.py
+Info 2021-04-14 15:09:28: Loading webview. View is notset
+Info 2021-04-14 15:09:28: Loading web view...
+Info 2021-04-14 15:09:28: Webview panel created.
+Info 2021-04-14 15:09:28: Waiting for jupyter server and web panel ...
+Info 2021-04-14 15:09:28: Creating raw notebook for history://64ac6895-2395-44f4-a3ab-74a076ffc227
+Info 2021-04-14 15:09:28: Getting preferred kernel for history://64ac6895-2395-44f4-a3ab-74a076ffc227
+Info 2021-04-14 15:09:28: Cached data exists getEnvironmentVariables, <No Resource>
+Info 2021-04-14 15:09:28: Search all interpreters /Users/jiahuaxu/GitHub/premfin/venv/bin/python, /usr/bin/python, /usr/bin/python3, /usr/local/bin/python3
+Info 2021-04-14 15:09:29: findPreferredKernel score for Python 3.9.3  ('venv': venv) is 9
+Info 2021-04-14 15:09:29: findPreferredKernel score for Python 2.7.16 64-bit is 1
+Info 2021-04-14 15:09:29: findPreferredKernel score for Python 3.8.2 64-bit is 3
+Info 2021-04-14 15:09:29: findPreferredKernel score for Python 3.9.3 64-bit is 3
+Info 2021-04-14 15:09:29: Find kernel spec, Class name = D, completed in 717ms, has a truthy return value, Arg 1: <Uri:/Users/jiahuaxu/GitHub/premfin/scripts/playground.py>, Arg 2: undefined, Arg 3: undefined, Return Value: {"kind":"startUsingPythonInterpreter","kernelSpec":{"specFile":"/Users/jiahuaxu/Library/Jupyter/kernels/pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b/kernel.json","interpreterPath":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","name":"pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b","argv":["python","-m","ipykernel_launcher","-f","{connection_file}"],"language":"python","path":"python","display_name":"Python 3.9.3  ('venv': venv)","metadata":{"interpreter":{"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"}},"env":{}},"interpreter":{"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"},"id":".pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b.python./Users/jiahuaxu/GitHub/premfin/venv/bin/python.Python 3.9.3  ('venv': venv)"}
+Info 2021-04-14 15:09:29: Computing working directory history://64ac6895-2395-44f4-a3ab-74a076ffc227
+Info 2021-04-14 15:09:29: Connecting to raw session for history://64ac6895-2395-44f4-a3ab-74a076ffc227 with connection {"kind":"startUsingPythonInterpreter","kernelSpec":{"specFile":"/Users/jiahuaxu/Library/Jupyter/kernels/pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b/kernel.json","interpreterPath":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","name":"pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b","argv":["python","-m","ipykernel_launcher","-f","{connection_file}"],"language":"python","path":"python","display_name":"Python 3.9.3  ('venv': venv)","metadata":{"interpreter":{"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"}},"env":{}},"interpreter":{"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"},"id":".pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b.python./Users/jiahuaxu/GitHub/premfin/venv/bin/python.Python 3.9.3  ('venv': venv)"}
+Info 2021-04-14 15:09:29: Starting raw kernel Python 3.9.3  ('venv': venv)
+Info 2021-04-14 15:09:29: installMissingDependencies /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:29: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+Info 2021-04-14 15:09:29: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+Info 2021-04-14 15:09:29: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py pip list
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py pip list
+Info 2021-04-14 15:09:30: Install Missing Dependencies, Class name = v, completed in 690ms, has a falsy return value, Return Value: undefined
+Info 2021-04-14 15:09:30: Kernel launching with ports 9000,9001,9002,9003,9004. Start port is 9000
+Info 2021-04-14 15:09:30: Launching kernel daemon for Python 3.9.3  ('venv': venv) # /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:30: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+Info 2021-04-14 15:09:30: No custom variables for Kernel as interpreter is not conda, but is Venv
+Info 2021-04-14 15:09:30: Creating daemon process for /Users/jiahuaxu/GitHub/premfin/venv/bin/python with env variables count 40
+Info 2021-04-14 15:09:30: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py vscode_datascience_helpers.daemon --daemon-module=vscode_datascience_helpers.kernel_launcher_daemon -v
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py vscode_datascience_helpers.daemon --daemon-module=vscode_datascience_helpers.kernel_launcher_daemon -v
+Info 2021-04-14 15:09:30: Creating daemon process for /Users/jiahuaxu/GitHub/premfin/venv/bin/python with env variables count 40
+Info 2021-04-14 15:09:30: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py vscode_datascience_helpers.daemon --daemon-module=vscode_datascience_helpers.kernel_launcher_daemon -v
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py vscode_datascience_helpers.daemon --daemon-module=vscode_datascience_helpers.kernel_launcher_daemon -v
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Execute rpc method prewarm_kernel in DS Daemon
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Execute rpc method prewarm_kernel from /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Pre-Warm DS Kernel in DS Kernel Launcher Daemon
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Exec in DS Kernel Launcher Daemon (observable) ['/Users/jiahuaxu/GitHub/premfin/venv/bin/python', '/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/vscode_datascience_helpers/../pyvsc-run-isolated.py', '/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/vscode_datascience_helpers/kernel_prewarm_starter.py']
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Exec in DS Kernel Launcher Daemon (observable)
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Kernel launched, with PID 84141
+Warn 2021-04-14 15:09:30: Python Daemon (pid: 84139): Waiting for Kernel to die 84141
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Kernel launched, with PID as a daemon 84141
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Execute rpc method start_prewarmed_kernel in DS Daemon
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Execute rpc method start_prewarmed_kernel from /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): Start pre-warmed Kernel in DS Kernel Launcher Daemon 84141 with args ['ipykernel_launcher', '--ip=127.0.0.1', '--stdin=9003', '--control=9001', '--hb=9000', '--Session.signature_scheme="hmac-sha256"', '--Session.key=b"94cbf1dc-642b-47df-8b23-41360021d3a3"', '--shell=9002', '--transport="tcp"', '--iopub=9004', '--f=/var/folders/5r/lgk0jr5s38q9tthj0d93n9cr0000gn/T/tmp-83941B5TODSS5LmGf.json']
+Info 2021-04-14 15:09:30: Launching kernel daemon, Class name = h, completed in 503ms, has a truthy return value, Arg 1: <Uri:/Users/jiahuaxu/GitHub/premfin/scripts/playground.py>, Arg 2: "/Users/jiahuaxu/GitHub/premfin/scripts", Arg 3: {"specFile":"/Users/jiahuaxu/Library/Jupyter/kernels/pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b/kernel.json","interpreterPath":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","name":"pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b","argv":["python","-m","ipykernel_launcher","--ip=127.0.0.1","--stdin=9003","--control=9001","--hb=9000","--Session.signature_scheme=\"hmac-sha256\"","--Session.key=b\"94cbf1dc-642b-47df-8b23-41360021d3a3\"","--shell=9002","--transport=\"tcp\"","--iopub=9004","--f=/var/folders/5r/lgk0jr5s38q9tthj0d93n9cr0000gn/T/tmp-83941B5TODSS5LmGf.json"],"language":"python","path":"python","display_name":"Python 3.9.3  ('venv': venv)","metadata":{"interpreter":{"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"}},"env":{}}, Arg 4: {"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"}, Return Value: <Return value cannot be serialized for logging>
+Info 2021-04-14 15:09:30: Launching kernel in kernelProcess.ts, Class name = _, completed in 504ms, has a truthy return value, Arg 1: "/Users/jiahuaxu/GitHub/premfin/scripts", Return Value: {"proc":{"_events":{},"_eventsCount":2,"_closesNeeded":3,"_closesGot":0,"connected":false,"signalCode":null,"exitCode":null,"killed":false,"spawnfile":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","_handle":{"pid":84139},"spawnargs":["/Users/jiahuaxu/GitHub/premfin/venv/bin/python","/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py","vscode_datascience_helpers.daemon","--daemon-module=vscode_datascience_helpers.kernel_launcher_daemon","-v"],"pid":84139,"stdin":{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":null,"ended":false,"endEmitted":false,"reading":false,"sync":true,"needReadable":false,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":false,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":false,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":true,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},"stdout":{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{"close":[null,null]},"_eventsCount":4,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},"stderr":{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},"stdio":[{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":null,"ended":false,"endEmitted":false,"reading":false,"sync":true,"needReadable":false,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":false,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":false,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":true,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{"close":[null,null]},"_eventsCount":4,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null}]},"out":{"_isScalar":false,"observers":[],"closed":false,"isStopped":false,"hasError":false,"thrownError":null}}
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84140): Execute rpc method prewarm_kernel in DS Daemon
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84140): Execute rpc method prewarm_kernel from /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84140): Pre-Warm DS Kernel in DS Kernel Launcher Daemon
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84140): Exec in DS Kernel Launcher Daemon (observable) ['/Users/jiahuaxu/GitHub/premfin/venv/bin/python', '/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/vscode_datascience_helpers/../pyvsc-run-isolated.py', '/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/vscode_datascience_helpers/kernel_prewarm_starter.py']
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84140): Exec in DS Kernel Launcher Daemon (observable)
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84140): Kernel launched, with PID 84142
+Warn 2021-04-14 15:09:30: Python Daemon (pid: 84140): Waiting for Kernel to die 84142
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84140): Kernel launched, with PID as a daemon 84142
+Info 2021-04-14 15:09:30: KernelProcess output: Content-Length: 357
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "log", "params": {"level": "INFO", "msg": "write to stderr: /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '\"hmac-sha256\"' \u2013 or use CUnicode.\n", "pid": 84139}}Content-Length: 332
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "output", "params": {"source": "stderr", "out": "/Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '\"hmac-sha256\"' \u2013 or use CUnicode.\n"}}
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): write to stderr: /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '"hmac-sha256"' – or use CUnicode.
+
+Info 2021-04-14 15:09:30: KernelProcess output: Content-Length: 115
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "log", "params": {"level": "INFO", "msg": "write to stderr:   warn(\n", "pid": 84139}}Content-Length: 90
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "output", "params": {"source": "stderr", "out": "  warn(\n"}}Content-Length: 383
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "log", "params": {"level": "INFO", "msg": "write to stderr: /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use '94cbf1dc-642b-47df-8b23-41360021d3a3' instead of 'b\"94cbf1dc-642b-47df-8b23-41360021d3a3\"'.\n", "pid": 84139}}Content-Length: 358
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "output", "params": {"source": "stderr", "out": "/Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use '94cbf1dc-642b-47df-8b23-41360021d3a3' instead of 'b\"94cbf1dc-642b-47df-8b23-41360021d3a3\"'.\n"}}Content-Length: 115
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "log", "params": {"level": "INFO", "msg": "write to stderr:   warn(\n", "pid": 84139}}Content-Length: 90
+Content-Type: application/vscode-jsonrpc; charset=utf8
+
+{"jsonrpc": "2.0", "method": "output", "params": {"source": "stderr", "out": "  warn(\n"}}
+Warn 2021-04-14 15:09:30: Kernel 84139 as possibly died, StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '"hmac-sha256"' – or use CUnicode.
+
+Warn 2021-04-14 15:09:30: StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '"hmac-sha256"' – or use CUnicode.
+
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): write to stderr:   warn(
+
+Warn 2021-04-14 15:09:30: Kernel 84139 as possibly died, StdErr from Kernel Process   warn(
+
+Warn 2021-04-14 15:09:30: StdErr from Kernel Process   warn(
+
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): write to stderr: /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use '94cbf1dc-642b-47df-8b23-41360021d3a3' instead of 'b"94cbf1dc-642b-47df-8b23-41360021d3a3"'.
+
+Warn 2021-04-14 15:09:30: Kernel 84139 as possibly died, StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use '94cbf1dc-642b-47df-8b23-41360021d3a3' instead of 'b"94cbf1dc-642b-47df-8b23-41360021d3a3"'.
+
+Warn 2021-04-14 15:09:30: StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use '94cbf1dc-642b-47df-8b23-41360021d3a3' instead of 'b"94cbf1dc-642b-47df-8b23-41360021d3a3"'.
+
+Info 2021-04-14 15:09:30: Python Daemon (pid: 84139): write to stderr:   warn(
+
+Warn 2021-04-14 15:09:30: Kernel 84139 as possibly died, StdErr from Kernel Process   warn(
+
+Warn 2021-04-14 15:09:30: StdErr from Kernel Process   warn(
+
+Info 2021-04-14 15:09:30: Raw session started and connected
+Started kernel Python 3.9.3  ('venv': venv)
+Info 2021-04-14 15:09:30: Initial setup for history://64ac6895-2395-44f4-a3ab-74a076ffc227 starting ...
+Info 2021-04-14 15:09:30: UpdateWorkingDirectoryAndPath
+Info 2021-04-14 15:09:30: Kernel switching to busy
+Info 2021-04-14 15:09:30: Kernel switching to idle
+Info 2021-04-14 15:09:30: Starting raw kernel Python 3.9.3  ('venv': venv)
+Info 2021-04-14 15:09:30: installMissingDependencies /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:30: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+Info 2021-04-14 15:09:30: Kernel switching to busy
+Info 2021-04-14 15:09:30: Kernel switching to idle
+Info 2021-04-14 15:09:30: Initial setup complete for history://64ac6895-2395-44f4-a3ab-74a076ffc227
+Info 2021-04-14 15:09:30: Finished connecting 5bd88528-a6da-449b-8089-03b1e6f7b9ed
+Info 2021-04-14 15:09:30: Registering commtarget jupyter.widget
+Info 2021-04-14 15:09:30: Adding sys info for dbc88866-d73a-4972-bdaa-e043910727f6 0
+Info 2021-04-14 15:09:30: Sys info for dbc88866-d73a-4972-bdaa-e043910727f6 0 complete
+Info 2021-04-14 15:09:31: Web view react rendered
+Info 2021-04-14 15:09:31: Request for onigasm file at /Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/node_modules/onigasm/lib/onigasm.wasm
+Info 2021-04-14 15:09:31: Request for tmlanguage file.
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Install Missing Dependencies, Class name = v, completed in 380ms, has a falsy return value, Return Value: undefined
+Info 2021-04-14 15:09:31: Kernel launching with ports 9005,9006,9007,9008,9009. Start port is 9000
+Info 2021-04-14 15:09:31: Launching kernel daemon for Python 3.9.3  ('venv': venv) # /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:31: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py -c "import ipykernel"
+Info 2021-04-14 15:09:31: No custom variables for Kernel as interpreter is not conda, but is Venv
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84140): Execute rpc method start_prewarmed_kernel in DS Daemon
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84140): Execute rpc method start_prewarmed_kernel from /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84140): Start pre-warmed Kernel in DS Kernel Launcher Daemon 84142 with args ['ipykernel_launcher', '--ip=127.0.0.1', '--stdin=9008', '--control=9006', '--hb=9005', '--Session.signature_scheme="hmac-sha256"', '--Session.key=b"a2835e34-e8f8-4e28-97a3-80729f6fbb40"', '--shell=9007', '--transport="tcp"', '--iopub=9009', '--f=/var/folders/5r/lgk0jr5s38q9tthj0d93n9cr0000gn/T/tmp-839419KwLt3Seal7L.json']
+Info 2021-04-14 15:09:31: Launching kernel daemon, Class name = h, completed in 98ms, has a truthy return value, Arg 1: <Uri:/Users/jiahuaxu/GitHub/premfin/scripts/playground.py>, Arg 2: "/Users/jiahuaxu/GitHub/premfin/scripts", Arg 3: {"specFile":"/Users/jiahuaxu/Library/Jupyter/kernels/pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b/kernel.json","interpreterPath":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","name":"pythonjvsc74a57bd002ba76c8590b555f52861666e3225279053f4f4a31b100a9e82a3386ea0d1b0b","argv":["python","-m","ipykernel_launcher","--ip=127.0.0.1","--stdin=9008","--control=9006","--hb=9005","--Session.signature_scheme=\"hmac-sha256\"","--Session.key=b\"a2835e34-e8f8-4e28-97a3-80729f6fbb40\"","--shell=9007","--transport=\"tcp\"","--iopub=9009","--f=/var/folders/5r/lgk0jr5s38q9tthj0d93n9cr0000gn/T/tmp-839419KwLt3Seal7L.json"],"language":"python","path":"python","display_name":"Python 3.9.3  ('venv': venv)","metadata":{"interpreter":{"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"}},"env":{}}, Arg 4: {"sysPrefix":"","envType":"Venv","envName":"venv","envPath":"/Users/jiahuaxu/GitHub/premfin/venv","path":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","architecture":1,"sysVersion":"","version":{"raw":"3.9.3","major":3,"minor":9,"patch":3,"build":[],"prerelease":[]},"displayName":"Python 3.9.3  ('venv': venv)"}, Return Value: <Return value cannot be serialized for logging>
+Info 2021-04-14 15:09:31: Launching kernel in kernelProcess.ts, Class name = _, completed in 98ms, has a truthy return value, Arg 1: "/Users/jiahuaxu/GitHub/premfin/scripts", Return Value: {"proc":{"_events":{},"_eventsCount":2,"_closesNeeded":3,"_closesGot":0,"connected":false,"signalCode":null,"exitCode":null,"killed":false,"spawnfile":"/Users/jiahuaxu/GitHub/premfin/venv/bin/python","_handle":{"pid":84140},"spawnargs":["/Users/jiahuaxu/GitHub/premfin/venv/bin/python","/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py","vscode_datascience_helpers.daemon","--daemon-module=vscode_datascience_helpers.kernel_launcher_daemon","-v"],"pid":84140,"stdin":{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":null,"ended":false,"endEmitted":false,"reading":false,"sync":true,"needReadable":false,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":false,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":false,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":true,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},"stdout":{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{"close":[null,null]},"_eventsCount":4,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},"stderr":{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},"stdio":[{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":null,"ended":false,"endEmitted":false,"reading":false,"sync":true,"needReadable":false,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":false,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":false,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":true,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{"close":[null,null]},"_eventsCount":4,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null},{"connecting":false,"_hadError":false,"_parent":null,"_host":null,"_readableState":{"objectMode":false,"highWaterMark":16384,"buffer":{"head":null,"tail":null,"length":0},"length":0,"pipes":null,"pipesCount":0,"flowing":true,"ended":false,"endEmitted":false,"reading":true,"sync":false,"needReadable":true,"emittedReadable":false,"readableListening":false,"resumeScheduled":false,"emitClose":false,"autoDestroy":false,"destroyed":false,"defaultEncoding":"utf8","awaitDrainWriters":null,"multiAwaitDrain":false,"readingMore":false,"decoder":null,"encoding":null},"readable":true,"_events":{},"_eventsCount":3,"_writableState":{"objectMode":false,"highWaterMark":16384,"finalCalled":false,"needDrain":false,"ending":false,"ended":false,"finished":false,"destroyed":false,"decodeStrings":false,"defaultEncoding":"utf8","length":0,"writing":false,"corked":0,"sync":true,"bufferProcessing":false,"writecb":null,"writelen":0,"afterWriteTickInfo":null,"bufferedRequest":null,"lastBufferedRequest":null,"pendingcb":0,"prefinished":false,"errorEmitted":false,"emitClose":false,"autoDestroy":false,"bufferedRequestCount":0,"corkedRequestsFree":{"next":null,"entry":null}},"writable":false,"allowHalfOpen":false,"_sockname":null,"_pendingData":null,"_pendingEncoding":"","server":null,"_server":null}]},"out":{"_isScalar":false,"observers":[],"closed":false,"isStopped":false,"hasError":false,"thrownError":null}}
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84140): write to stderr: /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '"hmac-sha256"' – or use CUnicode.
+
+Warn 2021-04-14 15:09:31: Kernel 84140 as possibly died, StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '"hmac-sha256"' – or use CUnicode.
+
+Warn 2021-04-14 15:09:31: StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'hmac-sha256' instead of '"hmac-sha256"' – or use CUnicode.
+
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84140): write to stderr:   warn(
+
+Warn 2021-04-14 15:09:31: Kernel 84140 as possibly died, StdErr from Kernel Process   warn(
+
+Warn 2021-04-14 15:09:31: StdErr from Kernel Process   warn(
+
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84140): write to stderr: /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use 'a2835e34-e8f8-4e28-97a3-80729f6fbb40' instead of 'b"a2835e34-e8f8-4e28-97a3-80729f6fbb40"'.
+
+Warn 2021-04-14 15:09:31: Kernel 84140 as possibly died, StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use 'a2835e34-e8f8-4e28-97a3-80729f6fbb40' instead of 'b"a2835e34-e8f8-4e28-97a3-80729f6fbb40"'.
+
+Warn 2021-04-14 15:09:31: StdErr from Kernel Process /Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/traitlets/traitlets.py:2151: FutureWarning: Supporting extra quotes around Bytes is deprecated in traitlets 5.0. Use 'a2835e34-e8f8-4e28-97a3-80729f6fbb40' instead of 'b"a2835e34-e8f8-4e28-97a3-80729f6fbb40"'.
+
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84140): write to stderr:   warn(
+
+Warn 2021-04-14 15:09:31: Kernel 84140 as possibly died, StdErr from Kernel Process   warn(
+
+Warn 2021-04-14 15:09:31: StdErr from Kernel Process   warn(
+
+Info 2021-04-14 15:09:31: Creating daemon process for /Users/jiahuaxu/GitHub/premfin/venv/bin/python with env variables count 40
+Info 2021-04-14 15:09:31: Process Execution: > ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py vscode_datascience_helpers.daemon --daemon-module=vscode_datascience_helpers.kernel_launcher_daemon -v
+> ~/GitHub/premfin/venv/bin/python ~/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/pyvsc-run-isolated.py vscode_datascience_helpers.daemon --daemon-module=vscode_datascience_helpers.kernel_launcher_daemon -v
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84145): Execute rpc method prewarm_kernel in DS Daemon
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84145): Execute rpc method prewarm_kernel from /Users/jiahuaxu/GitHub/premfin/venv/bin/python
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84145): Pre-Warm DS Kernel in DS Kernel Launcher Daemon
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84145): Exec in DS Kernel Launcher Daemon (observable) ['/Users/jiahuaxu/GitHub/premfin/venv/bin/python', '/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/vscode_datascience_helpers/../pyvsc-run-isolated.py', '/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/vscode_datascience_helpers/kernel_prewarm_starter.py']
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84145): Exec in DS Kernel Launcher Daemon (observable)
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84145): Kernel launched, with PID 84146
+Warn 2021-04-14 15:09:31: Python Daemon (pid: 84145): Waiting for Kernel to die 84146
+Info 2021-04-14 15:09:31: Python Daemon (pid: 84145): Kernel launched, with PID as a daemon 84146
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleCssRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:594767)
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Searching for token colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleMonacoThemeRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:595130)
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleMonacoThemeRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:595130)
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleCssRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:594767)
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleMonacoThemeRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:595130)
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleCssRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:594767)
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleMonacoThemeRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:595130)
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Error 2021-04-14 15:09:31: TypeError: Cannot read property 'themes' of undefined
+    at y.findTokenColors (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:833241)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at y.applyThemeData (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:47:834752)
+    at b.handleCssRequest (/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/out/client/extension.js:32:594767)
+Info 2021-04-14 15:09:31: Attempting search for colors ...
+Info 2021-04-14 15:09:31: Loading base colors from /Users/jiahuaxu/.vscode/extensions/ms-vscode.theme-tomorrowkit-0.1.4/themes/Tomorrow_Night.tmTheme ...
+Info 2021-04-14 15:09:33: Submitting code for dbc88866-d73a-4972-bdaa-e043910727f6
+Info 2021-04-14 15:09:33: Wait for sys info for dbc88866-d73a-4972-bdaa-e043910727f6 0
+Info 2021-04-14 15:09:33: UpdateWorkingDirectoryAndPath
+Info 2021-04-14 15:09:33: changeDirectoryIfPossible
+Info 2021-04-14 15:09:33: Kernel switching to busy
+Info 2021-04-14 15:09:33: Kernel switching to idle
+Info 2021-04-14 15:09:33: Kernel switching to busy
+Info 2021-04-14 15:09:33: Kernel switching to idle
+Info 2021-04-14 15:09:33: Adding hash for 1 = 61c7be64b4db with 2 lines
+Info 2021-04-14 15:09:33: Kernel switching to busy
+Info 2021-04-14 15:09:33: Kernel switching to idle
+Info 2021-04-14 15:09:33: Finished execution for ee72099e-bd24-4e37-a336-c32cd5886593

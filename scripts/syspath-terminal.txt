@@ -1,0 +1,11 @@
+/Users/jiahuaxu/GitHub/premfin/scripts
+/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles
+/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles
+/Users/jiahuaxu/.vscode/extensions/ms-toolsai.jupyter-2021.5.745244803/pythonFiles/lib/python
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python39.zip
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/lib-dynload
+
+/Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages
+/Users/jiahuaxu/GitHub/premfin/venv/lib/python3.9/site-packages/IPython/extensions
+/Users/jiahuaxu/.ipython

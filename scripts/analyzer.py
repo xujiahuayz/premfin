@@ -22,7 +22,7 @@ def explore_plot(rFree, age_v, pr_v):
     for rB in rB_vs:
         pv_debt = getPV_endpay(pr=pr_v, surv=surv_v, r_b=rB)
         pv_financer, pv_polholder = getPV_agents(
-            finop="nonrecourse",
+            finop="fullrecourse",
             pv_db_value=pv_db,
             pv_pr_value=pv_pr,
             pv_debt_value=pv_debt,
@@ -40,8 +40,8 @@ def explore_plot(rFree, age_v, pr_v):
         pv_polholder_fr.append(pv_polholder)
 
     # fig, ax = plt.subplots()
-    plt.plot(rB_vs, pv_financer_nr, label="Nonrecourse financer", c="green")
-    plt.plot(rB_vs, pv_polholder_nr, label="Nonrecourse policyholder", c="orange")
+    plt.plot(rB_vs, pv_financer_nr, label="fullrecourse financer", c="green")
+    plt.plot(rB_vs, pv_polholder_nr, label="fullrecourse policyholder", c="orange")
 
     plt.plot(
         rB_vs, pv_financer_fr, linestyle="--", label="Fullrecourse financer", c="green"

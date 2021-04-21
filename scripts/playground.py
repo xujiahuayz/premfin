@@ -1,11 +1,8 @@
+from numpy.lib.twodim_base import triu_indices_from
 import pandas as pd
 import numpy as np
 from os import path
 import matplotlib.pyplot as plt
-from scipy import optimize
-from copy import deepcopy
-from time import time
-import json
 
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy, extendarray
@@ -14,6 +11,21 @@ from premiumFinance.fetchdata import getAnnualYield
 from premiumFinance.financing import PolicyFinancingScheme
 from premiumFinance.settings import PROJECT_ROOT
 from premiumFinance.constants import DATA_FOLDER
+
+insured_A8 = Insured(
+    issueage=54, isMale=True, isSmoker=False, currentage=None, issueVBT="VBT01"
+)
+
+policy_A8 = InsurancePolicy(
+    insrd=insured_A8,
+    lapse_assumption=True,
+    statutory_interest=0.05,
+    prmarkup=0.15,
+)
+
+policy_A8.getLevelpr()
+7821.8 / 750_000
+
 
 insrd_benchmark = Insured(
     issueage=40,
@@ -46,6 +58,15 @@ insPol0.PV_db(issuerPerspective=False, assumeLapse=False)
 
 financing0 = PolicyFinancingScheme(insPol0)
 
+financing0.PV_lender(loanrate=0.16754701834676933, fullrecourse=True)
+financing0.breakevenLoanRate(fullrecourse=False, levelPr=True, surPenalty=None)
+
+financing0.surrender_value(levelPr=True, surPenalty=None)
+financing0.PV_borrower(loanrate=0.1675470183467693, levelPr=True, fullrecourse=True)
+
+financing0.PV_lender_maxed(fullrecourse=False, levelPr=True, surPenalty=None)
+
+
 current_age_range = np.arange(40, 90, 2)
 current_mort_range = np.arange(0.5, 1.6, 0.5)
 statrate_range = [0.01, 0.1]
@@ -66,7 +87,7 @@ for sr in statrate_range:
             bkv_r_currentagelevel = list()
             for age in current_age_range:
                 insrd_benchmark.currentage = age
-                bkv_r = financing0.breakevenLoanRate(pr=pr)
+                bkv_r = financing0.breakevenLoanRate(pr=pr, fullrecourse=False)
                 bkv_r_currentagelevel.extend([bkv_r])
                 print(age)
             bkv_r_mortlevel.append(bkv_r_currentagelevel)
@@ -94,64 +115,3 @@ for k, v in enumerate(bkv_r_statratelevel):
             """
         )
         plt.show()
-
-
-# with open(path.join(PROJECT_ROOT, DATA_FOLDER, "bkv_r_matrix.json"), "w") as f:
-#     json.dump(bkv_r_matrix, f, indent=2)
-
-# bkv_r_matrix2 = json.load(
-#     open(path.join(PROJECT_ROOT, DATA_FOLDER, "bkv_r_matrix.json"), "r")
-# )
-
-
-insPol1 = InsurancePolicy(
-    insrd=insrd_benchmark,
-    lapse_assumption=False,
-    policyholder_rate=0.001,
-    surrender_penalty_rate=0.1,
-)
-insPol2 = InsurancePolicy(
-    insrd=insrd_benchmark,
-    lapse_assumption=False,
-    policyholder_rate=getAnnualYield(),
-    surrender_penalty_rate=0.1,
-)
-
-
-sttime = time()
-# pv_deathben = financing3.PV_db()
-financing0.breakevenLoanRate(pr=pr)
-print(time() - sttime)
-
-sttime = time()
-financing0.breakevenLoanRate()
-print(time() - sttime)
-
-
-financing0.surrender_value(levelPr=True)
-financing0.PV_borrower(levelPr=False, loanrate=0.01, nonrecourse=False)
-financing0.PV_lender(levelPr=False, loanrate=0.01, nonrecourse=True)
-
-
-insrd_oldcurrent = deepcopy(insrd_benchmark)
-insrd_oldcurrent.currentage = 50
-
-
-insrd_oldissue = deepcopy(insrd_benchmark)
-insrd_oldissue.currentage = 90
-
-
-insrd_fem = deepcopy(insrd_benchmark)
-insrd_fem.isMale = False
-
-
-insrd_smoker = deepcopy(insrd_benchmark)
-insrd_smoker.isSmoker = True
-
-
-insrd_sickissue = deepcopy(insrd_benchmark)
-insrd_sickissue.issueMort = 1.2
-
-
-insrd_sickcurrent = deepcopy(insrd_benchmark)
-insrd_sickcurrent.currentmort = 1.2

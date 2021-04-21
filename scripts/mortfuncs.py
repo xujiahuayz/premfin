@@ -225,7 +225,7 @@ def getPV_agents(
         financ = 0
         polhol = 0
 
-    # case `nonrecourse`
+    # case `fullrecourse`
     if finop == FIN_OPTIONS[1]:
         financ = min(pv_db_value, pv_debt_value) - pv_pr_value
         polhol = max(0, pv_db_value - pv_debt_value)

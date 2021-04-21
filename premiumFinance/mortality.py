@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from os import path
 import matplotlib.pyplot as plt
+from typing import Optional
 
 from premiumFinance.constants import DATA_FOLDER
 from premiumFinance.settings import PROJECT_ROOT
@@ -14,9 +15,9 @@ EPSILON = 1e-10
 @dataclass
 class Mortality:
     issueage: int
-    currentage: int
+    currentage: Optional[bool]
     isMale: bool
-    isSmoker: bool = None
+    isSmoker: Optional[bool]
     mortrate: float = 1
     whichVBT: str = "VBT01"
 

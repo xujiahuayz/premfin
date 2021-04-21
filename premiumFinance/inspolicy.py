@@ -4,7 +4,7 @@ import numpy as np
 from os import path
 import matplotlib.pyplot as plt
 from scipy import optimize
-from typing import Any
+from typing import Any, List, Optional, Union
 
 
 from premiumFinance.constants import DATA_FOLDER
@@ -26,13 +26,13 @@ lapse_tbl = pd.read_excel(
 )
 
 
-def extendarray(x):
+def extendarray(x) -> list:
     if isinstance(x, (int, float)):
         x = [x]
     if type(x) == np.ndarray:
-        x = x.tolist()
+        x = x.tolist()  # type: ignore
     if type(x) == pd.Series:
-        x = x.to_list()
+        x = x.to_list()  # type: ignore
     x.extend([x[-1]] * 150)
     return x
 
@@ -54,27 +54,30 @@ class InsurancePolicy:
         self.policyholder_rate = extendarray(self.policyholder_rate)
 
     # lapse rate dependent on gender; lapse == 0 with no lapse assumption
-    def lapseRate(self, assumeLapse: bool = None, doplot=False):
+    def lapseRate(self, assumeLapse: Optional[bool] = None, doplot: bool = False):
         if assumeLapse is None:
             assumeLapse = self.lapse_assumption
         lapse_rate = pd.Series([0])
         if assumeLapse:
             col_ind = 0 if self.insrd.isMale else 1
             lapse_rate = lapse_rate.append(
-                lapse_tbl.iloc[:, col_ind] / 100, ignore_index=True
+                lapse_tbl.iloc[:, col_ind] / 100, ignore_index=True  # type: ignore
             )
         if doplot:
             plt.plot(lapse_rate)
         return lapse_rate
 
     # inforce rate starting year 1 (as opposed to year 0)
-    def inforceRate(self, assumeLapse: bool = None):
+    def inforceRate(self, assumeLapse: Optional[bool] = None):
         inforcerate = (1 - self.lapseRate(assumeLapse=assumeLapse)).to_list()
         inforcerate = extendarray(inforcerate)[1:]
         return inforcerate
 
     def condPersRate(
-        self, assumeLapse: bool = None, atIssue: bool = True, doplot: bool = False
+        self,
+        assumeLapse: Optional[bool] = None,
+        atIssue: Optional[bool] = True,
+        doplot: bool = False,
     ):
         inforcerate = self.inforceRate(assumeLapse=assumeLapse)
         if atIssue:
@@ -95,12 +98,12 @@ class InsurancePolicy:
             plt.plot(persrate)
         return persrate
 
-    def persRate(self, assumeLapse: bool = None, atIssue: bool = True):
+    def persRate(self, assumeLapse: Optional[bool] = None, atIssue: bool = True):
         persrate = self.condPersRate(assumeLapse=assumeLapse, atIssue=atIssue)
         pers = np.cumprod(persrate)
         return pers
 
-    def plotPersRate(self, assumeLapse: bool = None, atIssue: bool = True):
+    def plotPersRate(self, assumeLapse: Optional[bool] = None, atIssue: bool = True):
         pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
         mort = self.insrd.issueMort() if atIssue else self.insrd.currentMort()
         ageaxis = np.arange(len(pers)) + (
@@ -109,7 +112,9 @@ class InsurancePolicy:
         plt.plot(ageaxis, pers, label="Persistency rate")
         mort.plotSurvCurv()
 
-    def dbPayRate(self, assumeLapse: bool = None, atIssue: bool = True, doplot=False):
+    def dbPayRate(
+        self, assumeLapse: Optional[bool] = None, atIssue: bool = True, doplot=False
+    ):
         pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
         condmort = (
             self.insrd.issueMort().condMortCurv()
@@ -124,11 +129,11 @@ class InsurancePolicy:
     # `pr` is premium rate: premium / deth benefit
     def PV_pr(
         self,
-        pr=None,  # unpaid premium stream
-        issuerPerspective: bool = True,
-        assumeLapse: bool = None,
+        pr: Any = None,  # unpaid premium stream
+        issuerPerspective: Optional[bool] = True,
+        assumeLapse: Optional[bool] = True,
         atIssue: bool = True,
-        discount_rate: float = None,
+        discount_rate: Optional[Union[float, List[float]]] = None,
     ) -> float:
 
         pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
@@ -150,16 +155,16 @@ class InsurancePolicy:
 
         cf = 0
         for i in range(obs_period):
-            cf += (pers[i] * pr[i]) / (1 + discount_rate[i]) ** i
+            cf += (pers[i] * pr[i]) / (1 + discount_rate[i]) ** i  # type: ignore
 
         return cf
 
     def PV_db(
         self,
-        issuerPerspective: bool = True,
-        assumeLapse: bool = None,
+        issuerPerspective: Optional[bool] = True,
+        assumeLapse: Optional[bool] = None,
         atIssue: bool = True,
-        discount_rate: float = None,
+        discount_rate: Any = None,
     ) -> float:
 
         if issuerPerspective is not None:
@@ -179,10 +184,10 @@ class InsurancePolicy:
     def policyvalue(
         self,
         pr=None,
-        issuerPerspective: bool = True,
-        assumeLapse: bool = None,
+        issuerPerspective: Optional[bool] = True,
+        assumeLapse: Optional[bool] = None,
         atIssue: bool = True,
-        discount_rate: float = None,
+        discount_rate: Optional[float] = None,
     ):
 
         PVdb = self.PV_db(
@@ -203,7 +208,7 @@ class InsurancePolicy:
 
     def getLevelpr(
         self, assumeLapse: bool = None, newPolicy: bool = False, addMarkup: bool = True
-    ):
+    ) -> float:
         sol = optimize.root_scalar(
             lambda pr: self.policyvalue(
                 pr,

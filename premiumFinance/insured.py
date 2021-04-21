@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 from os import path
+from typing import Optional
 
 from premiumFinance.mortality import Mortality
 
@@ -10,8 +11,8 @@ from premiumFinance.mortality import Mortality
 class Insured:
     issueage: int
     isMale: bool
-    isSmoker: bool = None
-    currentage: int = None
+    isSmoker: Optional[bool]
+    currentage: Optional[int]
     issuemort: float = 1
     currentmort: float = 1
     issueVBT: str = "VBT01"

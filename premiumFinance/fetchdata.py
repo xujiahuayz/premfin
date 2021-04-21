@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from lxml import etree
 from urllib.request import urlopen
 import xmltodict
-
+from typing import Optional
 from premiumFinance import constants
 from premiumFinance.settings import PROJECT_ROOT
 from xml.dom import minidom
@@ -21,9 +21,9 @@ from xml.dom import minidom
 def getVBTdata(
     vbt: str = "VBT15",
     isMale: bool = True,
-    isSmoker: bool = False,
+    isSmoker: Optional[bool] = False,
     issueage: int = 50,
-    currentage: int = 70,
+    currentage: Optional[int] = 70,
 ):
 
     tbl_index = constants.VBT_TABLES[vbt]["m" if isMale else "f"][
@@ -164,11 +164,11 @@ def getMortData(url: str = constants.MORT_URL):
                 #  'Smoker Status': 'NonSmoker'}
 
 
-if __name__ == "__main__":
-    getYieldData(entryindex=7790)
-    # getSOAdata(url=constants.VBT_UNISMOKE_URL, filename="unismoke")
-    # getSOAdata(url=constants.VBT_SMOKEDISTINCT_URL, filename="smokedistinct")
-    # getSOAdata(url=constants.PERSIST_URL, filename="persistency")
-    # durange = range(40)
-    # plt.plot(durange, getAnnualYield(durange=durange, intertype="linear"))
-    # plt.plot(durange, getAnnualYield(durange=durange, intertype="quadratic"))
+# if __name__ == "__main__":
+# getYieldData(entryindex=7790)
+# getSOAdata(url=constants.VBT_UNISMOKE_URL, filename="unismoke")
+# getSOAdata(url=constants.VBT_SMOKEDISTINCT_URL, filename="smokedistinct")
+# getSOAdata(url=constants.PERSIST_URL, filename="persistency")
+# durange = range(40)
+# plt.plot(durange, getAnnualYield(durange=durange, intertype="linear"))
+# plt.plot(durange, getAnnualYield(durange=durange, intertype="quadratic"))
