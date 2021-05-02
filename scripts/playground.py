@@ -1,16 +1,11 @@
 from numpy.lib.twodim_base import triu_indices_from
-import pandas as pd
 import numpy as np
-from os import path
 import matplotlib.pyplot as plt
 
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy, extendarray
-from premiumFinance.mortality import Mortality
 from premiumFinance.fetchdata import getAnnualYield
 from premiumFinance.financing import PolicyFinancingScheme
-from premiumFinance.settings import PROJECT_ROOT
-from premiumFinance.constants import DATA_FOLDER
 
 insured_A8 = Insured(
     issueage=54, isMale=True, isSmoker=False, currentage=None, issueVBT="VBT01"

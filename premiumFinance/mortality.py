@@ -15,11 +15,15 @@ EPSILON = 1e-10
 @dataclass
 class Mortality:
     issueage: int
-    currentage: Optional[bool]
+    currentage: Optional[int]
     isMale: bool
     isSmoker: Optional[bool]
     mortrate: float = 1
     whichVBT: str = "VBT01"
+
+    def __post_init__(self):
+        if self.currentage is None:
+            self.currentage = self.issueage
 
     def basemortCurv(self, doplot=False):
         mort = getVBTdata(
