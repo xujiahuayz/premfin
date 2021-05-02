@@ -81,9 +81,9 @@ class InsurancePolicy:
     ):
         inforcerate = self.inforceRate(assumeLapse=assumeLapse)
         if atIssue:
-            condSurv = self.insrd.issueMort().condSurvCurv()
+            condSurv = self.insrd.issueMort.condSurvCurv()
         else:
-            condSurv = self.insrd.currentMort().condSurvCurv()
+            condSurv = self.insrd.currentMort.condSurvCurv()
             inforcerate = inforcerate[(self.insrd.currentage - self.insrd.issueage) :]
         # print(inforcerate)
 
@@ -105,7 +105,7 @@ class InsurancePolicy:
 
     def plotPersRate(self, assumeLapse: Optional[bool] = None, atIssue: bool = True):
         pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
-        mort = self.insrd.issueMort() if atIssue else self.insrd.currentMort()
+        mort = self.insrd.issueMort if atIssue else self.insrd.currentMort
         ageaxis = np.arange(len(pers)) + (
             self.insrd.issueage if atIssue else self.insrd.currentage
         )
@@ -117,9 +117,9 @@ class InsurancePolicy:
     ):
         pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
         condmort = (
-            self.insrd.issueMort().condMortCurv()
+            self.insrd.issueMort.condMortCurv()
             if atIssue
-            else self.insrd.currentMort().condMortCurv()
+            else self.insrd.currentMort.condMortCurv()
         )
         dbpayrate = pers * condmort
         if doplot:
@@ -263,7 +263,7 @@ class InsurancePolicy:
     def getVariablePr(
         self, assumeLapse: bool = None, addMarkup: bool = True, doplot=False
     ):
-        pr = self.insrd.issueMort().condMortCurv() / self.condPersRate(
+        pr = self.insrd.issueMort.condMortCurv() / self.condPersRate(
             assumeLapse=assumeLapse
         )
 

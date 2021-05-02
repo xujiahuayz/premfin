@@ -23,6 +23,7 @@ class Insured:
             self.currentage = self.issueage
         assert self.issueage <= self.currentage, "Issue age must not exceed current age"
 
+    @property
     def issueMort(self):
         im = Mortality(
             issueage=self.issueage,
@@ -34,6 +35,7 @@ class Insured:
         )
         return im
 
+    @property
     def currentMort(self):
         cm = Mortality(
             issueage=self.issueage,

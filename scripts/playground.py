@@ -103,7 +103,7 @@ for k, v in enumerate(bkv_r_statratelevel):
         plt.ylabel("Breakeven loan rate p.a.")
         plt.title(
             f"""
-            At issue: {insrd_benchmark.issueage}-year-old, {'' if insrd_benchmark.isSmoker else 'non-'}smoking, {insrd_benchmark.issueMort().gender()}, mortality factor: {insrd_benchmark.issuemort}
+            At issue: {insrd_benchmark.issueage}-year-old, {'' if insrd_benchmark.isSmoker else 'non-'}smoking, {insrd_benchmark.issueMort.gender()}, mortality factor: {insrd_benchmark.issuemort}
             """
             f"""
             Lapse-based pricing: {lapse_range[j]}, statutory interest rate: {statrate_range[k]}, premium rate: {round(pr_statratelevel[k][j],4)}
