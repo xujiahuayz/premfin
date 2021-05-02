@@ -1,11 +1,93 @@
+from os import path
+from numpy.core.numeric import full
 from numpy.lib.twodim_base import triu_indices_from
 import numpy as np
 import matplotlib.pyplot as plt
+import re  # regular expression
+import pandas as pd
 
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy, extendarray
 from premiumFinance.fetchdata import getAnnualYield
 from premiumFinance.financing import PolicyFinancingScheme
+from premiumFinance.constants import DATA_FOLDER
+
+mortality_experience_path = path.join(DATA_FOLDER, "mortalityexperience.xlsx")
+
+
+def get_representative_age(x: str) -> int:
+    return int(np.mean([int(x) for x in re.split("[+-]", x) if x != ""]))
+
+
+mortality_experience = pd.read_excel(mortality_experience_path)
+
+mortality_experience["issueage"] = mortality_experience["Issue Age Group"].map(
+    get_representative_age
+)
+mortality_experience["currentage"] = mortality_experience["Attained Age Group"].map(
+    get_representative_age
+)
+mortality_experience["isMale"] = mortality_experience["Gender"].map(
+    lambda x: True if x == "Male" else False
+)
+mortality_experience["isSmoker"] = mortality_experience["Smoker Status"].map(
+    lambda x: {"NonSmoker": False, "Smoker": True, "Unknown": None}[x]
+)
+
+profit_untapped = 0
+breakeven_loanrate = []
+lender_profit = []
+
+for i, row in mortality_experience.iterrows():
+    if i < 500:  # type: ignore
+        print(i)
+        this_insured = Insured(
+            issueage=row["issueage"],  # type: ignore
+            isMale=row["isMale"],  # type: ignore
+            isSmoker=row["isSmoker"],  # type: ignore
+            currentage=row["currentage"],  # type: ignore
+            issueVBT="VBT01",
+            currentVBT="VBT15",
+        )
+        this_policy = InsurancePolicy(
+            insrd=this_insured,
+            lapse_assumption=True,
+            statutory_interest=0.035,
+            premium_markup=0.15,
+        )
+        this_financing = PolicyFinancingScheme(this_policy)
+        this_breakeven_loanrate = this_financing.breakevenLoanRate(
+            levelPr=True, fullrecourse=True
+        )
+        if not (0 < this_breakeven_loanrate < 1):
+            this_breakeven_loanrate = np.nan
+            this_lender_profit = 0
+        else:
+            this_lender_profit = this_financing.PV_lender(
+                loanrate=this_breakeven_loanrate, levelPr=True, fullrecourse=True
+            )
+        breakeven_loanrate.append(this_breakeven_loanrate)
+        lender_profit.append(this_lender_profit)
+
+mortality_experience["Breakeven Loan rate"] = breakeven_loanrate
+mortality_experience["Lender profit"] = lender_profit
+
+untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
+mortality_experience.to_excel(untapped_profit_path)
+
+profit_untapped_table = mortality_experience[
+    [
+        "isMale",
+        "issueage",
+        "currentage",
+    ]
+]
+
+# this_profit = this_financing.PV_lender_maxed(levelPr=True, fullrecourse=True)
+# print(this_insured)
+# print(this_profit)
+# profit_untapped += this_profit * row["Amount Exposed "]  # type: ignore
+# print(profit_untapped)
 
 insured_A8 = Insured(
     issueage=54, isMale=True, isSmoker=False, currentage=None, issueVBT="VBT01"
@@ -15,7 +97,7 @@ policy_A8 = InsurancePolicy(
     insrd=insured_A8,
     lapse_assumption=True,
     statutory_interest=0.05,
-    prmarkup=0.15,
+    premium_markup=0.15,
 )
 
 policy_A8.getLevelpr()
@@ -39,7 +121,7 @@ insPol0 = InsurancePolicy(
     policyholder_rate=getAnnualYield(),
     surrender_penalty_rate=0.1,
     cash_interest=0.05,
-    prmarkup=0.2,
+    premium_markup=0.2,
     statutory_interest=0.03,
 )
 
@@ -49,7 +131,7 @@ plt.close()
 insPol0.plotPersRate(atIssue=False)
 insPol0.PV_db(issuerPerspective=True)
 insPol0.PV_db(issuerPerspective=False, assumeLapse=False)
-
+insPol0.PV_db(issuerPerspective=False, assumeLapse=False)
 
 financing0 = PolicyFinancingScheme(insPol0)
 
@@ -59,7 +141,7 @@ financing0.breakevenLoanRate(fullrecourse=False, levelPr=True, surPenalty=None)
 financing0.surrender_value(levelPr=True, surPenalty=None)
 financing0.PV_borrower(loanrate=0.1675470183467693, levelPr=True, fullrecourse=True)
 
-financing0.PV_lender_maxed(fullrecourse=False, levelPr=True, surPenalty=None)
+financing0.PV_lender_maxed(fullrecourse=True, levelPr=True, surPenalty=None)
 
 
 current_age_range = np.arange(40, 90, 2)

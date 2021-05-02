@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from scipy import optimize
-
+import numpy as np
 from premiumFinance.inspolicy import InsurancePolicy, extendarray
-from typing import Any, Optional, Union, List
+from typing import Any, Optional, Type, Union, List
 
 
 @dataclass
@@ -90,7 +90,7 @@ class PolicyFinancingScheme:
         pv = pv_deathben - self.PV_repay(
             pr=pr, levelPr=levelPr, loanrate=loanrate, oneperiod_mort=oneperiod_mort
         )
-        if fullrecourse:
+        if not fullrecourse:
             pv = max(0, pv)
         return pv
 
@@ -103,7 +103,7 @@ class PolicyFinancingScheme:
         pv_deathben: Optional[float] = None,
     ) -> float:
         in_flow = self.PV_repay(pr=pr, levelPr=levelPr, loanrate=loanrate)
-        if fullrecourse:
+        if not fullrecourse:
             if pv_deathben is None:
                 pv_deathben = self.PV_db()
             in_flow = min(pv_deathben, in_flow)

@@ -14,7 +14,7 @@ from premiumFinance.fetchdata import getAnnualYield
 
 
 # need to `pip install openpyxl`
-pers_file = path.join(PROJECT_ROOT, DATA_FOLDER, "persistency.xlsx")
+pers_file = path.join(DATA_FOLDER, "persistency.xlsx")
 # read lapse rates
 lapse_tbl = pd.read_excel(
     pers_file,
@@ -41,7 +41,7 @@ def extendarray(x) -> list:
 class InsurancePolicy:
     insrd: Insured
     lapse_assumption: bool = True
-    prmarkup: float = 0
+    premium_markup: float = 0
     surrender_penalty_rate: float = 0
     cash_interest: float = 0
     statutory_interest: Any = field(default=0.03)
@@ -220,7 +220,7 @@ class InsurancePolicy:
             bracket=[0, 1],
             method="brentq",
         )
-        levelpr = sol.root * (1 + (self.prmarkup if addMarkup else 0))
+        levelpr = sol.root * (1 + (self.premium_markup if addMarkup else 0))
         return levelpr
 
     def getIRR(
@@ -267,7 +267,7 @@ class InsurancePolicy:
             assumeLapse=assumeLapse
         )
 
-        pr = pr * (1 + (self.prmarkup if addMarkup else 0))
+        pr = pr * (1 + (self.premium_markup if addMarkup else 0))
         if doplot:
             plt.plot(pr)
             plt.ylim(0, 1)

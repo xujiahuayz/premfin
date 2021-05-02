@@ -51,7 +51,7 @@ class Mortality:
             smoker = "SM" if self.isSmoker else "NS"
             gender = gender[0]
             sheetname = f"2015 {gender}{smoker} ANB"
-        vbt_file = path.join(PROJECT_ROOT, DATA_FOLDER, filename + ".xlsx")
+        vbt_file = path.join(DATA_FOLDER, filename + ".xlsx")
         tbl = pd.read_excel(vbt_file, sheet_name=sheetname, header=2, index_col=0)
         maxage = max(tbl.index)
         if self.issueage <= maxage:

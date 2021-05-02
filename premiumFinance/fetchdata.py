@@ -65,10 +65,10 @@ def getVBTdata(
 
 # retrieve SOA data
 def getSOAdata(url: str, filename: str):
-    r_vbt = requests.get(url)
+    request_result = requests.get(url)
     vbt_path = path.join(PROJECT_ROOT, constants.DATA_FOLDER, filename + ".xlsx")
     with open(vbt_path, "wb") as f:
-        f.write(r_vbt.content)
+        f.write(request_result.content)
 
 
 def getYieldData(
