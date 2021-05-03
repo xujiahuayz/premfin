@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from numpy.core.arrayprint import BoolFormat
 import pandas as pd
 import numpy as np
 from os import path
@@ -26,232 +27,238 @@ lapse_tbl = pd.read_excel(
 )
 
 
-def extendarray(x) -> list:
+def extendarray(x, to_length: int = 150) -> list:
     if isinstance(x, (int, float)):
         x = [x]
     if type(x) == np.ndarray:
         x = x.tolist()  # type: ignore
     if type(x) == pd.Series:
         x = x.to_list()  # type: ignore
-    x.extend([x[-1]] * 150)
+    x_lenghth = len(x)
+    if x_lenghth < to_length:
+        x.extend([x[-1]] * (to_length - x_lenghth))
     return x
 
 
 @dataclass
 class InsurancePolicy:
-    insrd: Insured
+    insured: Insured
     lapse_assumption: bool = True
     premium_markup: float = 0
     surrender_penalty_rate: float = 0
     cash_interest: float = 0
-    statutory_interest: Any = field(default=0.03)
-    policyholder_rate: Any = field(default=0.01)  # should be some risk free rate
-    pr: Any = field(default=0.002)
+    is_level_premium: Optional[bool] = None
+    premium_stream_at_issue: Union[float, List[float], None] = None
+    statutory_interest: Union[float, List[float]] = 0.03
+    policyholder_rate: Union[float, List[float]] = 0.01  # should be some risk free rate
 
     def __post_init__(self):
-        self.pr = extendarray(self.pr)
+        assert (
+            (self.is_level_premium == None) + (self.premium_stream_at_issue == None)
+        ) == 1, "one and only one of `is_level_premium` and `premium_stream_at_issue` can be None"
+
         self.statutory_interest = extendarray(self.statutory_interest)
         self.policyholder_rate = extendarray(self.policyholder_rate)
 
+        if self.is_level_premium:
+            premium_stream_at_issue = self._level_premium
+        elif self.is_level_premium == False:
+            premium_stream_at_issue = self._variable_premium
+        self.premium_stream_at_issue = extendarray(premium_stream_at_issue)
+
     # lapse rate dependent on gender; lapse == 0 with no lapse assumption
-    def lapseRate(self, assumeLapse: Optional[bool] = None, doplot: bool = False):
-        if assumeLapse is None:
-            assumeLapse = self.lapse_assumption
+    def lapse_rate(self, assume_lapse: bool):
         lapse_rate = pd.Series([0])
-        if assumeLapse:
-            col_ind = 0 if self.insrd.isMale else 1
+        if assume_lapse:
+            col_ind = 0 if self.insured.isMale else 1
             lapse_rate = lapse_rate.append(
                 lapse_tbl.iloc[:, col_ind] / 100, ignore_index=True  # type: ignore
             )
-        if doplot:
-            plt.plot(lapse_rate)
         return lapse_rate
 
     # inforce rate starting year 1 (as opposed to year 0)
-    def inforceRate(self, assumeLapse: Optional[bool] = None):
-        inforcerate = (1 - self.lapseRate(assumeLapse=assumeLapse)).to_list()
+    def inforce_rate(self, assume_lapse: bool):
+        inforcerate = (1 - self.lapse_rate(assume_lapse=assume_lapse)).to_list()
         inforcerate = extendarray(inforcerate)[1:]
         return inforcerate
 
-    def condPersRate(
+    def conditional_persistency_curve(
         self,
-        assumeLapse: Optional[bool] = None,
-        atIssue: Optional[bool] = True,
-        doplot: bool = False,
+        assume_lapse: bool,
+        at_issue: bool = True,
     ):
-        inforcerate = self.inforceRate(assumeLapse=assumeLapse)
-        if atIssue:
-            condSurv = self.insrd.issueMort.condSurvCurv()
+        inforcerate = self.inforce_rate(assume_lapse=assume_lapse)
+        if at_issue:
+            condSurv = self.insured.mortality_at_issue.conditional_survival_curve
         else:
-            condSurv = self.insrd.currentMort.condSurvCurv()
-            inforcerate = inforcerate[(self.insrd.currentage - self.insrd.issueage) :]
-        # print(inforcerate)
+            condSurv = self.insured.currentMort.conditional_survival_curve
+            inforcerate = inforcerate[
+                (self.insured.current_age - self.insured.issue_age) :
+            ]
 
         # in year 0, inforce rate must be 100%
         inforcerate = [1] + inforcerate
-        persrate = []
+        persistency_rate = []
         i = 0
         for i, w in enumerate(condSurv):
-            persrate.append(w * inforcerate[i])
+            persistency_rate.append(w * inforcerate[i])
+        return persistency_rate
 
-        if doplot:
-            plt.plot(persrate)
-        return persrate
-
-    def persRate(self, assumeLapse: Optional[bool] = None, atIssue: bool = True):
-        persrate = self.condPersRate(assumeLapse=assumeLapse, atIssue=atIssue)
+    def persistency_rate(self, assume_lapse: bool, at_issue: bool = True):
+        persrate = self.conditional_persistency_curve(
+            assume_lapse=assume_lapse, at_issue=at_issue
+        )
         pers = np.cumprod(persrate)
         return pers
 
-    def plotPersRate(self, assumeLapse: Optional[bool] = None, atIssue: bool = True):
-        pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
-        mort = self.insrd.issueMort if atIssue else self.insrd.currentMort
+    def plotPersRate(self, assume_lapse: bool, atIssue: bool = True):
+        pers = self.persistency_rate(assume_lapse=assume_lapse, at_issue=atIssue)
+        mort = self.insured.mortality_at_issue if atIssue else self.insured.currentMort
         ageaxis = np.arange(len(pers)) + (
-            self.insrd.issueage if atIssue else self.insrd.currentage
+            self.insured.issue_age if atIssue else self.insured.current_age
         )
         plt.plot(ageaxis, pers, label="Persistency rate")
         mort.plotSurvCurv()
 
-    def dbPayRate(
-        self, assumeLapse: Optional[bool] = None, atIssue: bool = True, doplot=False
-    ):
-        pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
+    def death_benefit_payment_rate(self, assume_lapse: bool, at_issue: bool = True):
+        pers = self.persistency_rate(assume_lapse=assume_lapse, at_issue=at_issue)
         condmort = (
-            self.insrd.issueMort.condMortCurv()
-            if atIssue
-            else self.insrd.currentMort.condMortCurv()
+            self.insured.mortality_at_issue.conditional_mortality_curve
+            if at_issue
+            else self.insured.currentMort.conditional_mortality_curve
         )
         dbpayrate = pers * condmort
-        if doplot:
-            plt.plot(dbpayrate)
         return dbpayrate
 
     # `pr` is premium rate: premium / deth benefit
-    def PV_pr(
+    def PV_unpaid_premium(
         self,
-        pr: Any = None,  # unpaid premium stream
-        issuerPerspective: Optional[bool] = True,
-        assumeLapse: Optional[bool] = True,
-        atIssue: bool = True,
-        discount_rate: Optional[Union[float, List[float]]] = None,
+        issuer_perspective: bool,
+        at_issue: bool = True,
+        premium_stream_at_issue: Union[float, List[float], None] = None,
+        discount_rate: Union[float, List[float], None] = None,
     ) -> float:
 
-        pers = self.persRate(assumeLapse=assumeLapse, atIssue=atIssue)
-        if issuerPerspective is not None:
+        pers = self.persistency_rate(
+            assume_lapse=self.lapse_assumption if issuer_perspective else True,
+            at_issue=at_issue,
+        )
+        if discount_rate is None:
             discount_rate = (
-                self.statutory_interest if issuerPerspective else self.policyholder_rate
+                self.statutory_interest
+                if issuer_perspective
+                else self.policyholder_rate
             )
+        discount_rate = extendarray(discount_rate)
 
-        if pr is None:
-            starting_period = (
-                0 if atIssue else (self.insrd.currentage - self.insrd.issueage)
-            )
+        if premium_stream_at_issue is None:
+            premium_stream_at_issue = self.premium_stream_at_issue
 
-            pr = self.pr[starting_period:]
-        else:
-            pr = extendarray(pr)
+        premium_stream_at_issue = extendarray(premium_stream_at_issue)
+
+        starting_period = (
+            0 if at_issue else (self.insured.current_age - self.insured.issue_age)
+        )
+
+        unpaid_premium = premium_stream_at_issue[starting_period:]
 
         obs_period = len(pers)
 
         cf = 0
         for i in range(obs_period):
-            cf += (pers[i] * pr[i]) / (1 + discount_rate[i]) ** i  # type: ignore
+            cf += (pers[i] * unpaid_premium[i]) / (1 + discount_rate[i]) ** i  # type: ignore
 
         return cf
 
-    def PV_db(
+    def PV_death_benefit(
         self,
-        issuerPerspective: Optional[bool] = True,
-        assumeLapse: Optional[bool] = None,
-        atIssue: bool = True,
-        discount_rate: Any = None,
+        issuer_perspective: bool,
+        at_issue: bool = True,
+        discount_rate: Union[float, List[float], None] = None,
     ) -> float:
 
-        if issuerPerspective is not None:
+        if discount_rate is None:
             discount_rate = (
-                self.statutory_interest if issuerPerspective else self.policyholder_rate
+                self.statutory_interest
+                if issuer_perspective
+                else self.policyholder_rate
             )
+        discount_rate = extendarray(discount_rate)
 
         cf = 0
-        oneperiod_mort = self.dbPayRate(
-            assumeLapse=assumeLapse,
-            atIssue=atIssue,
+        one_period_mortality = self.death_benefit_payment_rate(
+            assume_lapse=self.lapse_assumption
+            if issuer_perspective
+            else False,  # insureds do not assume lapse
+            at_issue=at_issue,
         )
-        for i, m in enumerate(oneperiod_mort):
+        for i, m in enumerate(one_period_mortality):
             cf += m / (1 + discount_rate[i]) ** i
         return cf
 
-    def policyvalue(
+    def policy_value(
         self,
-        pr=None,
-        issuerPerspective: Optional[bool] = True,
-        assumeLapse: Optional[bool] = None,
-        atIssue: bool = True,
-        discount_rate: Optional[float] = None,
+        premium_stream_at_issue: Union[float, List[float], None] = None,
+        issuer_perspective: bool = True,
+        at_issue: bool = True,
+        discount_rate: Union[float, List[float], None] = None,
     ):
 
-        PVdb = self.PV_db(
-            issuerPerspective=issuerPerspective,
-            assumeLapse=assumeLapse,
-            atIssue=atIssue,
-            discount_rate=discount_rate,
-        )
-        PVpr = self.PV_pr(
-            pr=pr,
-            issuerPerspective=issuerPerspective,
-            assumeLapse=assumeLapse,
-            atIssue=atIssue,
-            discount_rate=discount_rate,
-        )
-        pft = PVdb - PVpr
-        return pft
+        if discount_rate is None:
+            discount_rate = (
+                self.statutory_interest
+                if issuer_perspective
+                else self.policyholder_rate
+            )
 
-    def getLevelpr(
-        self, assumeLapse: bool = None, newPolicy: bool = False, addMarkup: bool = True
-    ) -> float:
+        discount_rate = extendarray(discount_rate)
+
+        if premium_stream_at_issue is None:
+            premium_stream_at_issue = self.premium_stream_at_issue
+        else:
+            premium_stream_at_issue = extendarray(premium_stream_at_issue)
+
+        PVdb = self.PV_death_benefit(
+            issuer_perspective=issuer_perspective,
+            at_issue=at_issue,
+            discount_rate=discount_rate,
+        )
+        PVpr = self.PV_unpaid_premium(
+            premium_stream_at_issue=premium_stream_at_issue,
+            issuer_perspective=issuer_perspective,
+            at_issue=at_issue,
+            discount_rate=discount_rate,
+        )
+        surplus = PVpr - PVdb
+        return surplus
+        # if issuer_perspective else -surplus
+
+    @property
+    def _level_premium(self, newPolicy: bool = False) -> float:
         sol = optimize.root_scalar(
-            lambda pr: self.policyvalue(
-                pr,
-                issuerPerspective=True,
-                assumeLapse=assumeLapse,
-                atIssue=not newPolicy,
+            lambda p: self.policy_value(
+                premium_stream_at_issue=p,
+                issuer_perspective=True,
+                at_issue=not newPolicy,
             ),
             x0=0.004,
             bracket=[0, 1],
             method="brentq",
         )
-        levelpr = sol.root * (1 + (self.premium_markup if addMarkup else 0))
+        levelpr = sol.root * (1 + self.premium_markup)
         return levelpr
 
     def getIRR(
         self,
-        pr=None,
-        levelPr: bool = None,
-        lapse_based_pricing: bool = None,
-        assumeLapse: bool = None,
-        atIssue: bool = True,
+        issuer_perspecitve: bool = True,
+        at_issue: bool = True,
     ):
-        if pr is None:
-            if levelPr is None:
-                pr = self.pr
-            else:
-                pr = (
-                    self.getLevelpr(assumeLapse=lapse_based_pricing)
-                    if levelPr
-                    else self.getVariablePr(assumeLapse=lapse_based_pricing)
-                )
-            starting_period = (
-                0 if atIssue else (self.insrd.currentage - self.insrd.issueage)
-            )
-            pr = self.pr[starting_period:]
-        pr = extendarray(pr)
 
         sol = optimize.root_scalar(
-            lambda r: self.policyvalue(
-                pr=pr,
-                issuerPerspective=None,
-                assumeLapse=assumeLapse,
-                atIssue=atIssue,
+            lambda r: self.policy_value(
+                premium_stream_at_issue=self.premium_stream_at_issue,
+                issuer_perspective=issuer_perspecitve,
+                at_issue=at_issue,
                 discount_rate=r,
             ),
             x0=0.0001,
@@ -260,15 +267,12 @@ class InsurancePolicy:
         )
         return sol.root
 
-    def getVariablePr(
-        self, assumeLapse: bool = None, addMarkup: bool = True, doplot=False
-    ):
-        pr = self.insrd.issueMort.condMortCurv() / self.condPersRate(
-            assumeLapse=assumeLapse
+    @property
+    def _variable_premium(self):
+        pr = (
+            self.insured.mortality_at_issue.conditional_mortality_curve
+            / self.conditional_persistency_curve(assume_lapse=self.lapse_assumption)
         )
 
-        pr = pr * (1 + (self.premium_markup if addMarkup else 0))
-        if doplot:
-            plt.plot(pr)
-            plt.ylim(0, 1)
+        pr = pr * (1 + self.premium_markup)
         return pr

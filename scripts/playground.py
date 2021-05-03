@@ -1,4 +1,5 @@
 from os import path
+from xml.etree.ElementTree import TreeBuilder
 from numpy.core.numeric import full
 from numpy.lib.twodim_base import triu_indices_from
 import numpy as np
@@ -11,6 +12,28 @@ from premiumFinance.inspolicy import InsurancePolicy, extendarray
 from premiumFinance.fetchdata import getAnnualYield
 from premiumFinance.financing import PolicyFinancingScheme
 from premiumFinance.constants import DATA_FOLDER
+
+weird_insured = Insured(
+    issue_age=47,
+    current_age=82,
+    isMale=True,
+    isSmoker=False,
+    issueVBT="VBT01",
+    currentVBT="VBT15",
+)
+weird_insured_policy = InsurancePolicy(
+    insured=weird_insured,
+    is_level_premium=True,
+    lapse_assumption=True,
+    statutory_interest=0.035,
+    premium_markup=0.15,
+)
+weird_insured_policy._level_premium
+weird_financing = PolicyFinancingScheme(weird_insured_policy)
+this_breakeven_loanrate = weird_financing.breakevenLoanRate(fullrecourse=True)
+weird_financing.PV_lender(loanrate=this_breakeven_loanrate, fullrecourse=True)
+weird_financing.PV_borrower(loanrate=0.3099833645464375)
+weird_financing.surrender_value()
 
 mortality_experience_path = path.join(DATA_FOLDER, "mortalityexperience.xlsx")
 
@@ -42,29 +65,28 @@ for i, row in mortality_experience.iterrows():
     if i < 500:  # type: ignore
         print(i)
         this_insured = Insured(
-            issueage=row["issueage"],  # type: ignore
+            issue_age=row["issueage"],  # type: ignore
             isMale=row["isMale"],  # type: ignore
             isSmoker=row["isSmoker"],  # type: ignore
-            currentage=row["currentage"],  # type: ignore
+            current_age=row["currentage"],  # type: ignore
             issueVBT="VBT01",
             currentVBT="VBT15",
         )
         this_policy = InsurancePolicy(
-            insrd=this_insured,
+            insured=this_insured,
+            is_level_premium=True,
             lapse_assumption=True,
             statutory_interest=0.035,
             premium_markup=0.15,
         )
         this_financing = PolicyFinancingScheme(this_policy)
-        this_breakeven_loanrate = this_financing.breakevenLoanRate(
-            levelPr=True, fullrecourse=True
-        )
+        this_breakeven_loanrate = this_financing.breakevenLoanRate(fullrecourse=True)
         if not (0 < this_breakeven_loanrate < 1):
             this_breakeven_loanrate = np.nan
             this_lender_profit = 0
         else:
             this_lender_profit = this_financing.PV_lender(
-                loanrate=this_breakeven_loanrate, levelPr=True, fullrecourse=True
+                loanrate=this_breakeven_loanrate, fullrecourse=True
             )
         breakeven_loanrate.append(this_breakeven_loanrate)
         lender_profit.append(this_lender_profit)
@@ -73,7 +95,8 @@ mortality_experience["Breakeven Loan rate"] = breakeven_loanrate
 mortality_experience["Lender profit"] = lender_profit
 
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
-mortality_experience.to_excel(untapped_profit_path)
+
+mortality_experience.to_excel(untapped_profit_path, index=False)
 
 profit_untapped_table = mortality_experience[
     [
@@ -90,25 +113,26 @@ profit_untapped_table = mortality_experience[
 # print(profit_untapped)
 
 insured_A8 = Insured(
-    issueage=54, isMale=True, isSmoker=False, currentage=None, issueVBT="VBT01"
+    issue_age=54, isMale=True, isSmoker=False, current_age=None, issueVBT="VBT01"
 )
 
 policy_A8 = InsurancePolicy(
-    insrd=insured_A8,
+    insured=insured_A8,
+    is_level_premium=True,
     lapse_assumption=True,
     statutory_interest=0.05,
     premium_markup=0.15,
 )
 
-policy_A8.getLevelpr()
+policy_A8._level_premium
 7821.8 / 750_000
 
 
 insrd_benchmark = Insured(
-    issueage=40,
+    issue_age=40,
     isMale=True,
     isSmoker=False,
-    currentage=70,
+    current_age=70,
     issuemort=1.0,
     currentmort=1.0,
     issueVBT="VBT01",
@@ -116,7 +140,8 @@ insrd_benchmark = Insured(
 )
 
 insPol0 = InsurancePolicy(
-    insrd=insrd_benchmark,
+    insured=insrd_benchmark,
+    is_level_premium=True,
     lapse_assumption=True,
     policyholder_rate=getAnnualYield(),
     surrender_penalty_rate=0.1,
@@ -125,23 +150,9 @@ insPol0 = InsurancePolicy(
     statutory_interest=0.03,
 )
 
-insPol0.getLevelpr()
-insPol0.plotPersRate()
-plt.close()
-insPol0.plotPersRate(atIssue=False)
-insPol0.PV_db(issuerPerspective=True)
-insPol0.PV_db(issuerPerspective=False, assumeLapse=False)
-insPol0.PV_db(issuerPerspective=False, assumeLapse=False)
+insPol0._level_premium
 
 financing0 = PolicyFinancingScheme(insPol0)
-
-financing0.PV_lender(loanrate=0.16754701834676933, fullrecourse=True)
-financing0.breakevenLoanRate(fullrecourse=False, levelPr=True, surPenalty=None)
-
-financing0.surrender_value(levelPr=True, surPenalty=None)
-financing0.PV_borrower(loanrate=0.1675470183467693, levelPr=True, fullrecourse=True)
-
-financing0.PV_lender_maxed(fullrecourse=True, levelPr=True, surPenalty=None)
 
 
 current_age_range = np.arange(40, 90, 2)
@@ -154,25 +165,25 @@ pr_statratelevel = list()
 for sr in statrate_range:
     insPol0.statutory_interest = extendarray(sr)
     bkv_r_lapselevel = list()
-    pr_lapselevel = list()
+    premium_level = list()
     for assumelapse in lapse_range:
         insPol0.lapse_assumption = assumelapse
-        pr = financing0.policy.getLevelpr(assumeLapse=assumelapse, newPolicy=False)
+        pr = financing0.policy._level_premium
         bkv_r_mortlevel = list()
         for mort in current_mort_range:
             insrd_benchmark.currentmort = mort
             bkv_r_currentagelevel = list()
             for age in current_age_range:
-                insrd_benchmark.currentage = age
-                bkv_r = financing0.breakevenLoanRate(pr=pr, fullrecourse=False)
+                insrd_benchmark.current_age = age
+                bkv_r = financing0.breakevenLoanRate(fullrecourse=False)
                 bkv_r_currentagelevel.extend([bkv_r])
                 print(age)
             bkv_r_mortlevel.append(bkv_r_currentagelevel)
             print(str(mort) + "========")
         bkv_r_lapselevel.append(bkv_r_mortlevel)
-        pr_lapselevel.extend([pr])
+        premium_level.extend([pr])
     bkv_r_statratelevel.append(bkv_r_lapselevel)
-    pr_statratelevel.append(pr_lapselevel)
+    pr_statratelevel.append(premium_level)
 
 for k, v in enumerate(bkv_r_statratelevel):
     for j, w in enumerate(v):
@@ -185,7 +196,7 @@ for k, v in enumerate(bkv_r_statratelevel):
         plt.ylabel("Breakeven loan rate p.a.")
         plt.title(
             f"""
-            At issue: {insrd_benchmark.issueage}-year-old, {'' if insrd_benchmark.isSmoker else 'non-'}smoking, {insrd_benchmark.issueMort.gender()}, mortality factor: {insrd_benchmark.issuemort}
+            At issue: {insrd_benchmark.issue_age}-year-old, {'' if insrd_benchmark.isSmoker else 'non-'}smoking, {insrd_benchmark.mortality_at_issue.gender}, mortality factor: {insrd_benchmark.issuemort}
             """
             f"""
             Lapse-based pricing: {lapse_range[j]}, statutory interest rate: {statrate_range[k]}, premium rate: {round(pr_statratelevel[k][j],4)}

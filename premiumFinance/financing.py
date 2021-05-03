@@ -9,58 +9,36 @@ from typing import Any, Optional, Type, Union, List
 class PolicyFinancingScheme:
     policy: InsurancePolicy
 
-    def PV_pr(
+    def PV_unpaid_premium_policyholder(
         self,
-        pr: Any = None,
-        levelPr: Optional[bool] = None,
     ):
-        if pr is None:
-            if levelPr is None:
-                pr = self.policy.pr
-            else:
-                pr = (
-                    self.policy.getLevelpr() if levelPr else self.policy.getVariablePr()
-                )
-        return self.policy.PV_pr(
-            pr=pr,
-            issuerPerspective=False,
-            atIssue=False,
-            assumeLapse=False,
+        return self.policy.PV_unpaid_premium(
+            premium_stream_at_issue=self.policy.premium_stream_at_issue,
+            issuer_perspective=False,
+            at_issue=False,
         )
 
-    def PV_db(self) -> float:
-        return self.policy.PV_db(
-            issuerPerspective=False, atIssue=False, assumeLapse=False
+    def PV_death_benefit_policyholder(self) -> float:
+        return self.policy.PV_death_benefit(issuer_perspective=False, at_issue=False)
+
+    def unpaid_pr(self):
+        starting_period = (
+            self.policy.insured.current_age - self.policy.insured.issue_age
         )
-
-    def unpaid_pr(self, pr=None, levelPr: bool = None):
-        if pr is None:
-            if levelPr is None:
-                pr = self.policy.pr
-            else:
-                starting_period = (
-                    self.policy.insrd.currentage - self.policy.insrd.issueage
-                )
-
-                pr = (
-                    self.policy.getLevelpr()
-                    if levelPr
-                    else self.policy.getVariablePr()[starting_period:]
-                )
-        pr = extendarray(pr)
+        pr = self.policy.premium_stream_at_issue[starting_period:]
         return pr
 
     def PV_repay(
         self,
         loanrate: float,
-        pr: Any = None,
-        levelPr: Optional[bool] = None,
         oneperiod_mort: Any = None,
     ) -> float:
-        pr = self.unpaid_pr(pr=pr, levelPr=levelPr)
+        pr = self.unpaid_pr()
 
         if oneperiod_mort is None:
-            oneperiod_mort = self.policy.dbPayRate(assumeLapse=False, atIssue=False)
+            oneperiod_mort = self.policy.death_benefit_payment_rate(
+                assume_lapse=False, at_issue=False
+            )
 
         discount_rate = self.policy.policyholder_rate
 
@@ -79,16 +57,14 @@ class PolicyFinancingScheme:
     def PV_borrower(
         self,
         loanrate: float,
-        pr: Any = None,
-        levelPr: Optional[bool] = None,
         fullrecourse: bool = True,
         pv_deathben: Optional[float] = None,
         oneperiod_mort: Any = None,
     ) -> float:
         if pv_deathben is None:
-            pv_deathben = self.PV_db()
+            pv_deathben = self.PV_death_benefit_policyholder()
         pv = pv_deathben - self.PV_repay(
-            pr=pr, levelPr=levelPr, loanrate=loanrate, oneperiod_mort=oneperiod_mort
+            loanrate=loanrate, oneperiod_mort=oneperiod_mort
         )
         if not fullrecourse:
             pv = max(0, pv)
@@ -97,75 +73,53 @@ class PolicyFinancingScheme:
     def PV_lender(
         self,
         loanrate: float,
-        pr: Any = None,
-        levelPr: Optional[bool] = None,
         fullrecourse: bool = True,
         pv_deathben: Optional[float] = None,
     ) -> float:
-        in_flow = self.PV_repay(pr=pr, levelPr=levelPr, loanrate=loanrate)
+        in_flow = self.PV_repay(loanrate=loanrate)
         if not fullrecourse:
             if pv_deathben is None:
-                pv_deathben = self.PV_db()
+                pv_deathben = self.PV_death_benefit_policyholder()
             in_flow = min(pv_deathben, in_flow)
-        pv = in_flow - self.PV_pr(pr=pr, levelPr=levelPr)
+        pv = in_flow - self.PV_unpaid_premium_policyholder()
         return pv
 
     def PV_lender_maxed(
         self,
-        pr: Any = None,
-        levelPr: Optional[bool] = None,
         fullrecourse: bool = True,
         pv_deathben: Optional[float] = None,
-        surPenalty: Optional[float] = None,
     ) -> float:
-        loanrate = self.breakevenLoanRate(
-            pr=pr, levelPr=levelPr, surPenalty=surPenalty, fullrecourse=fullrecourse
-        )
+        loanrate = self.breakevenLoanRate(fullrecourse=fullrecourse)
         pv = self.PV_lender(
             loanrate=loanrate,
-            pr=pr,
-            levelPr=levelPr,
             fullrecourse=fullrecourse,
             pv_deathben=pv_deathben,
         )
         return pv
 
-    def surrender_value(
-        self, pr=None, levelPr: bool = None, surPenalty: Optional[float] = None
-    ) -> float:
-        if pr is None:
-            if levelPr is None:
-                pr = self.policy.pr
-            elif levelPr:
-                pr = self.policy.getLevelpr()
-            else:  # if policyholder has been paying variable premium, then cash value is 0
-                return 0
+    def surrender_value(self) -> float:
 
-        variablepr = self.policy.getVariablePr()
-        pr = extendarray(pr)
+        variablepr = self.policy._variable_premium
+        pr = self.policy.premium_stream_at_issue
         sv = 0
-        obs_period = self.policy.insrd.currentage - self.policy.insrd.issueage
+        obs_period = self.policy.insured.current_age - self.policy.insured.issue_age
+
         for i, vp in enumerate(variablepr[:obs_period]):
             sv += (pr[i] - vp) / (1 + self.policy.cash_interest) ** i
-        sv *= 1 - (
-            self.policy.surrender_penalty_rate if surPenalty is None else surPenalty
-        )
-        return sv
+        sv *= 1 - self.policy.surrender_penalty_rate
+        return max(sv, 0)  # surrender value cannot be negative
 
     def breakevenLoanRate(
         self,
-        pr: Any = None,
-        levelPr: Optional[bool] = None,
-        surPenalty: Optional[float] = None,
         fullrecourse: bool = True,
     ) -> float:
-        sv = self.surrender_value(pr=pr, levelPr=levelPr, surPenalty=surPenalty)
-        unpaidpr = self.unpaid_pr(pr=pr, levelPr=levelPr)
-        oneperiod_mort = self.policy.dbPayRate(assumeLapse=False, atIssue=False)
-        pv_deathben = self.PV_db()
+        sv = self.surrender_value()
+        oneperiod_mort = self.policy.death_benefit_payment_rate(
+            assume_lapse=False, at_issue=False
+        )
+        pv_deathben = self.PV_death_benefit_policyholder()
         sol = optimize.root_scalar(
             lambda r: self.PV_borrower(
-                pr=unpaidpr,
                 loanrate=r,
                 fullrecourse=fullrecourse,
                 pv_deathben=pv_deathben,

@@ -9,25 +9,27 @@ from premiumFinance.mortality import Mortality
 
 @dataclass
 class Insured:
-    issueage: int
-    isMale: bool
-    isSmoker: Optional[bool]
-    currentage: Optional[int]
+    issue_age: int
+    current_age: Optional[int]
+    isMale: bool = True
+    isSmoker: Optional[bool] = False
     issuemort: float = 1
     currentmort: float = 1
     issueVBT: str = "VBT01"
     currentVBT: str = "VBT15"
 
     def __post_init__(self):
-        if self.currentage is None:
-            self.currentage = self.issueage
-        assert self.issueage <= self.currentage, "Issue age must not exceed current age"
+        if self.current_age is None:
+            self.current_age = self.issue_age
+        assert (
+            self.issue_age <= self.current_age
+        ), "Issue age must not exceed current age"
 
     @property
-    def issueMort(self):
+    def mortality_at_issue(self):
         im = Mortality(
-            issueage=self.issueage,
-            currentage=self.issueage,  # currentage = issueage at policy issuance
+            issueage=self.issue_age,
+            currentage=self.issue_age,  # currentage = issueage at policy issuance
             isMale=self.isMale,
             isSmoker=self.isSmoker,
             mortrate=self.issuemort,
@@ -38,8 +40,8 @@ class Insured:
     @property
     def currentMort(self):
         cm = Mortality(
-            issueage=self.issueage,
-            currentage=self.currentage,
+            issueage=self.issue_age,
+            currentage=self.current_age,
             isMale=self.isMale,
             isSmoker=self.isSmoker,
             mortrate=self.currentmort,
