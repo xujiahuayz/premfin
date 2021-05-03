@@ -45,3 +45,11 @@ venv\Scripts\activate.bat
 ```
 pip install -e ".[dev]"
 ```
+
+## Git Large File Storage (Git LFS)
+
+All files in [`data/`](data/) are stored with lfs:
+
+```
+git lfs track data/**/*
+```
