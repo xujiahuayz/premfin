@@ -9,6 +9,8 @@ MORT_URL = "http://cdn-files.soa.org/research/2009-15_Data_20180601.zip"
 YIELD_URL = "https://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData"
 DATA_FOLDER = path.join(PROJECT_ROOT, "data")
 
+NAIC_PATH = path.join(DATA_FOLDER, "NAIC_1996_2020_SPGlobalofficeworkbook.xls")
+
 YIELD_DURATION = {
     "1MONTH": 1 / 12,
     "2MONTH": 2 / 12,

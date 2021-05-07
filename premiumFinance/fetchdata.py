@@ -1,5 +1,4 @@
 import requests
-import pickle
 import csv
 from os import path
 import pandas as pd
@@ -8,14 +7,12 @@ from zipfile import ZipFile
 from pprint import pprint
 import xml.etree.ElementTree as ET
 from scipy.interpolate import interp1d
+
+# must build from source with mac M1
 import matplotlib.pyplot as plt
-from lxml import etree
-from urllib.request import urlopen
-import xmltodict
 from typing import Optional
 from premiumFinance import constants
 from premiumFinance.settings import PROJECT_ROOT
-from xml.dom import minidom
 
 
 def getVBTdata(
@@ -24,7 +21,7 @@ def getVBTdata(
     isSmoker: Optional[bool] = False,
     issueage: int = 50,
     currentage: Optional[int] = 70,
-):
+) -> pd.Series:
 
     tbl_index = constants.VBT_TABLES[vbt]["m" if isMale else "f"][
         "unism" if isSmoker is None else "smoke" if isSmoker else "nonsm"
@@ -58,7 +55,7 @@ def getVBTdata(
     else:
         curv = sel_mort.reset_index(drop=True)
 
-    mort = pd.Series(0).append(curv[(currentage - issueage) :], ignore_index=True)
+    mort = pd.Series([0]).append(curv[(currentage - issueage) :], ignore_index=True)
 
     return mort
 
@@ -111,6 +108,20 @@ def getAnnualYield(yieldTable=None, durange=range(150), intertype: str = "linear
         bounds_error=False,
     )
     return f(durange)
+
+
+def getMarketSize(naic_path: str = constants.NAIC_PATH, year: int = 2020) -> float:
+    lapse_tbl = pd.read_excel(
+        naic_path,
+        index_col=0,
+        skiprows=8,
+        skipfooter=21,
+        usecols="A:Z",
+    ).T
+    market_size = (
+        1000 * lapse_tbl["Face Amount of In Force  - Ordinary Life"][f"{year}-12-31"]
+    )
+    return market_size
 
 
 # retrieve the huge mortality data set from the SOA
