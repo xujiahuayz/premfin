@@ -38,7 +38,7 @@ class Insured:
         return im
 
     @property
-    def currentMort(self):
+    def mortality_now(self):
         cm = Mortality(
             issueage=self.issue_age,
             currentage=self.current_age,
