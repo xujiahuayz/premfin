@@ -58,7 +58,7 @@ def calculate_lender_profit(
         this_breakeven_loanrate = np.nan
         this_lender_profit = 0.0
         # else:
-    elif this_breakeven_loanrate <= lender_coc:
+    elif isinstance(lender_coc, (int, float)) and this_breakeven_loanrate <= lender_coc:
         this_lender_profit = 0.0
     else:
         this_lender_profit = this_financing.PV_lender(
