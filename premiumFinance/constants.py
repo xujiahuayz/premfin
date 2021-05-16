@@ -9,6 +9,9 @@ MORT_URL = "http://cdn-files.soa.org/research/2009-15_Data_20180601.zip"
 YIELD_URL = "https://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData"
 DATA_FOLDER = path.join(PROJECT_ROOT, "data")
 
+MORTALITY_TABLE_CLEANED_PATH = path.join(DATA_FOLDER, "mortality_experience_clean.xlsx")
+PROCESSED_PROFITABILITY_PATH = path.join(DATA_FOLDER, "profitability.json")
+
 NAIC_PATH = path.join(DATA_FOLDER, "NAIC_1996_2020_SPGlobalofficeworkbook.xls")
 
 YIELD_DURATION = {

@@ -1,7 +1,6 @@
 from typing import Union
 import numpy as np
 import pandas as pd
-from typing import Optional
 
 LIST_LEN = 150
 # make a list with length 150

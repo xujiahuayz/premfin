@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 
-from pandas.io.parsers import ParserBase
 from premiumFinance.util import cash_flow_pv
 from scipy import optimize
 import numpy as np
+from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy, make_list
-from typing import Any, Optional, Type, Union, List
+from premiumFinance.fetchdata import getAnnualYield
+from typing import Any, Optional
 
 
 @dataclass
@@ -170,3 +171,48 @@ class PolicyFinancingScheme:
             method="brentq",
         )
         return sol.root
+
+
+yield_curve = getAnnualYield()
+
+
+def calculate_lender_profit(
+    row,
+    is_level_premium=True,
+    lapse_assumption=True,
+    policyholder_rate=yield_curve,
+    statutory_interest=0.035,
+    premium_markup=0.0,
+    cash_interest=0.001,
+    lender_coc=0.01,
+):
+    this_insured = Insured(
+        issue_age=row["issueage"],  # type: ignore
+        isMale=row["isMale"],  # type: ignore
+        isSmoker=row["isSmoker"],  # type: ignore
+        current_age=row["currentage"],  # type: ignore
+        issueVBT="VBT01",
+        currentVBT="VBT15",
+    )
+    this_policy = InsurancePolicy(
+        insured=this_insured,
+        is_level_premium=is_level_premium,
+        lapse_assumption=lapse_assumption,
+        statutory_interest=statutory_interest,
+        premium_markup=premium_markup,
+        policyholder_rate=policyholder_rate,
+        cash_interest=cash_interest,
+    )
+    this_financing = PolicyFinancingScheme(this_policy, lender_coc=lender_coc)
+    this_breakeven_loanrate = this_financing.max_loan_rate_borrower(fullrecourse=True)
+    if not (0.0 < this_breakeven_loanrate < 1.0):
+        this_breakeven_loanrate = np.nan
+        this_lender_profit = 0.0
+        # else:
+    elif isinstance(lender_coc, (int, float)) and this_breakeven_loanrate <= lender_coc:
+        this_lender_profit = 0.0
+    else:
+        this_lender_profit = this_financing.PV_lender(
+            loanrate=this_breakeven_loanrate, fullrecourse=True
+        )
+    return this_breakeven_loanrate, max(this_lender_profit, 0.0)
