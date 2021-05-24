@@ -143,6 +143,24 @@ class PolicyFinancingScheme:
 
         return max(surrender_value, 0)
 
+    def policyholder_IRR(
+        self,
+    ) -> float:
+        sv = self.surrender_value()
+        # no lapse assumption for death benefit payment
+        sol = optimize.root_scalar(
+            lambda r: sv
+            + self.policy.policy_value(
+                issuer_perspective=False,
+                at_issue=False,
+                discount_rate=r,
+            ),
+            x0=0.001,
+            bracket=[-0.1, 1.1],
+            method="brentq",
+        )
+        return sol.root
+
     def max_loan_rate_borrower(
         self,
         fullrecourse: bool = True,
@@ -216,3 +234,39 @@ def calculate_lender_profit(
             loanrate=this_breakeven_loanrate, fullrecourse=True
         )
     return this_breakeven_loanrate, max(this_lender_profit, 0.0)
+
+
+def calculate_policyholder_IRR(
+    row,
+    is_level_premium=True,
+    lapse_assumption=True,
+    policyholder_rate=yield_curve,
+    statutory_interest=0.035,
+    premium_markup=0.0,
+    cash_interest=0.001,
+    lender_coc=0.01,
+) -> float:
+    this_insured = Insured(
+        issue_age=row["issueage"],  # type: ignore
+        isMale=row["isMale"],  # type: ignore
+        isSmoker=row["isSmoker"],  # type: ignore
+        current_age=row["currentage"],  # type: ignore
+        issueVBT="VBT01",
+        currentVBT="VBT15",
+    )
+    this_policy = InsurancePolicy(
+        insured=this_insured,
+        is_level_premium=is_level_premium,
+        lapse_assumption=lapse_assumption,
+        statutory_interest=statutory_interest,
+        premium_markup=premium_markup,
+        policyholder_rate=policyholder_rate,
+        cash_interest=cash_interest,
+    )
+    this_financing = PolicyFinancingScheme(this_policy, lender_coc=lender_coc)
+    try:
+        irr = this_financing.policyholder_IRR()
+    except ValueError:
+        print(row)
+        irr = np.nan
+    return irr
