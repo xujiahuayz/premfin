@@ -12,7 +12,16 @@ from premiumFinance.constants import (
     MORTALITY_TABLE_CLEANED_PATH,
     PROCESSED_PROFITABILITY_PATH,
 )
-from premiumFinance.financing import calculate_lender_profit, calculate_policyholder_IRR
+from premiumFinance.financing import (
+    yield_curve,
+    calculate_lender_profit,
+    calculate_policyholder_IRR,
+    policyholder_policy_value,
+)
+
+IRR_PATH = path.join(DATA_FOLDER, "irrs.xlsx")
+PROFIT_PATH = path.join(DATA_FOLDER, "profits.xlsx")
+
 
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
@@ -37,7 +46,7 @@ this_policy = InsurancePolicy(
 this_financing = PolicyFinancingScheme(this_policy)
 sv = this_financing.surrender_value()  # =  0
 policy_val = []
-r_range = np.arange(start=-0.01, stop=2, step=0.001)
+r_range = np.arange(start=-0.01, stop=2, step=0.01)
 for r in r_range:
     policy_val.append(
         -this_policy.policy_value(
@@ -46,7 +55,8 @@ for r in r_range:
     )
 
 plt.plot(r_range, policy_val)
-plt.axhline(y=0)
+plt.axhline(y=0, c="r")
+plt.show()
 
 
 #%% calculate irr -- slightly time consuming
@@ -58,6 +68,16 @@ irr_columns = mortality_experience.apply(
     result_type="expand",
 )
 
+irr_columns.to_excel(IRR_PATH, index=False)
+
+# [
+#     calculate_policyholder_IRR(
+#         row=row,
+#     )
+#     for _, row in mortality_experience.iterrows()
+# ]
+
+
 #%% calculate percentage profit -- slightly time consuming
 profit_columns = mortality_experience.apply(
     lambda row: calculate_lender_profit(
@@ -67,10 +87,42 @@ profit_columns = mortality_experience.apply(
     result_type="expand",
 )
 
+profit_columns.to_excel(PROFIT_PATH, index=False)
+
+
+#%% calculate policy PV from perspective of policyholder
+
+mortality_experience["Excess_Policy_PV_yield_curve"] = (
+    mortality_experience.apply(
+        lambda row: policyholder_policy_value(row=row, policyholder_rate=yield_curve),
+        axis=1,
+        result_type="expand",
+    )
+    - pd.read_excel(PROFIT_PATH)[0]
+)
+
+for i in [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
+    print(i)
+    mortality_experience[f"Excess_Policy_PV_{i}"] = (
+        mortality_experience.apply(
+            lambda row: policyholder_policy_value(row=row, policyholder_rate=i),
+            axis=1,
+            result_type="expand",
+        )
+        - pd.read_excel(PROFIT_PATH)[0]
+    )
+# PROFIT_PATH = path.join(DATA_FOLDER, "profits.xlsx")
+# profit_columns.to_excel(PROFIT_PATH, index=False)
+
 #%% post-process
 
+irr_columns = pd.read_excel(IRR_PATH)
 mortality_experience["Policyholder IRR"] = irr_columns
-mortality_experience[["Max Loan rate", "Lender profit"]] = profit_columns
+
+profit_columns = pd.read_excel(PROFIT_PATH)
+mortality_experience[
+    ["Surrender value", "Max Loan rate", "Lender profit"]
+] = profit_columns
 
 mortality_experience["Dollar profit"] = (
     mortality_experience["Lender profit"] * mortality_experience["Amount Exposed"]
@@ -83,16 +135,31 @@ mortality_experience["Dollar profit"].sum() / mortality_experience[
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 mortality_experience.to_excel(untapped_profit_path, index=False)
 
+
 #%% calculate dollar profit
+
+mortality_experience = pd.read_excel(untapped_profit_path)
 
 mortality_experience["Lender profit"].mean()
 mortality_experience["Dollar profit"].sum() / mortality_experience[
     "Amount Exposed"
 ].sum()
+sample_representativeness = (
+    getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
+)
+
+for i in [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, "yield_curve"]:
+    money_left = (
+        mortality_experience[f"Excess_Policy_PV_{i}"]
+        * mortality_experience["Amount Exposed"]
+    ).sum() * sample_representativeness
+
+    print(
+        f"when policyholder rate equals {i}, total money left on the table: {money_left}"
+    )
+
 dollar_amount_untapped = (
-    mortality_experience["Dollar profit"].sum()
-    * getMarketSize(year=2020)
-    / mortality_experience["Amount Exposed"].sum()
+    mortality_experience["Dollar profit"].sum() * sample_representativeness
 )
 
 #%% plot
@@ -103,5 +170,3 @@ plt.plot(profitability["lender_coc"], profitability["profitability"][1], label="
 plt.xlabel("Lender cost of capital")
 plt.ylabel("Maximum profit untapped (in fraction of face value)")
 plt.legend(title="Lapse assumption")
-
-# %%

@@ -7,6 +7,10 @@ from zipfile import ZipFile
 from pprint import pprint
 import xml.etree.ElementTree as ET
 from scipy.interpolate import interp1d
+import numpy as np
+
+from nelson_siegel_svensson.calibrate import calibrate_ns_ols
+
 
 # must build from source with mac M1
 import matplotlib.pyplot as plt
@@ -93,11 +97,23 @@ def getYieldData(
     return pd.DataFrame(yieldTable)
 
 
+def getAnnualYield(yieldTable=None, durange=range(150)):
+    if yieldTable is None:
+        yieldTable = getYieldData()
+    curve, status = calibrate_ns_ols(
+        np.array(yieldTable["duration"]), np.array(yieldTable["rate"]), tau0=1.0
+    )  # starting value of 1.0 for the optimization of tau
+    assert status.success
+    return curve(np.array(durange))
+
+
 # kind has to be one of ‘linear’, ‘nearest’, ‘nearest-up’, ‘zero’, ‘slinear’, ‘quadratic’, ‘cubic’, ‘previous’,
 # or ‘next’. ‘zero’, ‘slinear’, ‘quadratic’ and ‘cubic’ refer to a spline interpolation of zeroth, first, second or third order;
 # ‘previous’ and ‘next’ simply return the previous or next value of the point;
 # ‘nearest-up’ and ‘nearest’ differ when interpolating half-integers (e.g. 0.5, 1.5) in that ‘nearest-up’ rounds up and ‘nearest’ rounds down.
-def getAnnualYield(yieldTable=None, durange=range(150), intertype: str = "linear"):
+def getAnnualYield_linear(
+    yieldTable=None, durange=range(150), intertype: str = "linear"
+):
     if yieldTable is None:
         yieldTable = getYieldData()
     f = interp1d(

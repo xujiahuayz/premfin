@@ -6,7 +6,7 @@ import numpy as np
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy, make_list
 from premiumFinance.fetchdata import getAnnualYield
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 
 @dataclass
@@ -119,7 +119,7 @@ class PolicyFinancingScheme:
         fullrecourse: bool = True,
         pv_deathben: Optional[float] = None,
     ) -> float:
-        loanrate = self.max_loan_rate_borrower(fullrecourse=fullrecourse)
+        _, loanrate = self.max_loan_rate_borrower(fullrecourse=fullrecourse)
         pv = self.PV_lender(
             loanrate=loanrate,
             fullrecourse=fullrecourse,
@@ -145,7 +145,7 @@ class PolicyFinancingScheme:
 
     def policyholder_IRR(
         self,
-    ) -> float:
+    ) -> list:
         sv = self.surrender_value()
         # no lapse assumption for death benefit payment
         sol = optimize.root_scalar(
@@ -155,16 +155,38 @@ class PolicyFinancingScheme:
                 at_issue=False,
                 discount_rate=r,
             ),
-            x0=0.001,
-            bracket=[-0.1, 1.1],
+            x0=0.1,
+            bracket=[-0.6, 99],
             method="brentq",
         )
         return sol.root
 
+        # sols = []
+        # interval = 0.05
+        # for i in range(100):
+        #     range_a = i * interval - 0.5
+        #     arange = [range_a, range_a + interval]
+        #     try:
+        #         sol = optimize.root_scalar(
+        #             lambda r: sv
+        #             + self.policy.policy_value(
+        #                 issuer_perspective=False,
+        #                 at_issue=False,
+        #                 discount_rate=r,
+        #             ),
+        #             x0=np.mean(arange),
+        #             bracket=arange,
+        #             method="brentq",
+        #         )
+        #         sols.append(sol.root)
+        #     except:
+        #         next
+        # return sols
+
     def max_loan_rate_borrower(
         self,
         fullrecourse: bool = True,
-    ) -> float:
+    ) -> Tuple[float, float]:
         sv = self.surrender_value()
         # no lapse assumption for death benefit payment
         oneperiod_mort = self.policy.death_benefit_payment_probability(
@@ -188,7 +210,7 @@ class PolicyFinancingScheme:
             bracket=[-0.5, 3],
             method="brentq",
         )
-        return sol.root
+        return sv, sol.root
 
 
 yield_curve = getAnnualYield()
@@ -222,7 +244,9 @@ def calculate_lender_profit(
         cash_interest=cash_interest,
     )
     this_financing = PolicyFinancingScheme(this_policy, lender_coc=lender_coc)
-    this_breakeven_loanrate = this_financing.max_loan_rate_borrower(fullrecourse=True)
+    this_sv, this_breakeven_loanrate = this_financing.max_loan_rate_borrower(
+        fullrecourse=True
+    )
     if not (0.0 < this_breakeven_loanrate < 1.0):
         this_breakeven_loanrate = np.nan
         this_lender_profit = 0.0
@@ -233,7 +257,7 @@ def calculate_lender_profit(
         this_lender_profit = this_financing.PV_lender(
             loanrate=this_breakeven_loanrate, fullrecourse=True
         )
-    return this_breakeven_loanrate, max(this_lender_profit, 0.0)
+    return this_sv, this_breakeven_loanrate, max(this_lender_profit, 0.0)
 
 
 def calculate_policyholder_IRR(
@@ -270,3 +294,36 @@ def calculate_policyholder_IRR(
         print(row)
         irr = np.nan
     return irr
+
+
+def policyholder_policy_value(
+    row,
+    is_level_premium=True,
+    lapse_assumption=True,
+    policyholder_rate=yield_curve,
+    statutory_interest=0.035,
+    premium_markup=0.0,
+    cash_interest=0.001,
+) -> float:
+    this_insured = Insured(
+        issue_age=row["issueage"],  # type: ignore
+        isMale=row["isMale"],  # type: ignore
+        isSmoker=row["isSmoker"],  # type: ignore
+        current_age=row["currentage"],  # type: ignore
+        issueVBT="VBT01",
+        currentVBT="VBT15",
+    )
+    this_policy = InsurancePolicy(
+        insured=this_insured,
+        is_level_premium=is_level_premium,
+        lapse_assumption=lapse_assumption,
+        statutory_interest=statutory_interest,
+        premium_markup=premium_markup,
+        policyholder_rate=policyholder_rate,
+        cash_interest=cash_interest,
+    )
+    return -this_policy.policy_value(
+        issuer_perspective=False,
+        at_issue=False,
+        discount_rate=policyholder_rate,
+    )
