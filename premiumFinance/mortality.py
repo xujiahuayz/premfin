@@ -1,12 +1,9 @@
 from dataclasses import dataclass
 import pandas as pd
 import numpy as np
-from os import path
 import matplotlib.pyplot as plt
 from typing import Optional
 
-from premiumFinance.constants import DATA_FOLDER
-from premiumFinance.settings import PROJECT_ROOT
 from premiumFinance.fetchdata import getVBTdata
 
 EPSILON = 1e-10
@@ -62,9 +59,9 @@ class Mortality:
         return surv
 
     @property
-    def lifeExpectancy(self):
+    def lifeExpectancy(self) -> float:
         surv = self.survCurv
-        le = np.sum(surv)
+        le = np.sum(surv) - 0.5
         return le
 
     def plotSurvCurv(self):

@@ -1,17 +1,13 @@
-from dataclasses import dataclass, field
-from numpy.core.arrayprint import BoolFormat
+from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 from os import path
 import matplotlib.pyplot as plt
 from scipy import optimize
-from typing import Any, List, Optional, Union
-from numba import njit
+from typing import List, Optional, Union
 
 from premiumFinance.constants import DATA_FOLDER
 from premiumFinance.insured import Insured
-from premiumFinance.settings import PROJECT_ROOT
-from premiumFinance.fetchdata import getAnnualYield
 from premiumFinance.util import make_list, cash_flow_pv
 
 

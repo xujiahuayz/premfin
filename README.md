@@ -48,8 +48,20 @@ pip install -e ".[dev]"
 
 ## Git Large File Storage (Git LFS)
 
-All files in [`data/`](data/) are stored with `lfs`:
+All files in [`data/`](data/) are stored with `lfs`.
+
+To initialize Git LFS:
+
+```
+git lfs install
+```
 
 ```
 git lfs track data/**/*
+```
+
+To pull data files, use
+
+```
+git lfs pull
 ```
