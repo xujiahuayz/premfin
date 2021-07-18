@@ -1,6 +1,5 @@
 #%% import packages
 
-from os import path
 import numpy as np
 import pandas as pd
 import multiprocessing
@@ -8,7 +7,6 @@ from time import time
 import json
 
 from premiumFinance.constants import (
-    DATA_FOLDER,
     MORTALITY_TABLE_CLEANED_PATH,
     PROCESSED_PROFITABILITY_PATH,
 )
