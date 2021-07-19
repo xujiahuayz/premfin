@@ -48,6 +48,8 @@ def get_coefficients(index_file_name: str) -> pd.Series:
     return lm_results.params
 
 
+# utilities / REIT / Finance / Insurance
+
 index_betas = pd.Series(
     [
         get_coefficients("USTMIIndex")[1],
