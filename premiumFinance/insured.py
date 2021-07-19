@@ -1,7 +1,4 @@
 from dataclasses import dataclass
-import pandas as pd
-import numpy as np
-from os import path
 from typing import Optional
 
 from premiumFinance.mortality import Mortality
