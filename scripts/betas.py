@@ -51,14 +51,25 @@ def get_coefficients(index_file_name: str) -> pd.Series:
 index_betas = pd.Series(
     [
         get_coefficients("USTMIIndex")[1],
-        get_coefficients("USbondIndex")[1],
+        # get_coefficients("USbondIndex")[1],
         get_coefficients("UShealthcareIndex")[1],
         get_coefficients("USRealEstateIndex")[1],
         get_coefficients("USoilgasIndex")[1],
+        0.067,
     ]
 )
 
 x_pos = range(len(index_betas))
 plt.bar(x=x_pos, height=index_betas)
-plt.xticks(x_pos, ["TMI", "Bond", "Healthcare", "Real estate", "Oil & gas"])
+plt.xticks(
+    x_pos,
+    [
+        "TMI",
+        # "Bond",
+        "Healthcare",
+        "Real estate",
+        "Oil & gas",
+        "VLSI",
+    ],
+)
 plt.ylabel("beta")

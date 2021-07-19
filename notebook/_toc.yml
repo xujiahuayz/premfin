@@ -5,3 +5,5 @@ format: jb-book
 root: cover
 chapters:
   - file: betas
+  - file: markdown
+  - file: notebooks

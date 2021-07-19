@@ -70,13 +70,6 @@ irr_columns = mortality_experience.apply(
 
 irr_columns.to_excel(IRR_PATH, index=False)
 
-# [
-#     calculate_policyholder_IRR(
-#         row=row,
-#     )
-#     for _, row in mortality_experience.iterrows()
-# ]
-
 
 #%% calculate percentage profit -- slightly time consuming
 profit_columns = mortality_experience.apply(
@@ -148,19 +141,86 @@ sample_representativeness = (
     getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
 )
 
-for i in [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, "yield_curve"]:
+
+dollar_amount_untapped = (
+    mortality_experience["Dollar profit"].sum() * sample_representativeness
+)
+
+
+money_left_array = []
+investor_coc = [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, "yield_curve"]
+for i in investor_coc:
     money_left = (
-        mortality_experience[f"Excess_Policy_PV_{i}"]
-        * mortality_experience["Amount Exposed"]
-    ).sum() * sample_representativeness
+        sum(
+            w
+            for w in mortality_experience[f"Excess_Policy_PV_{i}"]
+            * mortality_experience["Amount Exposed"]
+            if w > 0
+        )
+        * sample_representativeness
+    )
+    money_left_array.append(money_left)
 
     print(
         f"when policyholder rate equals {i}, total money left on the table: {money_left}"
     )
 
-dollar_amount_untapped = (
-    mortality_experience["Dollar profit"].sum() * sample_representativeness
+#%% money left plot
+WIDTH = 1
+
+
+# https://www.federalreserve.gov/releases/z1/20120607/z1.pdf page 113
+plt.bar(
+    x=0,
+    height=23523.6 / 1e3,
+    width=WIDTH,
+    color="blue",
+    edgecolor="k",
 )
+
+plt.bar(
+    x=WIDTH,
+    height=(23523.6 - 19937.1) / 1e3,
+    width=WIDTH,
+    color="green",
+    edgecolor="k",
+)
+
+
+x_pos = np.arange(len(money_left_array))
+
+plt.bar(
+    x=3 * WIDTH,
+    height=[getMarketSize(year=2020) / 1e12],
+    width=WIDTH,
+    color="blue",
+    edgecolor="k",
+    # tick_label=["Total Face"],
+)
+
+plt.bar(
+    x=x_pos + 4 * WIDTH,
+    height=np.array(money_left_array) / 1e12,
+    width=WIDTH,
+    color="green",
+    edgecolor="k",
+    # tick_label=investor_coc,
+)
+
+plt.xticks(
+    [0, WIDTH, 3 * WIDTH] + (x_pos + 4 * WIDTH).tolist(),
+    [
+        "Real estate",
+        "Value lost",
+        "Life insurance",
+    ]
+    + investor_coc,
+    rotation=90,
+)
+plt.ylabel("trillion USD")
+
+# fig, ax = plt.subplots()
+
 
 #%% plot
 with open(PROCESSED_PROFITABILITY_PATH, "r") as f:
