@@ -41,6 +41,7 @@ this_policy = InsurancePolicy(
     lapse_assumption=True,
     statutory_interest=0.035,
     premium_markup=0.0,
+    # TODO: check a realistic cash interest from 2010-2015
     cash_interest=0.001,
 )
 this_financing = PolicyFinancingScheme(this_policy)
@@ -166,13 +167,52 @@ for i in investor_coc:
     )
 
 #%% money left plot
-WIDTH = 1
-
 
 # https://www.federalreserve.gov/releases/z1/20120607/z1.pdf page 113
+real_estate_nominal = 23523.6 / 1e3
+
+# change from 2007-2009
+real_estate_change = (23523.6 - 18874.5) / 1e3
+
+WIDTH = 1
+
+plt.bar(x=0, height=real_estate_nominal)
+
+plt.bar(x=WIDTH, height=[getMarketSize(year=2020) / 1e12])
+
+
+plt.xticks(
+    [0, WIDTH],
+    [
+        "Real estate",
+        "Life insurance",
+    ],
+    rotation=90,
+)
+plt.ylabel("trillion USD")
+
+
+plt.show()
+
+plt.bar(x=0, height=real_estate_change)
+
+plt.bar(x=WIDTH, height=money_left_array[-1] / 1e12)
+
+
+plt.xticks(
+    [0, WIDTH],
+    [
+        "Real estate value loss",
+        "Life insurance money left",
+    ],
+    rotation=90,
+)
+plt.ylabel("trillion USD")
+
+#%% old plot plot
 plt.bar(
     x=0,
-    height=23523.6 / 1e3,
+    height=real_estate_nominal,
     width=WIDTH,
     color="blue",
     edgecolor="k",
@@ -180,7 +220,7 @@ plt.bar(
 
 plt.bar(
     x=WIDTH,
-    height=(23523.6 - 19937.1) / 1e3,
+    height=real_estate_change,
     width=WIDTH,
     color="green",
     edgecolor="k",
