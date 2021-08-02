@@ -54,9 +54,13 @@ index_betas = pd.Series(
     [
         get_coefficients("USTMIIndex")[1],
         # get_coefficients("USbondIndex")[1],
-        get_coefficients("UShealthcareIndex")[1],
+        get_coefficients("USconsumerfinanceIndex")[1],
         get_coefficients("USRealEstateIndex")[1],
+        get_coefficients("USREITIndex")[1],
         get_coefficients("USoilgasIndex")[1],
+        get_coefficients("USutilityIndex")[1],
+        get_coefficients("UShealthcareIndex")[1],
+        get_coefficients("USinsuranceIndex")[1],
         0.067,
     ]
 )
@@ -68,10 +72,15 @@ plt.xticks(
     [
         "TMI",
         # "Bond",
-        "Healthcare",
+        "Consumer finance",
         "Real estate",
+        "REIT",
         "Oil & gas",
+        "Utility",
+        "Healthcare",
+        "Insurance",
         "VLSI",
     ],
+    rotation=90,
 )
 plt.ylabel("beta")
