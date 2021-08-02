@@ -223,7 +223,7 @@ def calculate_lender_profit(
     policyholder_rate=yield_curve,
     statutory_interest=0.035,
     premium_markup=0.0,
-    cash_interest=0.001,
+    cash_interest=0.03,
     lender_coc=0.01,
 ):
     this_insured = Insured(
@@ -267,7 +267,7 @@ def calculate_policyholder_IRR(
     policyholder_rate=yield_curve,
     statutory_interest=0.035,
     premium_markup=0.0,
-    cash_interest=0.001,
+    cash_interest=0.03,
     lender_coc=0.01,
 ) -> float:
     this_insured = Insured(
@@ -303,7 +303,10 @@ def policyholder_policy_value(
     policyholder_rate=yield_curve,
     statutory_interest=0.035,
     premium_markup=0.0,
-    cash_interest=0.001,
+    # TODO: check a realistic cash interest from 2010-2015
+    # 4% P.9: 3.5% p18 https://www.dropbox.com/s/rnf0k84744xj9xe/Policy_A10.pdf?dl=0
+    # 2-3.75% P.7 https://www.dropbox.com/s/tieqon4l3znfqco/Illustration_A6.pdf?dl=0
+    cash_interest=0.03,
 ) -> float:
     this_insured = Insured(
         issue_age=row["issueage"],  # type: ignore

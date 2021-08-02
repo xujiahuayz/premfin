@@ -41,8 +41,8 @@ this_policy = InsurancePolicy(
     lapse_assumption=True,
     statutory_interest=0.035,
     premium_markup=0.0,
-    # TODO: check a realistic cash interest from 2010-2015
-    cash_interest=0.001,
+    # TODO: show https://www.forbes.com/advisor/life-insurance/universal-life-insurance/
+    cash_interest=0.03,
 )
 this_financing = PolicyFinancingScheme(this_policy)
 sv = this_financing.surrender_value()  # =  0

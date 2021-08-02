@@ -30,10 +30,10 @@ class InsurancePolicy:
     lapse_assumption: bool = True
     premium_markup: float = 0
     surrender_penalty_rate: float = 0
-    cash_interest: float = 0
+    cash_interest: float = 0.03
     is_level_premium: Optional[bool] = None
     premium_stream_at_issue: Union[float, List[float], None] = None
-    statutory_interest: Union[float, List[float]] = 0.03
+    statutory_interest: Union[float, List[float]] = 0.035
     policyholder_rate: Union[float, List[float]] = 0.01  # should be some risk free rate
 
     def __post_init__(self):
