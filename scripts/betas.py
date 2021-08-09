@@ -50,6 +50,8 @@ def get_coefficients(index_file_name: str) -> pd.Series:
 
 # utilities / REIT / Finance / Insurance
 
+# TODO: update life settlement color
+
 index_betas = pd.Series(
     [
         get_coefficients("USTMIIndex")[1],
