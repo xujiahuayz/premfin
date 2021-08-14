@@ -76,3 +76,45 @@ To pull data files, use
 ```
 git lfs pull
 ```
+
+## Run scripts
+
+```zsh
+cd scripts
+```
+
+plot betas
+
+```zsh
+python plot_betas.py
+```
+
+create a clean `mortality_experience_clean.xlsx`:
+
+```zsh
+python process_empirical_table.py
+```
+
+get surrender value, max loan rate acceptable by policyholder, lender profit at max loan rate in one go:
+
+```zsh
+python get_surrendervalue_maxloanrate_lenderprofit.py
+```
+
+get untapped profit from the perspective of policyholder when their cost of capital is at various levels
+
+```zsh
+python get_untappedprofit_policyholder.py
+```
+
+plot money left of the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis
+
+```zsh
+python plot_moneyleft.py
+```
+
+get untapped profit from the perspective of lender when their cost of capital is at various levels
+
+```zsh
+python get_lenderprofit.py
+```
