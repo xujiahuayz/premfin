@@ -8,6 +8,7 @@ PERSIST_URL = "https://www.soa.org/globalassets/assets/files/resources/research-
 MORT_URL = "http://cdn-files.soa.org/research/2009-15_Data_20180601.zip"
 YIELD_URL = "https://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData"
 DATA_FOLDER = path.join(PROJECT_ROOT, "data")
+FIGURE_FOLDER = path.join(PROJECT_ROOT, "figures")
 
 MORTALITY_TABLE_CLEANED_PATH = path.join(DATA_FOLDER, "mortality_experience_clean.xlsx")
 PROCESSED_PROFITABILITY_PATH = path.join(DATA_FOLDER, "profitability.json")

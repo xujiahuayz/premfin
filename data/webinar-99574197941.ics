@@ -1,0 +1,60 @@
+BEGIN:VCALENDAR
+PRODID:-//zoom.us//iCalendar Event//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+CLASS:PUBLIC
+BEGIN:VTIMEZONE
+TZID:Europe/London
+LAST-MODIFIED:20201011T015911Z
+TZURL:http://tzurl.org/zoneinfo-outlook/Europe/London
+X-LIC-LOCATION:Europe/London
+BEGIN:DAYLIGHT
+TZNAME:BST
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+DTSTART:19700329T010000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZNAME:GMT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+DTSTART:19701025T020000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTAMP:20210719T171141Z
+DTSTART;TZID=Europe/London:20210722T150000
+DTEND;TZID=Europe/London:20210722T160000
+SUMMARY:UCL CS Postgraduate Info Session. 3pm.  Autumn 2021 entry
+UID:20210719T171141Z-99574197941@fe80:0:0:0:822:40ff:fe00:96a3ens5
+TZID:Europe/London
+DESCRIPTION:Join from a PC\, Mac\, iPad\, iPhone or Android device:\n    
+ Please click this URL to join. https://ucl.zoom.us/w/99574197941?tk=4OZC
+ BNQDi3jl28e-hcN1AyiWnL8ylW6s7q4zBz7Sinw.DQIAAAAXLxWutRZaTTF0S2RrSlFKLUhO
+ NGFQSDV3VXVBAAAAAAAAAAAAAAAAAAAAAAAAAAAA&uuid=WN_uid9W-FoQ6yKd9-S6gqk5Q\
+ n	Description: An opportunity for those holding an offer to start a post
+ graduate programme in 2021 to ask questions about the programme\, depart
+ ment and UCL.\nWe will have Programme Leaders and representatives from e
+ ach of our MSc's\, as well as our Head of Department\, Teaching and Lear
+ ning staff and recent MSc students on the panel.\n\nOr One tap mobile:\n
+     +443300885830\,\,99574197941# The United Kingdom\n    +441314601196\
+ ,\,99574197941# The United Kingdom\n\nOr join by phone:\n    Dial(for hi
+ gher quality\, dial a number based on your current location):\n        T
+ he United Kingdom: +44 330 088 5830  or +44 131 460 1196  or +44 203 481
+  5237  or +44 203 481 5240  or +44 203 901 7895  or +44 208 080 6591  or
+  +44 208 080 6592 \n    Webinar ID: 995 7419 7941\n    Participant ID: 1
+ 85233<br>\n    International numbers available: https://ucl.zoom.us/u/ab
+ qa5wTDib\n\n
+LOCATION:https://ucl.zoom.us/w/99574197941?tk=4OZCBNQDi3jl28e-hcN1AyiWnL8
+ ylW6s7q4zBz7Sinw.DQIAAAAXLxWutRZaTTF0S2RrSlFKLUhONGFQSDV3VXVBAAAAAAAAAAA
+ AAAAAAAAAAAAAAAAA&uuid=WN_uid9W-FoQ6yKd9-S6gqk5Q
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+END:VALARM
+END:VEVENT
+END:VCALENDAR

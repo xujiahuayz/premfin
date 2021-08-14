@@ -1,0 +1,60 @@
+BEGIN:VCALENDAR
+PRODID:-//zoom.us//iCalendar Event//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+CLASS:PUBLIC
+BEGIN:VTIMEZONE
+TZID:Europe/London
+LAST-MODIFIED:20201011T015911Z
+TZURL:http://tzurl.org/zoneinfo-outlook/Europe/London
+X-LIC-LOCATION:Europe/London
+BEGIN:DAYLIGHT
+TZNAME:BST
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+DTSTART:19700329T010000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZNAME:GMT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+DTSTART:19701025T020000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTAMP:20210719T171119Z
+DTSTART;TZID=Europe/London:20210722T100000
+DTEND;TZID=Europe/London:20210722T110000
+SUMMARY:UCL CS Postgraduate Info Session. 10am. Autumn 2021 entry
+UID:20210719T171120Z-99724189818@fe80:0:0:0:c56:7fff:fe85:9c43ens5
+TZID:Europe/London
+DESCRIPTION:Join from a PC\, Mac\, iPad\, iPhone or Android device:\n    
+ Please click this URL to join. https://ucl.zoom.us/w/99724189818?tk=0H4X
+ 0RNmKlBADp63EFgOACXs8k1yOupvOYnXpdd7APs.DQIAAAAXOAZgehY4dTI1UURSVVJxYUU4
+ TDZwY0E4blV3AAAAAAAAAAAAAAAAAAAAAAAAAAAA&uuid=WN_dI4cKVnKQR64Wy3eBtVzCA\
+ n	Description: An opportunity for those holding an offer to start a post
+ graduate degree at UCL Computer Science\, in 2021 to ask questions about
+  the programme\, department and UCL.\nWe will have Programme Leaders and
+  representatives from each of our MSc's\, as well as our Head of Departm
+ ent\, Teaching and Learning staff and MSc students on the panel.\n\nOr O
+ ne tap mobile:\n    +443300885830\,\,99724189818# The United Kingdom\n  
+   +441314601196\,\,99724189818# The United Kingdom\n\nOr join by phone:\
+ n    Dial(for higher quality\, dial a number based on your current locat
+ ion):\n        The United Kingdom: +44 330 088 5830  or +44 131 460 1196
+   or +44 203 481 5237  or +44 203 481 5240  or +44 203 901 7895  or +44 
+ 208 080 6591  or +44 208 080 6592 \n    Webinar ID: 997 2418 9818\n    P
+ articipant ID: 210712<br>\n    International numbers available: https://
+ ucl.zoom.us/u/aBBZ2DabD\n\n
+LOCATION:https://ucl.zoom.us/w/99724189818?tk=0H4X0RNmKlBADp63EFgOACXs8k1
+ yOupvOYnXpdd7APs.DQIAAAAXOAZgehY4dTI1UURSVVJxYUU4TDZwY0E4blV3AAAAAAAAAAA
+ AAAAAAAAAAAAAAAAA&uuid=WN_dI4cKVnKQR64Wy3eBtVzCA
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -12,6 +12,17 @@ Navigate to the directory of the cloned repo
 cd premfin
 ```
 
+## Set up the repo
+
+### Give execute permission to your script and then run `setup_repo.sh`
+
+```
+chmod +x setup_repo.sh
+./setup_repo.sh
+```
+
+or follow the step-by-step instructions below
+
 ### Create a python virtual environment
 
 - iOS

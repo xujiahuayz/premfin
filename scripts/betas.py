@@ -1,4 +1,4 @@
-from premiumFinance.constants import DATA_FOLDER
+from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
 import pandas as pd
 from os import path
 import statsmodels.formula.api as smf
@@ -48,41 +48,50 @@ def get_coefficients(index_file_name: str) -> pd.Series:
     return lm_results.params
 
 
-# utilities / REIT / Finance / Insurance
+if __name__ == "__main__":
+    # utilities / REIT / Finance / Insurance
 
-# TODO: update life settlement color
+    # TODO: update life settlement color
 
-index_betas = pd.Series(
-    [
-        get_coefficients("USTMIIndex")[1],
-        # get_coefficients("USbondIndex")[1],
-        get_coefficients("USconsumerfinanceIndex")[1],
-        get_coefficients("USRealEstateIndex")[1],
-        get_coefficients("USREITIndex")[1],
-        get_coefficients("USoilgasIndex")[1],
-        get_coefficients("USutilityIndex")[1],
-        get_coefficients("UShealthcareIndex")[1],
-        get_coefficients("USinsuranceIndex")[1],
-        0.067,
-    ]
-)
+    index_betas = pd.Series(
+        [
+            get_coefficients("USTMIIndex")[1],
+            # get_coefficients("USbondIndex")[1],
+            get_coefficients("USconsumerfinanceIndex")[1],
+            get_coefficients("USRealEstateIndex")[1],
+            get_coefficients("USREITIndex")[1],
+            get_coefficients("USoilgasIndex")[1],
+            get_coefficients("USutilityIndex")[1],
+            get_coefficients("UShealthcareIndex")[1],
+            get_coefficients("USinsuranceIndex")[1],
+            0.067,
+        ]
+    )
 
-x_pos = range(len(index_betas))
-plt.bar(x=x_pos, height=index_betas)
-plt.xticks(
-    x_pos,
-    [
-        "TMI",
-        # "Bond",
-        "Consumer finance",
-        "Real estate",
-        "REIT",
-        "Oil & gas",
-        "Utility",
-        "Healthcare",
-        "Insurance",
-        "VLSI",
-    ],
-    rotation=90,
-)
-plt.ylabel("beta")
+    x_pos = range(len(index_betas))
+    barlist = plt.bar(x=x_pos, height=index_betas)
+    barlist[-1].set_color("green")
+
+    plt.axhline(y=1, c="gray", linestyle="--")
+
+    plt.xticks(
+        x_pos,
+        [
+            "TMI",
+            # "Bond",
+            "Consumer finance",
+            "Real estate",
+            "REIT",
+            "Oil & gas",
+            "Utility",
+            "Healthcare",
+            "Insurance",
+            "Life settlement index",
+        ],
+        rotation=90,
+    )
+    plt.ylabel("beta")
+
+    plt.tight_layout()
+
+    plt.savefig(path.join(FIGURE_FOLDER, "betas.pdf"))
