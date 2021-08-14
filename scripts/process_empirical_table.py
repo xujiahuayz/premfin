@@ -32,5 +32,3 @@ mortality_experience_clean = mortality_experience[
 ]
 mortality_experience_clean["Amount Exposed"] = mortality_experience["Amount Exposed "]
 mortality_experience_clean.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)
-
-# %%
