@@ -101,19 +101,19 @@ get surrender value, max loan rate acceptable by policyholder, lender profit at 
 python get_surrendervalue_maxloanrate_lenderprofit.py
 ```
 
-get untapped profit from the perspective of policyholder when their cost of capital is at various levels
+get untapped profit from the perspective of policyholder when their cost of capital is at various levels:
 
 ```zsh
 python get_untappedprofit_policyholder.py
 ```
 
-plot money left of the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis
+plot money left of the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:
 
 ```zsh
 python plot_moneyleft.py
 ```
 
-get untapped profit from the perspective of lender when their cost of capital is at various levels
+get untapped profit from the perspective of lender when their cost of capital is at various levels:
 
 ```zsh
 python get_lenderprofit.py
