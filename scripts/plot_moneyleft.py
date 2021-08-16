@@ -99,7 +99,7 @@ plt.xticks(
         "Real estate market size",
         "Life insurance face amount",
         "Real estate value lost",
-        "Life insurance value lost",
+        "Life insurance value to policyholders",
     ],
     rotation=45,
 )
@@ -112,90 +112,89 @@ plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
 
 
-# #%% money left plot
+#%% money left plot
 
-# plt.bar(x=0, height=real_estate_nominal)
+plt.bar(x=0, height=real_estate_nominal)
 
-# plt.bar(x=WIDTH, height=[getMarketSize(year=2020) / 1e12])
-
-
-# plt.xticks(
-#     [0, WIDTH],
-#     [
-#         "Real estate",
-#         "Life insurance",
-#     ],
-#     rotation=90,
-# )
-# plt.ylabel("trillion USD")
+plt.bar(x=WIDTH, height=[getMarketSize(year=2020) / 1e12])
 
 
-# plt.show()
-
-# plt.bar(x=0, height=real_estate_change)
-
-# plt.bar(x=WIDTH, height=money_left_array[-1] / 1e12)
-
-
-# plt.xticks(
-#     [0, WIDTH],
-#     [
-#         "Real estate value loss",
-#         "Life insurance money left",
-#     ],
-#     rotation=90,
-# )
-# plt.ylabel("trillion USD")
-
-# plt.show()
-# #%% old plot plot
-# plt.bar(
-#     x=0,
-#     height=real_estate_nominal,
-#     width=WIDTH,
-#     color="blue",
-#     edgecolor="k",
-# )
-
-# plt.bar(
-#     x=WIDTH,
-#     height=real_estate_change,
-#     width=WIDTH,
-#     color="green",
-#     edgecolor="k",
-# )
+plt.xticks(
+    [0, WIDTH],
+    [
+        "Real estate",
+        "Life insurance",
+    ],
+    rotation=90,
+)
+plt.ylabel("trillion USD")
 
 
-# x_pos = np.arange(len(money_left_array))
+plt.show()
 
-# plt.bar(
-#     x=3 * WIDTH,
-#     height=[getMarketSize(year=2020) / 1e12],
-#     width=WIDTH,
-#     color="blue",
-#     edgecolor="k",
-#     # tick_label=["Total Face"],
-# )
+plt.bar(x=0, height=real_estate_change)
 
-# plt.bar(
-#     x=x_pos + 4 * WIDTH,
-#     height=np.array(money_left_array) / 1e12,
-#     width=WIDTH,
-#     color="green",
-#     edgecolor="k",
-#     # tick_label=investor_coc,
-# )
+plt.bar(x=WIDTH, height=money_left_array[-1] / 1e12)
 
-# plt.xticks(
-#     [0, WIDTH, 3 * WIDTH] + (x_pos + 4 * WIDTH).tolist(),
-#     [
-#         "Real estate",
-#         "Value lost",
-#         "Life insurance",
-#     ]
-#     + investor_coc,
-#     rotation=90,
-# )
-# plt.ylabel("trillion USD")
 
-# %%
+plt.xticks(
+    [0, WIDTH],
+    [
+        "Real estate value loss",
+        "Life insurance money left",
+    ],
+    rotation=90,
+)
+plt.ylabel("trillion USD")
+
+plt.show()
+
+#%% old plot plot
+plt.bar(
+    x=0,
+    height=real_estate_nominal,
+    width=WIDTH,
+    color="blue",
+    edgecolor="k",
+)
+
+plt.bar(
+    x=WIDTH,
+    height=real_estate_change,
+    width=WIDTH,
+    color="green",
+    edgecolor="k",
+)
+
+
+x_pos = np.arange(len(money_left_array))
+
+plt.bar(
+    x=3 * WIDTH,
+    height=[getMarketSize(year=2020) / 1e12],
+    width=WIDTH,
+    color="blue",
+    edgecolor="k",
+    # tick_label=["Total Face"],
+)
+
+plt.bar(
+    x=x_pos + 4 * WIDTH,
+    height=np.array(money_left_array) / 1e12,
+    width=WIDTH,
+    color="green",
+    edgecolor="k",
+    # tick_label=investor_coc,
+)
+
+plt.xticks(
+    [0, WIDTH, 3 * WIDTH] + (x_pos + 4 * WIDTH).tolist(),
+    [
+        "Real estate",
+        "Value lost",
+        "Life insurance",
+    ]
+    + investor_coc,
+    rotation=90,
+)
+plt.ylabel("trillion USD")
