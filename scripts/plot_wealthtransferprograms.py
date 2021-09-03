@@ -1,10 +1,13 @@
-from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
+from premiumFinance.constants import FIGURE_FOLDER
+from premiumFinance.fetchdata import lapse_tbl
+
 import pandas as pd
 from os import path
 import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
 
 
+#
 WEALTHTRANSFER_PROGRAMS_DICT = {
     "value": [
         84,

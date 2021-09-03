@@ -6,22 +6,9 @@ import matplotlib.pyplot as plt
 from scipy import optimize
 from typing import List, Optional, Union
 
-from premiumFinance.constants import DATA_FOLDER
+from premiumFinance.fetchdata import lapse_tbl
 from premiumFinance.insured import Insured
 from premiumFinance.util import make_list, cash_flow_pv
-
-
-# need to `pip install openpyxl`
-pers_file = path.join(DATA_FOLDER, "persistency.xlsx")
-# read lapse rates
-lapse_tbl = pd.read_excel(
-    pers_file,
-    sheet_name="Universal Life",
-    index_col=0,
-    skiprows=8,
-    skipfooter=71,
-    usecols="J:K,O",
-)
 
 
 @dataclass
