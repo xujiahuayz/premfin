@@ -8,6 +8,42 @@ import matplotlib.pyplot as plt
 DATE_RANGE = pd.date_range("2011-06-30", "2021-07-01", freq="1D")
 LOG_RETURN_COLUMN = "log_return"
 
+SPGURLROOT = "https://www.spglobal.com/spdji/en/idsexport/file.xls?selectedModule=PerformanceGraphView&yearFlag=tenYearFlag&indexId="
+
+INDEX_DICT = {
+    "filename": [
+        "USTMIIndex",
+        "USconsumerfinanceIndex",
+        "USRealEstateIndex",
+        "USREITIndex",
+        "USoilgasIndex",
+        "USutilityIndex",
+        "UShealthcareIndex",
+        "USinsuranceIndex",
+    ],
+    "indexid": [
+        2762,
+        5458463,
+        91882099,
+        5552915,
+        101116869,
+        100003020,
+        101117012,
+        57092,
+    ],
+    "labelname": [
+        "TMI",
+        "Consumer finance",
+        "Real estate",
+        "REIT",
+        "Oil & gas",
+        "Utility",
+        "Healthcare",
+        "Insurance",
+        "Life settlement index",
+    ],
+}
+
 
 def get_index_log_return(index_file_name: str) -> pd.DataFrame:
 
