@@ -139,6 +139,7 @@ def getAnnualYield_linear(
     return f(durange)
 
 
+# amount in dollar
 def getMarketSize(naic_path: str = constants.NAIC_PATH, year: int = 2020) -> float:
     lapse_tbl = pd.read_excel(
         naic_path,

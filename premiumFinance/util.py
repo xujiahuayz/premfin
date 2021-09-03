@@ -1,6 +1,7 @@
 from typing import Union
 import numpy as np
 import pandas as pd
+from premiumFinance.fetchdata import lapse_tbl
 
 LIST_LEN = 150
 # make a list with length 150
@@ -30,3 +31,15 @@ def cash_flow_pv(
     return sum(
         c * probabilities[i] / (1 + discounters[i]) ** i for i, c in enumerate(cashflow)
     )
+
+
+# lapse rate dependent on gender; lapse == 0 with no lapse assumption
+def lapse_rate(isMale: bool, assume_lapse: bool = True) -> list[float]:
+    lapse_rate = [0.0]
+    if assume_lapse:
+        col_ind = 0 if isMale else 1
+        lapse_column = (lapse_tbl.iloc[:, col_ind] / 100).to_list()
+        lapse_rate.extend(
+            lapse_column[:-1] + [lapse_column[-2]] * (29 - 26) + [lapse_column[-1]]
+        )
+    return make_list(lapse_rate)

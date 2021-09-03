@@ -110,18 +110,7 @@ if __name__ == "__main__":
 
     plt.xticks(
         x_pos,
-        [
-            "TMI",
-            # "Bond",
-            "Consumer finance",
-            "Real estate",
-            "REIT",
-            "Oil & gas",
-            "Utility",
-            "Healthcare",
-            "Insurance",
-            "Life settlement index",
-        ],
+        INDEX_DICT["labelname"],
         rotation=90,
     )
     plt.ylabel("beta")
