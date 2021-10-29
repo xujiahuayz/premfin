@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 
 
-from fetch_fred import DATE_ID
-from premiumFinance.constants import PROJECT_ROOT, DATA_FOLDER, FIGURE_FOLDER
+from premiumFinance.constants import PROJECT_ROOT, DATA_FOLDER, FIGURE_FOLDER, DATE_ID
 
 
 if __name__ == "__main__":
@@ -31,7 +30,7 @@ if __name__ == "__main__":
 
     data_to_plot = health_income_ratio.loc["2020-01-01"]
     ax = data_to_plot.plot(marker=".")
-    ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=2))
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter(1.0, decimals=0))
     ax.set_xlabel("age")
     ax.set_ylabel("annual health expenditure / income")
 
