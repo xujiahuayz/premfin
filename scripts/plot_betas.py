@@ -1,5 +1,6 @@
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
 import pandas as pd
+import numpy as np
 from os import path
 import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
@@ -59,9 +60,9 @@ def get_index_log_return(index_file_name: str) -> pd.DataFrame:
 
     index_table_interpolated = index_table.reindex(DATE_RANGE).interpolate()
 
-    index_table_interpolated[LOG_RETURN_COLUMN] = index_table_interpolated.iloc[
-        :, 0
-    ].pct_change()
+    index_table_interpolated[LOG_RETURN_COLUMN] = np.log(
+        1 + index_table_interpolated.iloc[:, 0].pct_change()
+    )
 
     return index_table_interpolated.iloc[1:, :]
 
@@ -101,6 +102,8 @@ if __name__ == "__main__":
             0.067,
         ]
     )
+
+    print(index_betas)
 
     x_pos = range(len(index_betas))
     barlist = plt.bar(x=x_pos, height=index_betas)
