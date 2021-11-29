@@ -1,5 +1,4 @@
 #%% import packages
-import json
 from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -54,7 +53,7 @@ WIDTH = 1
 colors = ["blue", "green"]
 
 
-#%% old plot plot
+#%% latest plot
 
 heights = [
     real_estate_nominal,
@@ -149,7 +148,7 @@ plt.ylabel("trillion USD")
 
 plt.show()
 
-#%% old plot plot
+#%% old plot
 plt.bar(
     x=0,
     height=real_estate_nominal,
@@ -198,3 +197,5 @@ plt.xticks(
     rotation=90,
 )
 plt.ylabel("trillion USD")
+
+# %%
