@@ -65,11 +65,11 @@ insPol0 = InsurancePolicy(
     insured=insrd_benchmark,
     is_level_premium=True,
     lapse_assumption=True,
-    policyholder_rate=getAnnualYield(),
-    surrender_penalty_rate=0.1,
-    cash_interest=0.05,
-    premium_markup=0.2,
-    statutory_interest=0.03,
+    # policyholder_rate=getAnnualYield(),
+    # surrender_penalty_rate=0.1,
+    # cash_interest=0.05,
+    # premium_markup=0.2,
+    # statutory_interest=0.03,
 )
 
 insPol0._level_premium
