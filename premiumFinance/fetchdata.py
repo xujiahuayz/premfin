@@ -68,11 +68,15 @@ def getVBTdata(
     ult_start = issueage + int(sel_mort.index[-1])
 
     if ult_start <= int(ult_mort.index[-1]):
-        curv = sel_mort.append(ult_mort[str(ult_start) :], ignore_index=True)
+        curv = pd.concat([sel_mort, ult_mort[str(ult_start) :]], ignore_index=True)
+        # sel_mort.append(ult_mort[str(ult_start) :], ignore_index=True)
     else:
         curv = sel_mort.reset_index(drop=True)
 
-    mort = pd.Series([0]).append(curv[(currentage - issueage) :], ignore_index=True)
+    mort = pd.concat(
+        [pd.Series([0]), curv[(currentage - issueage) :]], ignore_index=True
+    )
+    # pd.Series([0]).append(curv[(currentage - issueage) :], ignore_index=True)
 
     return mort
 
