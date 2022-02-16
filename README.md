@@ -118,3 +118,9 @@ get untapped profit from the perspective of lender when their cost of capital is
 ```zsh
 python get_lenderprofit.py
 ```
+
+get median value loss from common household mistakes
+
+```zsh
+python get_median.py
+```
