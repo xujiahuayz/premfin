@@ -107,7 +107,7 @@ get untapped profit from the perspective of policyholder when their cost of capi
 python get_untappedprofit_policyholder.py
 ```
 
-plot money left of the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:
+plot money left on the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:
 
 ```zsh
 python plot_moneyleft.py

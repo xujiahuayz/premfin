@@ -3,6 +3,7 @@ from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import xlrd
 
 from premiumFinance.fetchdata import getMarketSize
 from premiumFinance.constants import (
@@ -23,6 +24,14 @@ mortality_experience["Dollar profit"].sum() / mortality_experience[
 sample_representativeness = (
     getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
 )
+
+mortality_experience["Excess_Policy_PV_yield_curve_none0"] = mortality_experience[
+    "Excess_Policy_PV_yield_curve"
+]
+
+mortality_experience["Excess_Policy_PV_yield_curve_none0"][
+    mortality_experience["Excess_Policy_PV_yield_curve_none0"] < 0
+] = 0
 
 money_left_array = []
 investor_coc = [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, "yield_curve"]
@@ -110,6 +119,19 @@ plt.tight_layout()
 
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
 
+#%% money left distribution
+mortality_experience["money_left"] = (
+    mortality_experience["Excess_Policy_PV_yield_curve_none0"]
+    * mortality_experience["Amount Exposed"]
+    * sample_representativeness
+)
+
+money_left_grouped = mortality_experience.groupby(["currentage", "isMale"])[
+    "money_left"
+].sum()
+
+
+## BELOW IS DEPRECATED
 
 #%% money left plot
 
