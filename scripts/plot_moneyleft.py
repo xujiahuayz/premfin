@@ -121,43 +121,6 @@ plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
 
 
 
-#%% money left distribution subject to age and sex
-#sex_age_distribution
-bins=[20,30,40,50,60,70,80,90,100]
-group_age = pd.cut(mortality_experience['currentage'],bins=bins)
-df = mortality_experience.loc[:,['isMale','money_left']]
-df['Age_cat'] = group_age
-group_age_sex=df.groupby(['isMale','Age_cat']).sum()
-
-X_label = group_age_sex.index.levels[1].astype(str)
-woman_money = group_age_sex[0:len(bins)-1].values.flatten()/1e11
-man_money = group_age_sex[len(bins)-1:].values.flatten()/1e11
-plt.bar(
-    X_label,
-    height=man_money,
-    width=0.7,
-    color='blue',
-    edgecolor="k",
-    label='Man'
-)
-plt.bar(
-    X_label,
-    height=woman_money,
-    bottom  = man_money,
-    width=0.7,
-    color='pink',
-    edgecolor="k",
-    label ='Woman'
-)
-for x, y in enumerate(man_money):
-    plt.text(x,y,'%s'%round(y,2),ha='center',va='bottom',fontsize=8)
-for x, y in enumerate(woman_money):
-    plt.text(x,y+man_money[x],'%s'%round(y,2),ha='center',va='bottom',fontsize=8)
-plt.xticks(rotation=45)
-plt.ylabel("Trillion USD")
-plt.xlabel('Age')
-plt.legend()
-plt.savefig(path.join(FIGURE_FOLDER, "moneyleft_sex_age_distribution.pdf"))
 #%% money left distribution
 mortality_experience["money_left"] = (
     mortality_experience["Excess_Policy_PV_yield_curve_none0"]
@@ -208,7 +171,44 @@ plt.xticks(
 plt.ylabel("trillion USD")
 
 plt.show()
+#%% money left distribution subject to age and sex
+#sex_age_distribution
+bins=[20,30,40,50,60,70,80,90,100]
+group_age = pd.cut(mortality_experience['currentage'],bins=bins)
+df = mortality_experience.loc[:,['isMale','money_left']]
+df['Age_cat'] = group_age
+group_age_sex=df.groupby(['isMale','Age_cat']).sum()
 
+X_label = group_age_sex.index.levels[1].astype(str)
+woman_money = group_age_sex[0:len(bins)-1].values.flatten()/1e11
+man_money = group_age_sex[len(bins)-1:].values.flatten()/1e11
+plt.bar(
+    X_label,
+    height=man_money,
+    width=0.7,
+    color='blue',
+    edgecolor="k",
+    label='Man'
+)
+plt.bar(
+    X_label,
+    height=woman_money,
+    bottom  = man_money,
+    width=0.7,
+    color='pink',
+    edgecolor="k",
+    label ='Woman'
+)
+for x, y in enumerate(man_money):
+    plt.text(x,y,'%s'%round(y,2),ha='center',va='bottom',fontsize=8)
+for x, y in enumerate(woman_money):
+    plt.text(x,y+man_money[x],'%s'%round(y,2),ha='center',va='bottom',fontsize=8)
+plt.xticks(rotation=45)
+plt.ylabel("Trillion USD")
+plt.xlabel('Age')
+plt.legend()
+plt.show()
+plt.savefig(path.join(FIGURE_FOLDER, "moneyleft_sex_age_distribution.pdf"))
 #%% old plot
 plt.bar(
     x=0,
