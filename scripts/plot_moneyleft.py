@@ -199,7 +199,7 @@ plt.bar(
     width=0.7,
     color='pink',
     edgecolor="k",
-    label ='Woman'
+    label ='Woman'"
 )
 for x,y in enumerate(zip(man_money,woman_money)):
     plt.text(x,y[0],'%s'%round(y[0],2),ha='center',va='bottom',fontsize=8)
