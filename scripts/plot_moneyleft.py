@@ -173,15 +173,17 @@ plt.ylabel("trillion USD")
 plt.show()
 #%% money left distribution subject to age and sex
 #sex_age_distribution
-bins=[20,30,40,50,60,70,80,90,100]
+bins=np.arange(20,110,10)
 group_age = pd.cut(mortality_experience['currentage'],bins=bins)
 df = mortality_experience.loc[:,['isMale','money_left']]
 df['Age_cat'] = group_age
-group_age_sex=df.groupby(['isMale','Age_cat']).sum()
+group_age_sex=df.groupby(['isMale','Age_cat'],as_index=False).sum()
+group_age_sex['Age_cat'] = group_age_sex['Age_cat'].astype(str)
 
-X_label = group_age_sex.index.levels[1].astype(str)
-woman_money = group_age_sex[0:len(bins)-1].values.flatten()/1e11
-man_money = group_age_sex[len(bins)-1:].values.flatten()/1e11
+X_label = sorted(set(group_age_sex['Age_cat']))
+man_money = group_age_sex[group_age_sex['isMale']==True]['money_left']/1e11
+woman_money = group_age_sex[group_age_sex['isMale']==False]['money_left']/1e11
+
 plt.bar(
     X_label,
     height=man_money,
@@ -193,16 +195,15 @@ plt.bar(
 plt.bar(
     X_label,
     height=woman_money,
-    bottom  = man_money,
+    bottom=man_money,
     width=0.7,
     color='pink',
     edgecolor="k",
     label ='Woman'
 )
-for x, y in enumerate(man_money):
-    plt.text(x,y,'%s'%round(y,2),ha='center',va='bottom',fontsize=8)
-for x, y in enumerate(woman_money):
-    plt.text(x,y+man_money[x],'%s'%round(y,2),ha='center',va='bottom',fontsize=8)
+for x,y in enumerate(zip(man_money,woman_money)):
+    plt.text(x,y[0],'%s'%round(y[0],2),ha='center',va='bottom',fontsize=8)
+    plt.text(x,y[1]+y[0],'%s'%round(y[1],2),ha='center',va='bottom',fontsize=8)
 plt.xticks(rotation=45)
 plt.ylabel("Trillion USD")
 plt.xlabel('Age')
