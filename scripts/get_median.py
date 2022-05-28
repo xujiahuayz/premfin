@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 from os import path
 import matplotlib.pyplot as plt
-
+from itertools import product
 
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 
@@ -45,7 +45,6 @@ median_value_lapsed = mortality_experience_sorted.loc[
     "average_lapsed_amount",
 ].iat[0]
 # 46190.03282643981
-
 WORKING_LIFE_YEARS = 25
 Underdiversification_LOSS = 0.0204
 
@@ -101,6 +100,48 @@ HOUSEHOLD_MISTAKES_DICT = {
     ],
 }
 
+
+def getMedian_lapsed_distr(og_mortality_experience: pd.DataFrame) -> pd.DataFrame:
+    median_lapsed_distr = pd.DataFrame(
+        columns=("isMale", "Age_cat", "lapsed_median"), index=None
+    )
+    age = np.arange(20, 100, 10)
+    gender = [False, True]
+    conditions = list(product(gender, age))
+
+    for con in conditions:
+        cur_mortality_experience = og_mortality_experience
+        cur_mortality_experience = cur_mortality_experience[
+            cur_mortality_experience.apply(
+                lambda x: con[1] < x["issueage"] <= con[1] + 10
+                and x["isMale"] == con[0],
+                axis=1,
+            )
+        ]
+        cur_mortality_experience_sorted = cur_mortality_experience.sort_values(
+            by=["average_lapsed_amount"], ignore_index=True
+        )
+        cur_mortality_experience_sorted[
+            "number_policies_cumsum"
+        ] = cur_mortality_experience_sorted["number_lapsed_policies"].cumsum()
+
+        cur_median_value_lapsed = cur_mortality_experience_sorted.loc[
+            (
+                cur_mortality_experience_sorted["number_policies_cumsum"]
+                > cur_mortality_experience_sorted["number_policies_cumsum"].iloc[-1] / 2
+            ).values,
+            "average_lapsed_amount",
+        ].iat[0]
+
+        row = {
+            "isMale": con[0],
+            "Age_cat": (str(con[1]) + "-" + str(con[1] + 10)),
+            "lapsed_median": cur_median_value_lapsed,
+        }
+        median_lapsed_distr = median_lapsed_distr.append(row, ignore_index=True)
+    return median_lapsed_distr
+
+
 if __name__ == "__main__":
 
     x_pos = range(len(HOUSEHOLD_MISTAKES_DICT["labelname"]))
@@ -131,4 +172,45 @@ if __name__ == "__main__":
     plt.tight_layout()
 
     plt.savefig(path.join(FIGURE_FOLDER, "householdmistakes.pdf"))
+    plt.show()
+    # Plot gender and age distribution
+    group_age_sex = getMedian_lapsed_distr(mortality_experience)
+    X_label = sorted(set(group_age_sex["Age_cat"]))
+    man_money = group_age_sex[group_age_sex["isMale"] == True]["lapsed_median"]
+    woman_money = group_age_sex[group_age_sex["isMale"] == False]["lapsed_median"]
 
+    plt.bar(
+        X_label, height=man_money, width=0.7, color="blue", edgecolor="k", label="Man"
+    )
+    plt.bar(
+        X_label,
+        height=woman_money,
+        bottom=man_money,
+        width=0.7,
+        color="pink",
+        edgecolor="k",
+        label="Woman",
+    )
+    for x, y in enumerate(zip(man_money, woman_money)):
+        plt.text(
+            x,
+            max(y[0] / 2, 4),
+            "%s" % round(y[0]),
+            ha="center",
+            va="bottom",
+            fontsize=8,
+        )
+        plt.text(
+            x,
+            max(y[1] / 2 + y[0], y[0] / 2 + 8),
+            "%s" % round(y[1]),
+            ha="center",
+            va="bottom",
+            fontsize=8,
+        )
+    plt.xticks(rotation=45)
+    plt.ylabel("USD")
+    plt.xlabel("Age")
+    plt.legend()
+    plt.show()
+    plt.savefig(path.join(FIGURE_FOLDER, "householdmistakes_distri.pdf"))
