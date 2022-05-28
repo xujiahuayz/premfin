@@ -3,7 +3,7 @@ from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import xlrd
+#import xlrd
 
 from premiumFinance.fetchdata import getMarketSize
 from premiumFinance.constants import (
@@ -210,8 +210,8 @@ plt.xticks(rotation=45)
 plt.ylabel("Trillion USD")
 plt.xlabel("Age")
 plt.legend()
-plt.show()
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft_sex_age_distribution.pdf"))
+plt.show()
 #%% old plot
 plt.bar(
     x=0,

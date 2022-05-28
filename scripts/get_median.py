@@ -212,5 +212,5 @@ if __name__ == "__main__":
     plt.ylabel("USD")
     plt.xlabel("Age")
     plt.legend()
-    plt.show()
     plt.savefig(path.join(FIGURE_FOLDER, "householdmistakes_distri.pdf"))
+    plt.show()
