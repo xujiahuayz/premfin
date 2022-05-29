@@ -3,7 +3,8 @@ from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-#import xlrd
+
+# import xlrd
 
 from premiumFinance.fetchdata import getMarketSize
 from premiumFinance.constants import (
@@ -196,12 +197,17 @@ plt.bar(
 for x, y in enumerate(zip(man_money, woman_money)):
     plt.text(x, y[0] / 2, "%s" % round(y[0], 2), ha="center", va="bottom", fontsize=8)
     plt.text(
-        x, max(y[0] / 2+0.03,y[1] / 2 + y[0]), "%s" % round(y[1], 2), ha="center", va="bottom", fontsize=8
+        x,
+        max(y[0] / 2 + 0.03, y[1] / 2 + y[0]),
+        "%s" % round(y[1], 2),
+        ha="center",
+        va="bottom",
+        fontsize=8,
     )
     plt.text(
         x,
-        max(y[1] + y[0],y[0] / 2+0.2),
-        "%s" % round(y[1] + y[0],2),
+        max(y[1] + y[0], y[0] / 2 + 0.2),
+        "%s" % round(y[1] + y[0], 2),
         ha="center",
         va="bottom",
         fontsize=8,

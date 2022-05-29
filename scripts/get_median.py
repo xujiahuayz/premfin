@@ -1,6 +1,6 @@
 # COL_NAMES = ["Gender", "Smoker Status",	"Issue Age", "Attained Age", "Amount Exposed", 	Policies Exposed 	Death Claim Amount 	Sum of Number of Deaths
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
-from premiumFinance.fetchdata import getMarketSize
+#from premiumFinance.fetchdata import getMarketSize
 from premiumFinance.util import lapse_rate
 
 import pandas as pd
@@ -178,15 +178,20 @@ if __name__ == "__main__":
     X_label = sorted(set(group_age_sex["Age_cat"]))
     man_money = group_age_sex[group_age_sex["isMale"] == True]["lapsed_median"]
     woman_money = group_age_sex[group_age_sex["isMale"] == False]["lapsed_median"]
-
+    x_pos = np.arange(len(X_label))
+    WIDTH = 0.3
     plt.bar(
-        X_label, height=man_money, width=0.7, color="blue", edgecolor="k", label="Man"
+        x_pos - WIDTH / 2,
+        height=man_money,
+        width=WIDTH,
+        color="blue",
+        edgecolor="k",
+        label="Man",
     )
     plt.bar(
-        X_label,
+        x_pos + WIDTH / 2,
         height=woman_money,
-        bottom=man_money,
-        width=0.7,
+        width=WIDTH,
         color="pink",
         edgecolor="k",
         label="Woman",
@@ -194,21 +199,23 @@ if __name__ == "__main__":
     for x, y in enumerate(zip(man_money, woman_money)):
         plt.text(
             x,
-            max(y[0] / 2, 4),
-            "%s" % round(y[0]),
+            y[0],
+            s="{:,}".format(round(y[0])),
             ha="center",
             va="bottom",
             fontsize=8,
+            color="blue",
         )
         plt.text(
-            x,
-            max(y[1] / 2 + y[0], y[0] / 2 + 8),
-            "%s" % round(y[1]),
+            x + WIDTH + 0.03,
+            y[1],
+            s="{:,}".format(round(y[1])),
             ha="center",
             va="bottom",
             fontsize=8,
+            color="red",
         )
-    plt.xticks(rotation=45)
+    plt.xticks(x_pos, X_label, rotation=45)
     plt.ylabel("USD")
     plt.xlabel("Age")
     plt.legend()
