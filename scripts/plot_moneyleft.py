@@ -117,9 +117,8 @@ plt.ylabel("trillion USD")
 plt.ylim(0, max(heights) * 1.1)
 
 plt.tight_layout()
-
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
-
+plt.show()
 
 #%% money left distribution
 mortality_experience["money_left"] = (
@@ -128,63 +127,23 @@ mortality_experience["money_left"] = (
     * sample_representativeness
 )
 
-money_left_grouped = mortality_experience.groupby(["currentage", "isMale"])[
-    "money_left"
-].sum()
+# money_left_grouped = mortality_experience.groupby(["currentage", "isMale"])[
+#     "money_left"
+# ].sum()
 
 
-## BELOW IS DEPRECATED
-
-#%% money left plot
-
-plt.bar(x=0, height=real_estate_nominal)
-
-plt.bar(x=WIDTH, height=[getMarketSize(year=2020) / 1e12])
-
-
-plt.xticks(
-    [0, WIDTH],
-    [
-        "Real estate",
-        "Life insurance",
-    ],
-    rotation=90,
-)
-plt.ylabel("trillion USD")
-
-
-plt.show()
-
-plt.bar(x=0, height=real_estate_change)
-
-plt.bar(x=WIDTH, height=money_left_array[-1] / 1e12)
-
-
-plt.xticks(
-    [0, WIDTH],
-    [
-        "Real estate value loss",
-        "Life insurance money left",
-    ],
-    rotation=90,
-)
-plt.ylabel("trillion USD")
-
-plt.show()
 #%% money left distribution subject to age and sex
 # sex_age_distribution
 bins = np.arange(20, 110, 10)
-group_age = pd.cut(mortality_experience["currentage"], bins=bins)
 df = mortality_experience.loc[:, ["isMale", "money_left"]]
-df["Age_cat"] = group_age
+df["Age_cat"] = pd.cut(mortality_experience["currentage"], bins=bins).astype(str)
 group_age_sex = df.groupby(["isMale", "Age_cat"], as_index=False).sum()
-group_age_sex["Age_cat"] = group_age_sex["Age_cat"].astype(str)
 
 X_label = sorted(set(group_age_sex["Age_cat"]))
 man_money = group_age_sex[group_age_sex["isMale"] == True]["money_left"] / 1e12
 woman_money = group_age_sex[group_age_sex["isMale"] == False]["money_left"] / 1e12
 
-plt.bar(X_label, height=man_money, width=0.7, color="blue", edgecolor="k", label="Man")
+plt.bar(X_label, height=man_money, width=0.7, color="blue", edgecolor="k", label="male")
 plt.bar(
     X_label,
     height=woman_money,
@@ -192,7 +151,7 @@ plt.bar(
     width=0.7,
     color="pink",
     edgecolor="k",
-    label="Woman",
+    label="female",
 )
 for x, y in enumerate(zip(man_money, woman_money)):
     plt.text(x, y[0] / 2, "%s" % round(y[0], 2), ha="center", va="bottom", fontsize=8)
@@ -213,59 +172,98 @@ for x, y in enumerate(zip(man_money, woman_money)):
         fontsize=8,
     )
 plt.xticks(rotation=45)
-plt.ylabel("Trillion USD")
+plt.ylabel("trillion USD")
 plt.xlabel("Age")
 plt.legend()
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft_sex_age_distribution.pdf"))
 plt.show()
-#%% old plot
-plt.bar(
-    x=0,
-    height=real_estate_nominal,
-    width=WIDTH,
-    color="blue",
-    edgecolor="k",
-)
-
-plt.bar(
-    x=WIDTH,
-    height=real_estate_change,
-    width=WIDTH,
-    color="green",
-    edgecolor="k",
-)
 
 
-x_pos = np.arange(len(money_left_array))
+# ## BELOW IS DEPRECATED
 
-plt.bar(
-    x=3 * WIDTH,
-    height=[getMarketSize(year=2020) / 1e12],
-    width=WIDTH,
-    color="blue",
-    edgecolor="k",
-    # tick_label=["Total Face"],
-)
+# #%% money left plot
 
-plt.bar(
-    x=x_pos + 4 * WIDTH,
-    height=np.array(money_left_array) / 1e12,
-    width=WIDTH,
-    color="green",
-    edgecolor="k",
-    # tick_label=investor_coc,
-)
+# plt.bar(x=0, height=real_estate_nominal)
 
-plt.xticks(
-    [0, WIDTH, 3 * WIDTH] + (x_pos + 4 * WIDTH).tolist(),
-    [
-        "Real estate",
-        "Value lost",
-        "Life insurance",
-    ]
-    + investor_coc,
-    rotation=90,
-)
-plt.ylabel("trillion USD")
+# plt.bar(x=WIDTH, height=[getMarketSize(year=2020) / 1e12])
 
-# %%
+
+# plt.xticks(
+#     [0, WIDTH],
+#     [
+#         "Real estate",
+#         "Life insurance",
+#     ],
+#     rotation=90,
+# )
+# plt.ylabel("trillion USD")
+
+
+# plt.show()
+
+# plt.bar(x=0, height=real_estate_change)
+
+# plt.bar(x=WIDTH, height=money_left_array[-1] / 1e12)
+
+
+# plt.xticks(
+#     [0, WIDTH],
+#     [
+#         "Real estate value loss",
+#         "Life insurance money left",
+#     ],
+#     rotation=90,
+# )
+# plt.ylabel("trillion USD")
+
+# #%% old plot
+# plt.bar(
+#     x=0,
+#     height=real_estate_nominal,
+#     width=WIDTH,
+#     color="blue",
+#     edgecolor="k",
+# )
+
+# plt.bar(
+#     x=WIDTH,
+#     height=real_estate_change,
+#     width=WIDTH,
+#     color="green",
+#     edgecolor="k",
+# )
+
+
+# x_pos = np.arange(len(money_left_array))
+
+# plt.bar(
+#     x=3 * WIDTH,
+#     height=[getMarketSize(year=2020) / 1e12],
+#     width=WIDTH,
+#     color="blue",
+#     edgecolor="k",
+#     # tick_label=["Total Face"],
+# )
+
+# plt.bar(
+#     x=x_pos + 4 * WIDTH,
+#     height=np.array(money_left_array) / 1e12,
+#     width=WIDTH,
+#     color="green",
+#     edgecolor="k",
+#     # tick_label=investor_coc,
+# )
+
+# plt.xticks(
+#     [0, WIDTH, 3 * WIDTH] + (x_pos + 4 * WIDTH).tolist(),
+#     [
+#         "Real estate",
+#         "Value lost",
+#         "Life insurance",
+#     ]
+#     + investor_coc,
+#     rotation=90,
+# )
+# plt.ylabel("trillion USD")
+
+# # %%
