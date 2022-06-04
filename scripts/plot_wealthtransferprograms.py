@@ -104,16 +104,13 @@ if __name__ == "__main__":
         * sample_representativeness
     )
 
-    plt.bar(
-        X_label, height=man_money, width=0.7, color="blue", edgecolor="k", label="Man"
-    )
+    plt.bar(X_label, height=man_money, width=0.7, color="royalblue", label="Man")
     plt.bar(
         X_label,
         height=woman_money,
         bottom=man_money,
         width=0.7,
         color="pink",
-        edgecolor="k",
         label="Woman",
     )
     for x, y in enumerate(zip(man_money, woman_money)):
@@ -135,15 +132,16 @@ if __name__ == "__main__":
         )
         plt.text(
             x,
-            max(y[1] + y[0], y[1] / 2 + y[0] + 10,y[1] / 2 + y[0]+10),
+            max(y[1] + y[0], y[1] / 2 + y[0] + 10, y[1] / 2 + y[0] + 10),
             "%s" % round(y[1] + y[0], 2),
             ha="center",
             va="bottom",
             fontsize=8,
         )
     plt.xticks(rotation=45)
-    plt.ylabel("Billion USD")
-    plt.xlabel("Age")
+    plt.ylabel("billion USD")
+    plt.xlabel("age")
     plt.legend()
+    plt.tight_layout()
     plt.savefig(path.join(FIGURE_FOLDER, "lap_bd.pdf"))
     plt.show()

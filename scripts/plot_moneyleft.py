@@ -143,14 +143,13 @@ X_label = sorted(set(group_age_sex["Age_cat"]))
 man_money = group_age_sex[group_age_sex["isMale"] == True]["money_left"] / 1e12
 woman_money = group_age_sex[group_age_sex["isMale"] == False]["money_left"] / 1e12
 
-plt.bar(X_label, height=man_money, width=0.7, color="blue", edgecolor="k", label="male")
+plt.bar(X_label, height=man_money, width=0.7, color="royalblue", label="male")
 plt.bar(
     X_label,
     height=woman_money,
     bottom=man_money,
     width=0.7,
     color="pink",
-    edgecolor="k",
     label="female",
 )
 for x, y in enumerate(zip(man_money, woman_money)):
@@ -173,8 +172,9 @@ for x, y in enumerate(zip(man_money, woman_money)):
     )
 plt.xticks(rotation=45)
 plt.ylabel("trillion USD")
-plt.xlabel("Age")
+plt.xlabel("age")
 plt.legend()
+plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft_sex_age_distribution.pdf"))
 plt.show()
 
