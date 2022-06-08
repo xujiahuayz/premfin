@@ -218,6 +218,8 @@ yield_curve = getAnnualYield()
 
 def calculate_lender_profit(
     row,
+    currentVBT,
+    currentmort=1.0,
     is_level_premium=True,
     lapse_assumption=True,
     policyholder_rate=yield_curve,
@@ -232,7 +234,8 @@ def calculate_lender_profit(
         isSmoker=row["isSmoker"],  # type: ignore
         current_age=row["currentage"],  # type: ignore
         issueVBT="VBT01",
-        currentVBT="VBT15",
+        currentVBT=currentVBT,
+        currentmort=currentmort
     )
     this_policy = InsurancePolicy(
         insured=this_insured,
@@ -262,6 +265,8 @@ def calculate_lender_profit(
 
 def calculate_policyholder_IRR(
     row,
+    currentVBT,
+    currentmort=1.0,
     is_level_premium=True,
     lapse_assumption=True,
     policyholder_rate=yield_curve,
@@ -276,7 +281,8 @@ def calculate_policyholder_IRR(
         isSmoker=row["isSmoker"],  # type: ignore
         current_age=row["currentage"],  # type: ignore
         issueVBT="VBT01",
-        currentVBT="VBT15",
+        currentVBT=currentVBT,
+        currentmort=currentmort
     )
     this_policy = InsurancePolicy(
         insured=this_insured,
@@ -298,6 +304,8 @@ def calculate_policyholder_IRR(
 
 def policyholder_policy_value(
     row,
+    currentVBT,
+    currentmort=1.0,
     is_level_premium=True,
     lapse_assumption=True,
     policyholder_rate=yield_curve,
@@ -314,7 +322,8 @@ def policyholder_policy_value(
         isSmoker=row["isSmoker"],  # type: ignore
         current_age=row["currentage"],  # type: ignore
         issueVBT="VBT01",
-        currentVBT="VBT15",
+        currentVBT=currentVBT,
+        currentmort=currentmort
     )
     this_policy = InsurancePolicy(
         insured=this_insured,

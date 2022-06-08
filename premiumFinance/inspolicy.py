@@ -40,7 +40,7 @@ class InsurancePolicy:
         self.premium_stream_at_issue = make_list(premium_stream_at_issue)
 
     # inforce rate starting year 1 (as opposed to year 0)
-    def inforce_rate(self, assume_lapse: bool) -> list[float]:
+    def inforce_rate(self, assume_lapse: bool) -> List[float]:
         inforcerate = [
             1 - x for x in lapse_rate(self.insured.isMale, assume_lapse=assume_lapse)
         ]
@@ -51,7 +51,7 @@ class InsurancePolicy:
         self,
         assume_lapse: bool,
         at_issue: bool = True,
-    ) -> list[float]:
+    ) -> List[float]:
         inforcerate = self.inforce_rate(assume_lapse=assume_lapse)
         if at_issue:
             condSurv = self.insured.mortality_at_issue.conditional_survival_curve
@@ -89,7 +89,7 @@ class InsurancePolicy:
 
     def death_benefit_payment_probability(
         self, assume_lapse: bool, at_issue: bool = True
-    ) -> list[float]:
+    ) -> List[float]:
         persistency = self.persistency_rate(
             assume_lapse=assume_lapse, at_issue=at_issue
         )
@@ -261,7 +261,7 @@ class InsurancePolicy:
         return sol.root
 
     @property
-    def _variable_premium(self) -> list[float]:
+    def _variable_premium(self) -> List[float]:
         # variable premium shouldn't exceed 1 death benefit per year
         return [
             min(a / b * (1 + self.premium_markup), 1)

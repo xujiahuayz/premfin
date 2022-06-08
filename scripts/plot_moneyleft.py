@@ -12,45 +12,51 @@ from premiumFinance.constants import (
     FIGURE_FOLDER,
 )
 
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
-
-#%% calculate dollar profit
-
-mortality_experience = pd.read_excel(untapped_profit_path)
-
-mortality_experience["Dollar profit"].sum() / mortality_experience[
-    "Amount Exposed"
-].sum()
-
-sample_representativeness = (
-    getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
+untapped_profit_path_15_T = path.join(DATA_FOLDER, "untappedprofit.xlsx")
+untapped_profit_path_01_T = path.join(DATA_FOLDER, "untappedprofit_cnt.xlsx")
+untapped_profit_path_15_F = path.join(DATA_FOLDER, "untappedprofit_cnt_false.xlsx")
+untapped_profit_path_15_T_mort5 = path.join(
+    DATA_FOLDER, "untappedprofit_cnt_15_T_mort5.xlsx"
 )
+#%% calculate dollar profit
+def get_money_left_arr(untapped_profit_path):
+    mortality_experience = pd.read_excel(untapped_profit_path)
 
-mortality_experience["Excess_Policy_PV_yield_curve_none0"] = mortality_experience[
-    "Excess_Policy_PV_yield_curve"
-]
+    mortality_experience["Dollar profit"].sum() / mortality_experience[
+        "Amount Exposed"
+    ].sum()
 
-mortality_experience["Excess_Policy_PV_yield_curve_none0"][
-    mortality_experience["Excess_Policy_PV_yield_curve_none0"] < 0
-] = 0
+    sample_representativeness = (
+        getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
+    )
 
-money_left_array = []
-investor_coc = [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, "yield_curve"]
-for i in investor_coc:
-    money_left = (
-        sum(
-            w
-            for w in mortality_experience[f"Excess_Policy_PV_{i}"]
-            * mortality_experience["Amount Exposed"]
-            if w > 0
+    mortality_experience["Excess_Policy_PV_yield_curve_none0"] = mortality_experience[
+        "Excess_Policy_PV_yield_curve"
+    ]
+
+    mortality_experience["Excess_Policy_PV_yield_curve_none0"][
+        mortality_experience["Excess_Policy_PV_yield_curve_none0"] < 0
+    ] = 0
+
+    money_left_array = []
+    investor_coc = [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, "yield_curve"]
+    for i in investor_coc:
+        money_left = (
+            sum(
+                w
+                for w in mortality_experience[f"Excess_Policy_PV_{i}"]
+                * mortality_experience["Amount Exposed"]
+                if w > 0
+            )
+            * sample_representativeness
         )
-        * sample_representativeness
-    )
-    money_left_array.append(money_left)
+        money_left_array.append(money_left)
 
-    print(
-        f"when policyholder rate equals {i}, total money left on the table: {money_left}"
-    )
+        print(
+            f"when policyholder rate equals {i}, total money left on the table: {money_left}"
+        )
+    return money_left_array
+
 
 # https://www.federalreserve.gov/releases/z1/20120607/z1.pdf page 113
 real_estate_nominal = 23523.6 / 1e3
@@ -60,19 +66,26 @@ real_estate_change = (23523.6 - 18874.5) / 1e3
 
 WIDTH = 1
 
-colors = ["blue", "green"]
+colors = ["blue", "green", "royalblue", "red", "yellow"]
 
 
 #%% latest plot
-
+money_left_15_T = get_money_left_arr(untapped_profit_path_15_T)
+money_left_01_T = get_money_left_arr(untapped_profit_path_01_T)
+money_left_15_F = get_money_left_arr(untapped_profit_path_15_F)
+money_left_15_T_mort5 = get_money_left_arr(untapped_profit_path_15_T_mort5)
+#%% latest plot
 heights = [
     real_estate_nominal,
     getMarketSize(year=2020) / 1e12,
     real_estate_change,
-    money_left_array[-1] / 1e12,
+    money_left_15_T[-1] / 1e12,
+    money_left_01_T[-1] / 1e12,
+    money_left_15_F[-1] / 1e12,
+    money_left_15_T_mort5[-1] / 1e12,
 ]
 
-x_pos = [0, WIDTH, 3 * WIDTH, 4 * WIDTH]
+x_pos = [0, WIDTH, 3 * WIDTH, 4 * WIDTH, 4 * WIDTH, 4 * WIDTH,4 * WIDTH]
 
 plt.bar(
     x=x_pos[:2],
@@ -82,12 +95,37 @@ plt.bar(
     edgecolor="k",
 )
 
-
 plt.bar(
-    x=x_pos[2:],
-    height=heights[2:],
+    x=x_pos[2:4],
+    height=heights[2:4],
     width=WIDTH,
     color=colors,
+    edgecolor="k",
+)
+
+plt.bar(
+    x=x_pos[4],
+    height=heights[4],
+    bottom=heights[3],
+    width=WIDTH,
+    color=colors[2],
+    edgecolor="k",
+)
+
+plt.bar(
+    x=x_pos[5],
+    height=heights[5],
+    bottom=heights[3]+heights[4],
+    width=WIDTH,
+    color=colors[3],
+    edgecolor="k",
+)
+plt.bar(
+    x=x_pos[6],
+    height=heights[6],
+    bottom=heights[3]+heights[4]+heights[5],
+    width=WIDTH,
+    color=colors[4],
     edgecolor="k",
 )
 
@@ -109,6 +147,9 @@ plt.xticks(
         "Life insurance face amount",
         "Real estate value lost",
         "Life insurance value to policyholders",
+        "",
+        "",
+        "",
     ],
     rotation=45,
 )
@@ -121,15 +162,15 @@ plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
 plt.show()
 
 #%% money left distribution
+mortality_experience = pd.read_excel(untapped_profit_path_15_T)
+sample_representativeness = (
+    getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
+)
 mortality_experience["money_left"] = (
     mortality_experience["Excess_Policy_PV_yield_curve_none0"]
     * mortality_experience["Amount Exposed"]
     * sample_representativeness
 )
-
-# money_left_grouped = mortality_experience.groupby(["currentage", "isMale"])[
-#     "money_left"
-# ].sum()
 
 
 #%% money left distribution subject to age and sex
@@ -267,3 +308,5 @@ plt.show()
 # plt.ylabel("trillion USD")
 
 # # %%
+
+# %%
