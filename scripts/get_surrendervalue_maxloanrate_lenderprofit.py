@@ -15,7 +15,9 @@ PROFIT_PATH = path.join(DATA_FOLDER, "profits.xlsx")
 PROFIT_PATH_cnt = path.join(DATA_FOLDER,"profits_cnt.xlsx")
 PROFIT_PATH_cnt_false = path.join(DATA_FOLDER,"profits_cnt_false.xlsx")
 PROFIT_PATH_cnt_15_T_mort5 = path.join(DATA_FOLDER,"profits_cnt_15_T_0.5.xlsx")
-
+PROFIT_PATH_cnt_15_T_mort3 = path.join(DATA_FOLDER, "profits_cnt_15_T_0.3.xlsx")
+PROFIT_PATH_cnt_15_T_mort03 = path.join(DATA_FOLDER, "profits_cnt_15_T_0.03.xlsx")
+PROFIT_PATH_cnt_15_T_mort05 = path.join(DATA_FOLDER, "profits_cnt_15_T_0.05.xlsx")
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 #%%
 # return 3 columns:
@@ -47,4 +49,13 @@ profit_columns.to_excel(PROFIT_PATH_cnt_false, index=False)
 # %%
 profit_columns=get_profit_columns(currentVBT="VBT15", lapse_assup=True,currentmort=0.5)
 profit_columns.to_excel(PROFIT_PATH_cnt_15_T_mort5, index=False)
+# %%
+profit_columns = get_profit_columns(currentVBT="VBT15",lapse_assup=True,currentmort=0.3)
+profit_columns.to_excel(PROFIT_PATH_cnt_15_T_mort3,index=False)
+# %%
+profit_columns = get_profit_columns(currentVBT="VBT15",lapse_assup=True,currentmort=0.03)
+profit_columns.to_excel(PROFIT_PATH_cnt_15_T_mort03,index=False)
+# %%
+profit_columns = get_profit_columns(currentVBT="VBT15",lapse_assup=True,currentmort=0.05)
+profit_columns.to_excel(PROFIT_PATH_cnt_15_T_mort05,index=False)
 # %%

@@ -20,9 +20,9 @@ class InsurancePolicy:
     surrender_penalty_rate: float = 0
     cash_interest: float = 0.03
     is_level_premium: Optional[bool] = None
-    premium_stream_at_issue: Union[float, List[float], None] = None
-    statutory_interest: Union[float, List[float]] = 0.035
-    policyholder_rate: Union[float, List[float]] = 0.01  # should be some risk free rate
+    premium_stream_at_issue: Union[float, list[float], None] = None
+    statutory_interest: Union[float, list[float]] = 0.035
+    policyholder_rate: Union[float, list[float]] = 0.01  # should be some risk free rate
 
     def __post_init__(self):
         assert (
@@ -40,7 +40,7 @@ class InsurancePolicy:
         self.premium_stream_at_issue = make_list(premium_stream_at_issue)
 
     # inforce rate starting year 1 (as opposed to year 0)
-    def inforce_rate(self, assume_lapse: bool) -> List[float]:
+    def inforce_rate(self, assume_lapse: bool) -> list[float]:
         inforcerate = [
             1 - x for x in lapse_rate(self.insured.isMale, assume_lapse=assume_lapse)
         ]
@@ -51,7 +51,7 @@ class InsurancePolicy:
         self,
         assume_lapse: bool,
         at_issue: bool = True,
-    ) -> List[float]:
+    ) -> list[float]:
         inforcerate = self.inforce_rate(assume_lapse=assume_lapse)
         if at_issue:
             condSurv = self.insured.mortality_at_issue.conditional_survival_curve
@@ -89,7 +89,7 @@ class InsurancePolicy:
 
     def death_benefit_payment_probability(
         self, assume_lapse: bool, at_issue: bool = True
-    ) -> List[float]:
+    ) -> list[float]:
         persistency = self.persistency_rate(
             assume_lapse=assume_lapse, at_issue=at_issue
         )
@@ -111,8 +111,8 @@ class InsurancePolicy:
         self,
         at_issue: bool = False,
         issuer_perspective: Optional[bool] = None,
-        premium_stream_at_issue: Union[float, List[float], None] = None,
-        discount_rate: Union[float, List[float], None] = None,
+        premium_stream_at_issue: Union[float, list[float], None] = None,
+        discount_rate: Union[float, list[float], None] = None,
     ) -> float:
 
         # investor or issuer does not assume lapse
@@ -157,7 +157,7 @@ class InsurancePolicy:
         self,
         issuer_perspective: Optional[bool] = None,
         at_issue: bool = True,
-        discount_rate: Union[float, List[float], None] = None,
+        discount_rate: Union[float, list[float], None] = None,
     ) -> float:
 
         if discount_rate is None:
@@ -191,10 +191,10 @@ class InsurancePolicy:
 
     def policy_value(
         self,
-        premium_stream_at_issue: Union[float, List[float], None] = None,
+        premium_stream_at_issue: Union[float, list[float], None] = None,
         issuer_perspective: Optional[bool] = None,
         at_issue: bool = True,
-        discount_rate: Union[float, List[float], None] = None,
+        discount_rate: Union[float, list[float], None] = None,
     ):
 
         # if discount_rate is None:
@@ -261,7 +261,7 @@ class InsurancePolicy:
         return sol.root
 
     @property
-    def _variable_premium(self) -> List[float]:
+    def _variable_premium(self) -> list[float]:
         # variable premium shouldn't exceed 1 death benefit per year
         return [
             min(a / b * (1 + self.premium_markup), 1)
