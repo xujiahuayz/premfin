@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
 import brewer2mpl
+
 # import xlrd
 
 from premiumFinance.fetchdata import getMarketSize
@@ -80,13 +81,13 @@ bmap_3 = brewer2mpl.get_map("dark2", "qualitative", 3)
 colors = bmap_3.mpl_colors
 colors_5 = bmap_5.mpl_colors
 colors.extend(colors_5[::-1])
-#%% 
+#%%
 money_left_15_T = get_money_left_arr(untapped_profit_path_15_T)
 money_left_01_T = get_money_left_arr(untapped_profit_path_01_T)
 money_left_15_F = get_money_left_arr(untapped_profit_path_15_F)
-#money_left_15_T_mort5 = get_money_left_arr(untapped_profit_path_15_T_mort5)
-#money_left_15_T_mort3 = get_money_left_arr(untapped_profit_path_15_T_mort3)
-#money_left_15_T_mort03 = get_money_left_arr(untapped_profit_path_15_T_mort03)
+# money_left_15_T_mort5 = get_money_left_arr(untapped_profit_path_15_T_mort5)
+# money_left_15_T_mort3 = get_money_left_arr(untapped_profit_path_15_T_mort3)
+# money_left_15_T_mort03 = get_money_left_arr(untapped_profit_path_15_T_mort03)
 money_left_15_T_mort05 = get_money_left_arr(untapped_profit_path_15_T_mort05)
 #%%
 #%% latest plot
@@ -154,11 +155,9 @@ custom_lines = [
     Line2D([0], [0], color=colors[4], lw=4),
     Line2D([0], [0], color=colors[5], lw=4),
 ]
-plt.legend(
-    custom_lines, ["VBT01 T 1", "VBT15 T 1", "VBT15 F 1"]
-)
+plt.legend(custom_lines, ["VBT01 T 1", "VBT15 T 1", "VBT15 F 1"])
 plt.ylim(0, sum(heights[3:]) * 1.3)
-
+plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
 plt.show()
 
@@ -264,14 +263,15 @@ df["avr"] = df.apply(
     axis=1,
 )
 avr = list(df["avr"].groupby(df["cat"]).sum().iteritems())
-avr = sorted(avr, key=lambda x : int(x[0].split(",")[1][1:-2]))
+avr = sorted(avr, key=lambda x: int(x[0].split(",")[1][1:-2]))
 for i in range(len(avr)):
-    avr[i]=avr[i][1]
+    avr[i] = avr[i][1]
 #%%
 plt.bar(X_label, height=avr, width=0.7, color="royalblue", label="average value")
 for x, y in enumerate(avr):
     plt.text(x, y, "%s" % round(y, 2), ha="center", va="bottom", fontsize=8)
 plt.xticks(rotation=45)
+plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft_pv_bd.pdf"))
 plt.show()
 #%%
