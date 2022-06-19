@@ -137,3 +137,4 @@ data/profitability.json filter=lfs diff=lfs merge=lfs -text
 data/example_policy.xlsx filter=lfs diff=lfs merge=lfs -text
 data/USoilgasIndex.xls filter=lfs diff=lfs merge=lfs -text
 data/irrs.xlsx filter=lfs diff=lfs merge=lfs -text
+data/** filter=lfs diff=lfs merge=lfs -text
