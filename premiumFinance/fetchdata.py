@@ -19,6 +19,19 @@ from premiumFinance import constants
 from premiumFinance.settings import PROJECT_ROOT
 
 
+# need to `pip install openpyxl`
+pers_file = path.join(constants.DATA_FOLDER, "persistency.xlsx")
+# read lapse rates
+lapse_tbl = pd.read_excel(
+    pers_file,
+    sheet_name="Universal Life",
+    index_col=0,
+    skiprows=8,
+    skipfooter=71,
+    usecols="J:K,O",
+)
+
+
 def getVBTdata(
     vbt: str = "VBT15",
     isMale: bool = True,
@@ -55,11 +68,15 @@ def getVBTdata(
     ult_start = issueage + int(sel_mort.index[-1])
 
     if ult_start <= int(ult_mort.index[-1]):
-        curv = sel_mort.append(ult_mort[str(ult_start) :], ignore_index=True)
+        curv = pd.concat([sel_mort, ult_mort[str(ult_start) :]], ignore_index=True)
+        # sel_mort.append(ult_mort[str(ult_start) :], ignore_index=True)
     else:
         curv = sel_mort.reset_index(drop=True)
 
-    mort = pd.Series([0]).append(curv[(currentage - issueage) :], ignore_index=True)
+    mort = pd.concat(
+        [pd.Series([0]), curv[(currentage - issueage) :]], ignore_index=True
+    )
+    # pd.Series([0]).append(curv[(currentage - issueage) :], ignore_index=True)
 
     return mort
 
@@ -126,6 +143,7 @@ def getAnnualYield_linear(
     return f(durange)
 
 
+# amount in dollar
 def getMarketSize(naic_path: str = constants.NAIC_PATH, year: int = 2020) -> float:
     lapse_tbl = pd.read_excel(
         naic_path,

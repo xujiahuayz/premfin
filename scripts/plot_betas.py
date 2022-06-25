@@ -1,5 +1,6 @@
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
 import pandas as pd
+import numpy as np
 from os import path
 import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
@@ -7,6 +8,42 @@ import matplotlib.pyplot as plt
 
 DATE_RANGE = pd.date_range("2011-06-30", "2021-07-01", freq="1D")
 LOG_RETURN_COLUMN = "log_return"
+
+SPGURLROOT = "https://www.spglobal.com/spdji/en/idsexport/file.xls?selectedModule=PerformanceGraphView&yearFlag=tenYearFlag&indexId="
+
+INDEX_DICT = {
+    "filename": [
+        "USTMIIndex",
+        "USconsumerfinanceIndex",
+        "USRealEstateIndex",
+        "USREITIndex",
+        "USoilgasIndex",
+        "USutilityIndex",
+        "UShealthcareIndex",
+        "USinsuranceIndex",
+    ],
+    "indexid": [
+        2762,
+        5458463,
+        91882099,
+        5552915,
+        101116869,
+        100003020,
+        101117012,
+        57092,
+    ],
+    "labelname": [
+        "TMI",
+        "Consumer finance",
+        "Real estate",
+        "REIT",
+        "Oil & gas",
+        "Utility",
+        "Healthcare",
+        "Insurance",
+        "Life settlement index",
+    ],
+}
 
 
 def get_index_log_return(index_file_name: str) -> pd.DataFrame:
@@ -23,9 +60,9 @@ def get_index_log_return(index_file_name: str) -> pd.DataFrame:
 
     index_table_interpolated = index_table.reindex(DATE_RANGE).interpolate()
 
-    index_table_interpolated[LOG_RETURN_COLUMN] = index_table_interpolated.iloc[
-        :, 0
-    ].pct_change()
+    index_table_interpolated[LOG_RETURN_COLUMN] = np.log(
+        1 + index_table_interpolated.iloc[:, 0].pct_change()
+    )
 
     return index_table_interpolated.iloc[1:, :]
 
@@ -51,8 +88,6 @@ def get_coefficients(index_file_name: str) -> pd.Series:
 if __name__ == "__main__":
     # utilities / REIT / Finance / Insurance
 
-    # TODO: update life settlement color
-
     index_betas = pd.Series(
         [
             get_coefficients("USTMIIndex")[1],
@@ -68,6 +103,8 @@ if __name__ == "__main__":
         ]
     )
 
+    print(index_betas)
+
     x_pos = range(len(index_betas))
     barlist = plt.bar(x=x_pos, height=index_betas)
     barlist[-1].set_color("green")
@@ -76,18 +113,7 @@ if __name__ == "__main__":
 
     plt.xticks(
         x_pos,
-        [
-            "TMI",
-            # "Bond",
-            "Consumer finance",
-            "Real estate",
-            "REIT",
-            "Oil & gas",
-            "Utility",
-            "Healthcare",
-            "Insurance",
-            "Life settlement index",
-        ],
+        INDEX_DICT["labelname"],
         rotation=90,
     )
     plt.ylabel("beta")
@@ -95,3 +121,6 @@ if __name__ == "__main__":
     plt.tight_layout()
 
     plt.savefig(path.join(FIGURE_FOLDER, "betas.pdf"))
+
+    #need to download statsmodel.
+    

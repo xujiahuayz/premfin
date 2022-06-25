@@ -14,7 +14,7 @@ from premiumFinance.financing import (
 PROFIT_PATH = path.join(DATA_FOLDER, "profits.xlsx")
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
-#%% calculate policy PV from perspective of policyholder
+#%% calculate policy PV from perspective of policyholder in excess of surrender value
 
 mortality_experience["Excess_Policy_PV_yield_curve"] = (
     mortality_experience.apply(

@@ -31,4 +31,7 @@ mortality_experience_clean = mortality_experience[
     ["issueage", "currentage", "isMale", "isSmoker"]
 ]
 mortality_experience_clean["Amount Exposed"] = mortality_experience["Amount Exposed "]
+mortality_experience_clean["Policies Exposed"] = mortality_experience[
+    "Policies Exposed "
+]
 mortality_experience_clean.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)

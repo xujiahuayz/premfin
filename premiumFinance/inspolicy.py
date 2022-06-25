@@ -5,23 +5,11 @@ from os import path
 import matplotlib.pyplot as plt
 from scipy import optimize
 from typing import List, Optional, Union
+from premiumFinance import insured
 
-from premiumFinance.constants import DATA_FOLDER
+from premiumFinance.fetchdata import lapse_tbl
 from premiumFinance.insured import Insured
-from premiumFinance.util import make_list, cash_flow_pv
-
-
-# need to `pip install openpyxl`
-pers_file = path.join(DATA_FOLDER, "persistency.xlsx")
-# read lapse rates
-lapse_tbl = pd.read_excel(
-    pers_file,
-    sheet_name="Universal Life",
-    index_col=0,
-    skiprows=8,
-    skipfooter=71,
-    usecols="J:K,O",
-)
+from premiumFinance.util import lapse_rate, make_list, cash_flow_pv
 
 
 @dataclass
@@ -51,19 +39,11 @@ class InsurancePolicy:
             premium_stream_at_issue = self._variable_premium
         self.premium_stream_at_issue = make_list(premium_stream_at_issue)
 
-    # lapse rate dependent on gender; lapse == 0 with no lapse assumption
-    def lapse_rate(self, assume_lapse: bool):
-        lapse_rate = pd.Series([0])
-        if assume_lapse:
-            col_ind = 0 if self.insured.isMale else 1
-            lapse_rate = lapse_rate.append(
-                lapse_tbl.iloc[:, col_ind] / 100, ignore_index=True  # type: ignore
-            )
-        return lapse_rate
-
     # inforce rate starting year 1 (as opposed to year 0)
-    def inforce_rate(self, assume_lapse: bool):
-        inforcerate = (1 - self.lapse_rate(assume_lapse=assume_lapse)).to_list()
+    def inforce_rate(self, assume_lapse: bool) -> list[float]:
+        inforcerate = [
+            1 - x for x in lapse_rate(self.insured.isMale, assume_lapse=assume_lapse)
+        ]
         inforcerate = make_list(inforcerate)[1:]
         return inforcerate
 

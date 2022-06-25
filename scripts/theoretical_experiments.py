@@ -20,8 +20,35 @@ policy_A8 = InsurancePolicy(
     premium_markup=0.15,
 )
 
+policy_A8_nolapse = InsurancePolicy(
+    insured=insured_A8,
+    is_level_premium=True,
+    lapse_assumption=False,
+    statutory_interest=0.05,
+    premium_markup=0.15,
+)
+
 policy_A8._level_premium
+# 0.012258309441970858
 7821.8 / 750_000
+
+policy_A8_nolapse._level_premium
+# 0.020767438228614155
+
+policy_A8._variable_premium
+# [0.0,
+#  0.0014175831113703672,
+#  0.0021522114467532067,
+#  0.00280132689213079,
+#  0.0033613377249408056,
+#  0.003873987707520262,
+#  0.004551769450898281,
+
+policy_A8_nolapse._variable_premium
+# [0.0,
+#  0.001324022626019923,
+#  0.0019929477996934696,
+#  0.0026164393172501575,
 
 insrd_benchmark = Insured(
     issue_age=40,
@@ -38,11 +65,11 @@ insPol0 = InsurancePolicy(
     insured=insrd_benchmark,
     is_level_premium=True,
     lapse_assumption=True,
-    policyholder_rate=getAnnualYield(),
-    surrender_penalty_rate=0.1,
-    cash_interest=0.05,
-    premium_markup=0.2,
-    statutory_interest=0.03,
+    # policyholder_rate=getAnnualYield(),
+    # surrender_penalty_rate=0.1,
+    # cash_interest=0.05,
+    # premium_markup=0.2,
+    # statutory_interest=0.03,
 )
 
 insPol0._level_premium
