@@ -1,8 +1,5 @@
 import pandas as pd
 
-# Read a Stata dta file
-df = pd.read_stata("pu2020.dta")
-
 # Read in the primary data file schema to get data-type information for each variable.
 rd_schema = pd.read_json("pu2020_schema.json")
 
@@ -40,7 +37,7 @@ df_data = pd.read_csv(
         [(i, v) for i, v in zip(rd_schema["name"], rd_schema["dtype"])]
     ),  # files are pipe-delimited
     sep="|",
-    header=colmname,
+    header=(),
     usecols=[
         "ssuid",
         "swave",
