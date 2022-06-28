@@ -139,3 +139,5 @@ data/USoilgasIndex.xls filter=lfs diff=lfs merge=lfs -text
 data/irrs.xlsx filter=lfs diff=lfs merge=lfs -text
 data/** filter=lfs diff=lfs merge=lfs -text
 data/Wealth_tables_dy2019.xlsx filter=lfs diff=lfs merge=lfs -text
+data/sub_organize.xlsx filter=lfs diff=lfs merge=lfs -text
+data/eco_value.xlsx filter=lfs diff=lfs merge=lfs -text
