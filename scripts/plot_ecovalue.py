@@ -204,7 +204,7 @@ avr_3 = list(
 # %%
 wealth_tb = pd.DataFrame()
 chunk_reader = pd.read_stata(wealth_path, chunksize=1000)
-for i in range(10):
+for i in range(600):
     chunk = chunk_reader.get_chunk(1000)
     chunk = chunk.loc[
         :, ["TNETWORTH", "WPFINWGT", "TLIFE_FVAL", "ESEX", "TAGE"]
@@ -219,6 +219,7 @@ age_bins = []
 for i, age in enumerate(age_set):
     age_bins.append(int(age[0:2]))
 age_bins = sorted(age_bins)
+#%%
 wealth_tb["Age Band"] = pd.cut(wealth_tb["TAGE"], age_bins).astype(str)
 wealth_tb = wealth_tb[wealth_tb["Age Band"] != "nan"]
 wealth_tb = wealth_tb[wealth_tb["Face Amount Band"] != "nan"]
