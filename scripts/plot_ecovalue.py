@@ -117,8 +117,10 @@ bins = np.array(
     ]
 )
 
+
 def findPV_2(row, avr_dict):
     return avr_dict[key_map[row["Face Amount Band"]]]
+
 
 # %%
 # Add column "Face Amount Band" for wealth_tb, delete row with entry "nan".
@@ -198,6 +200,7 @@ plt.savefig(path.join(FIGURE_FOLDER, "eco_wealth_distr.pdf"))
 plt.show()
 
 #%%
+# Sort in order of the three columns using groupby.
 conditions = list(
     organize_tb.groupby(
         ["Face Amount Band", "Gender", "Attained Age Group"]
@@ -217,6 +220,7 @@ organize_tb["weight_value"] = organize_tb.apply(
     lambda row: row["pv_curve"] * row["weight"],
     axis=1,
 )
+# Sort "weight_value" by the three columns.
 avr_3 = list(
     organize_tb["weight_value"]
     .groupby(
@@ -229,7 +233,9 @@ avr_3 = list(
     .sum()
     .iteritems()
 )
+
 # %%
+# Cut column "TLIFE_FVAL" into bins.
 wealth_tb = pd.DataFrame()
 chunk_reader = pd.read_stata(wealth_path, chunksize=1000)
 for i in range(600):
@@ -239,6 +245,7 @@ for i in range(600):
     ].dropna()
     wealth_tb = wealth_tb.append(chunk)
 wealth_tb["Face Amount Band"] = pd.cut(wealth_tb["TLIFE_FVAL"], bins).astype(str)
+
 # %%
 sub_organize_tb = pd.read_excel(organize_path)
 sub_organize_tb = sub_organize_tb.dropna()
@@ -247,7 +254,10 @@ age_bins = []
 for i, age in enumerate(age_set):
     age_bins.append(int(age[0:2]))
 age_bins = sorted(age_bins)
+
 #%%
+# Drop lines in wealth_tb with value "nan", take the average age to match other tables.
+# Change "ESEX" values to match.
 wealth_tb["Age Band"] = pd.cut(wealth_tb["TAGE"], age_bins).astype(str)
 wealth_tb = wealth_tb[wealth_tb["Age Band"] != "nan"]
 wealth_tb = wealth_tb[wealth_tb["Face Amount Band"] != "nan"]
@@ -256,6 +266,7 @@ wealth_tb["Age Band"] = wealth_tb.apply(
     axis=1,
 )
 wealth_tb["ESEX"] = wealth_tb["ESEX"].replace(1, True).replace(2, False)
+
 #%%
 def findPV_3(row, avr_dict_3):
     key = (
@@ -305,6 +316,7 @@ avr_4 = list(
     wealth_tb["weight_value"].groupby(wealth_tb["Net Worth Band"]).sum().iteritems()
 )
 avr_4.sort(key=lambda x: -x[1])
+
 #%%
 X = np.array(avr_4)[:, 0]
 heights = np.array(avr_4)[:, 1].astype(float)
@@ -315,3 +327,14 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "eco_wealth_gender_age_distr_.pdf"))
 plt.show()
+
+#%%
+# Save wealth_tb to data (processed data)
+wealth_tb.to_csv("../data/Wealth_table.csv")
+
+#%%
+# Net worth percentage
+worth_percentagee = wealth_tb[["Net Worth Band", "TNETWORTH"]]
+worth_percentagee.groupby(["Net Worth Band"]).sum().reset_index()
+
+# %%
