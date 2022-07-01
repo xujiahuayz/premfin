@@ -315,7 +315,7 @@ wealth_tb["weight_value"] = wealth_tb["weight"] * wealth_tb["eco_value"]
 avr_4 = list(
     wealth_tb["weight_value"].groupby(wealth_tb["Net Worth Band"]).sum().iteritems()
 )
-avr_4.sort(key=lambda x: -x[1])
+# avr_4.sort(key=lambda x: -x[1])
 
 #%%
 X = np.array(avr_4)[:, 0]
@@ -347,7 +347,17 @@ wealth_1["percent"] = (wealth_1["count"] / wealth_1["count"].sum()) * 100
 #%%
 # Create list.
 avr_5 = list(wealth_1["percent"].groupby(wealth_1["Net Worth Band"]).sum().iteritems())
-avr_5.sort(key=lambda x: x[1])
+avr_5 = [
+    ("(1.0, 4999.0]", 6.746519909355779),
+    ("(4999.0, 9999.0]", 3.3538361929426994),
+    ("(9999.0, 24999.0]", 7.3357073486565225),
+    ("(24999.0, 49999.0]", 8.779540304305602),
+    ("(49999.0, 99999.0]", 13.797345419229522),
+    ("(99999.0, 249999.0]", 22.73227581741664),
+    ("(249999.0, 499999.0]", 15.44836516672062),
+    ("(499999.0, 10000000000.0]", 21.806409841372613),
+]
+
 
 #%%
 # Plot
@@ -360,5 +370,3 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "net_worth_percentage_by_band.pdf"))
 plt.show()
-
-# %%
