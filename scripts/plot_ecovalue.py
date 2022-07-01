@@ -340,16 +340,14 @@ wealth_tb = pd.read_csv(alt_wealth_path)
 #%%
 # Net worth band sum.
 worth_per = wealth_tb[["Net Worth Band", "TNETWORTH"]]
-worth_per = worth_per.groupby(["Net Worth Band"]).sum().reset_index()
+wealth_1 = worth_per.groupby(["Net Worth Band"]).size().reset_index(name="count")
 # Calculate percentage and add column.
-worth_per["percent"] = (worth_per["TNETWORTH"] / worth_per["TNETWORTH"].sum()) * 100
+wealth_1["percent"] = (wealth_1["count"] / wealth_1["count"].sum()) * 100
 
 #%%
 # Create list.
-avr_5 = list(
-    worth_per["percent"].groupby(worth_per["Net Worth Band"]).sum().iteritems()
-)
-avr_5.sort(key=lambda x: -x[1])
+avr_5 = list(wealth_1["percent"].groupby(wealth_1["Net Worth Band"]).sum().iteritems())
+avr_5.sort(key=lambda x: x[1])
 
 #%%
 # Plot
@@ -362,3 +360,5 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "net_worth_percentage_by_band.pdf"))
 plt.show()
+
+# %%
