@@ -20,9 +20,9 @@ class InsurancePolicy:
     surrender_penalty_rate: float = 0
     cash_interest: float = 0.03
     is_level_premium: Optional[bool] = None
-    premium_stream_at_issue: Union[float, List[float], None] = None
-    statutory_interest: Union[float, List[float]] = 0.035
-    policyholder_rate: Union[float, List[float]] = 0.01  # should be some risk free rate
+    premium_stream_at_issue: Union[float, list[float], None] = None
+    statutory_interest: Union[float, list[float]] = 0.035
+    policyholder_rate: Union[float, list[float]] = 0.01  # should be some risk free rate
 
     def __post_init__(self):
         assert (
@@ -111,8 +111,8 @@ class InsurancePolicy:
         self,
         at_issue: bool = False,
         issuer_perspective: Optional[bool] = None,
-        premium_stream_at_issue: Union[float, List[float], None] = None,
-        discount_rate: Union[float, List[float], None] = None,
+        premium_stream_at_issue: Union[float, list[float], None] = None,
+        discount_rate: Union[float, list[float], None] = None,
     ) -> float:
 
         # investor or issuer does not assume lapse
@@ -157,7 +157,7 @@ class InsurancePolicy:
         self,
         issuer_perspective: Optional[bool] = None,
         at_issue: bool = True,
-        discount_rate: Union[float, List[float], None] = None,
+        discount_rate: Union[float, list[float], None] = None,
     ) -> float:
 
         if discount_rate is None:
@@ -191,10 +191,10 @@ class InsurancePolicy:
 
     def policy_value(
         self,
-        premium_stream_at_issue: Union[float, List[float], None] = None,
+        premium_stream_at_issue: Union[float, list[float], None] = None,
         issuer_perspective: Optional[bool] = None,
         at_issue: bool = True,
-        discount_rate: Union[float, List[float], None] = None,
+        discount_rate: Union[float, list[float], None] = None,
     ):
 
         # if discount_rate is None:

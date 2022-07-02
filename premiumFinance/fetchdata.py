@@ -1,3 +1,4 @@
+#%%
 import requests
 import csv
 from os import path
@@ -17,6 +18,19 @@ import matplotlib.pyplot as plt
 from typing import Optional
 from premiumFinance import constants
 from premiumFinance.settings import PROJECT_ROOT
+
+#%%
+# need to `pip install openpyxl`
+pers_file = path.join(constants.DATA_FOLDER, "persistency.xlsx")
+# read lapse rates
+lapse_tbl = pd.read_excel(
+    pers_file,
+    sheet_name="Universal Life",
+    index_col=0,
+    skiprows=8,
+    skipfooter=71,
+    usecols="J:K,O",
+)
 
 
 # need to `pip install openpyxl`
@@ -114,9 +128,32 @@ def getYieldData(
     return pd.DataFrame(yieldTable)
 
 
+def getYieldData_cdt(
+    rooturl: str = constants.YIELD_URL_cdt,
+    date: str = "05",
+    month: str = "02",
+    year: str = "2021",
+):
+    r_yield = requests.get(rooturl)
+    content = r_yield.content.decode("utf-8")
+    root = ET.fromstring(content)
+    yieldTable = [{"duration": 0, "rate": 0}]
+    entry = "{http://www.w3.org/2005/Atom}entry"
+    dat = year+"-"+month+"-"+date+"T00:00:00"
+    entry_set = root.findall(entry)
+    for rate in entry_set:
+        if rate[6][0][1].text == dat:
+            root = rate
+    yieldTable.extend(
+        {"duration": constants.YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
+        for w in root[6][0][2:-1]
+    )
+    return pd.DataFrame(yieldTable[1:])
+
+
 def getAnnualYield(yieldTable=None, durange=range(150)):
     if yieldTable is None:
-        yieldTable = getYieldData()
+        yieldTable = getYieldData_cdt()
     curve, status = calibrate_ns_ols(
         np.array(yieldTable["duration"]), np.array(yieldTable["rate"]), tau0=1.0
     )  # starting value of 1.0 for the optimization of tau
@@ -217,3 +254,5 @@ def getMortData(url: str = constants.MORT_URL):
 # durange = range(40)
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="linear"))
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="quadratic"))
+
+# %%
