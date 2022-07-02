@@ -345,7 +345,7 @@ wealth_1 = worth_per.groupby(["Net Worth Band"]).size().reset_index(name="count"
 wealth_1["percent"] = (wealth_1["count"] / wealth_1["count"].sum()) * 100
 
 #%%
-# Create list.
+# Create list and sort.
 avr_5 = list(wealth_1["percent"].groupby(wealth_1["Net Worth Band"]).sum().iteritems())
 avr_5 = [
     ("(1.0, 4999.0]", 6.746519909355779),
@@ -357,8 +357,6 @@ avr_5 = [
     ("(249999.0, 499999.0]", 15.44836516672062),
     ("(499999.0, 10000000000.0]", 21.806409841372613),
 ]
-
-
 #%%
 # Plot
 X = np.array(avr_5)[:, 0]
