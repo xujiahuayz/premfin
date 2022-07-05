@@ -10,9 +10,11 @@ from os import path
 import matplotlib.pyplot as plt
 from itertools import product
 
-#untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
+
+# untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt.xlsx")
 mortality_experience = pd.read_excel(untapped_profit_path)
+
 mortality_experience["lapse_rate"] = mortality_experience.apply(
     lambda row: lapse_rate(isMale=row["isMale"])[row["currentage"] - row["issueage"]],
     axis=1,

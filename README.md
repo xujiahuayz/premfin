@@ -76,6 +76,7 @@ To pull data files, use
 ```
 git lfs pull
 ```
+(Could run first if error show when running)
 
 ## Run scripts
 

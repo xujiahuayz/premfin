@@ -7,8 +7,9 @@ import pandas as pd
 from os import path
 import matplotlib.pyplot as plt
 import numpy as np
+
 #%%
-#untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
+# untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt.xlsx")
 mortality_experience = pd.read_excel(untapped_profit_path)
 

@@ -8,6 +8,8 @@ import brewer2mpl
 
 # import xlrd
 
+# import xlrd
+
 from premiumFinance.fetchdata import getMarketSize
 from premiumFinance.constants import (
     DATA_FOLDER,
@@ -160,6 +162,7 @@ plt.ylim(0, sum(heights[3:]) * 1.3)
 plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
 plt.show()
+
 
 #%% money left distribution
 mortality_experience = pd.read_excel(untapped_profit_path_15_T)

@@ -121,3 +121,6 @@ if __name__ == "__main__":
     plt.tight_layout()
 
     plt.savefig(path.join(FIGURE_FOLDER, "betas.pdf"))
+
+    #need to download statsmodel.
+    
