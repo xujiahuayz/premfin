@@ -7,6 +7,7 @@ PERSIST_URL = "https://www.soa.org/globalassets/assets/files/resources/research-
 
 MORT_URL = "http://cdn-files.soa.org/research/2009-15_Data_20180601.zip"
 YIELD_URL = "https://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData"
+YIELD_URL_cdt = "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2021"
 DATA_FOLDER = path.join(PROJECT_ROOT, "data")
 FIGURE_FOLDER = path.join(PROJECT_ROOT, "figures")
 

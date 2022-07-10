@@ -1,3 +1,4 @@
+#%%
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
 from premiumFinance.fetchdata import getMarketSize
 from premiumFinance.util import lapse_rate
@@ -7,8 +8,9 @@ from os import path
 import matplotlib.pyplot as plt
 import numpy as np
 
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
-
+#%%
+# untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
+untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt.xlsx")
 mortality_experience = pd.read_excel(untapped_profit_path)
 
 mortality_experience["lapse_rate"] = mortality_experience.apply(
@@ -51,7 +53,7 @@ WEALTHTRANSFER_PROGRAMS_DICT = {
     ],
 }
 
-
+#%%
 if __name__ == "__main__":
 
     x_pos = range(len(WEALTHTRANSFER_PROGRAMS_DICT["labelname"]))
@@ -145,3 +147,5 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig(path.join(FIGURE_FOLDER, "lap_bd.pdf"))
     plt.show()
+
+# %%
