@@ -12,7 +12,6 @@ from premiumFinance.constants import (
 organize_path = path.join(DATA_FOLDER, "sub_organize.xlsx")
 profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 wealth_path = path.join(DATA_FOLDER, "pu2020.dta")
-
 #%%
 def transCon(row):
     if len(row["Issue Age Group"]) < 4:
