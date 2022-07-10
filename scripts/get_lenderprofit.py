@@ -84,3 +84,5 @@ if __name__ == "__main__":
     }
     with open(PROCESSED_PROFITABILITY_PATH, "w") as outfile:
         json.dump(lender_profitability, outfile)
+
+# %%
