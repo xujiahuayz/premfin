@@ -83,7 +83,7 @@ mortality_experience.to_excel(untapped_profit_path, index=False)
 mortality_experience = get_untappedprofit(PROFIT_PATH_cnt_15_T_mort03, mortality_experience, currentVBT="VBT15",lapse_assup=True,currentmort=0.03)
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt_15_T_mort03.xlsx")
 mortality_experience.to_excel(untapped_profit_path, index=False)
-# %% currentVBT set to "VBT15", mort_rate = 0.03
+# %% currentVBT set to "VBT15", mort_rate = 0.05
 mortality_experience = get_untappedprofit(PROFIT_PATH_cnt_15_T_mort05, mortality_experience, currentVBT="VBT15",lapse_assup=True,currentmort=0.03)
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt_15_T_mort05.xlsx")
 mortality_experience.to_excel(untapped_profit_path, index=False)

@@ -101,13 +101,15 @@ get surrender value, max loan rate acceptable by policyholder, lender profit at 
 python get_surrendervalue_maxloanrate_lenderprofit.py
 ```
 
-get untapped profit from the perspective of policyholder when their cost of capital is at various levels:
+get different untapped profit based on different VBT tables and mortality rates from the perspective of policyholder when their cost of capital is at various levels:
 
 ```zsh
 python get_untappedprofit_policyholder.py
 ```
 
-plot money left on the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:
+1. plot money left based on different VBT on the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:
+2. plot distribution of life insurance value to policyhodlers on gender and age:
+3. plot avearge value to policy holders of different face value amount:
 
 ```zsh
 python plot_moneyleft.py
@@ -119,13 +121,32 @@ get untapped profit from the perspective of lender when their cost of capital is
 python get_lenderprofit.py
 ```
 
-get median value loss from common household mistakes
+1. get median value loss from common household mistakes
+2. And its distribution on age and gender:
 
 ```zsh
 python get_median.py
 ```
 
----
+plot value to policy holders of different net worth band:
+
+```zsh
+python plot_wealth_distr.py
+```
+
+1. plot economic value to policy holders of different net worth based on Face Amount Band:
+2. plot economic value to policy holders of different net worth based on Face Amount Band, Attainedage and Gender:
+
+```zsh
+python plot_ecovalue.py
+```
+
+1. plot lapsed life inusrance economic value and Food stamp, Medicare and Medicaid.
+2. Break down the life insurance economic value and see its distribution on gender and age
+
+```zsh
+python plot_wealthtransferprogram.py
+```
 
 ## Synchronize with the repo
 
