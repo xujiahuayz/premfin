@@ -308,3 +308,12 @@ plt.tight_layout()
 plt.savefig(path.join(FIGURE_FOLDER, "networth_distri.pdf"))
 plt.show() 
 # %%
+wealth_tb = pd.DataFrame()
+chunk_reader = pd.read_stata(wealth_path, chunksize=1000)
+for i in range(600):
+    chunk = chunk_reader.get_chunk(1000)
+    chunk = chunk.loc[
+        :, ["TNETWORTH"]
+    ].dropna()
+    wealth_tb = wealth_tb.append(chunk)
+# %%
