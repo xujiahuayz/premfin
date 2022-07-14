@@ -33,6 +33,19 @@ lapse_tbl = pd.read_excel(
 )
 
 
+# need to `pip install openpyxl`
+pers_file = path.join(constants.DATA_FOLDER, "persistency.xlsx")
+# read lapse rates
+lapse_tbl = pd.read_excel(
+    pers_file,
+    sheet_name="Universal Life",
+    index_col=0,
+    skiprows=8,
+    skipfooter=71,
+    usecols="J:K,O",
+)
+
+
 def getVBTdata(
     vbt: str = "VBT15",
     isMale: bool = True,
