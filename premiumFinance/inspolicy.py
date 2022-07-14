@@ -85,7 +85,7 @@ class InsurancePolicy:
             self.insured.issue_age if atIssue else self.insured.current_age
         )
         plt.plot(ageaxis, pers, label="Persistency rate")
-        mort.plotSurvCurv()
+        mort.plot_surv_curv()
 
     def death_benefit_payment_probability(
         self, assume_lapse: bool, at_issue: bool = True

@@ -25,23 +25,23 @@ class Insured:
     @property
     def mortality_at_issue(self):
         im = Mortality(
-            issueage=self.issue_age,
-            currentage=self.issue_age,  # currentage = issueage at policy issuance
-            isMale=self.isMale,
-            isSmoker=self.isSmoker,
-            mortrate=self.issuemort,
-            whichVBT=self.issueVBT,
+            issue_age=self.issue_age,
+            current_age=self.issue_age,  # currentage = issueage at policy issuance
+            is_male=self.isMale,
+            is_smoker=self.isSmoker,
+            mort_rate=self.issuemort,
+            which_vbt=self.issueVBT,
         )
         return im
 
     @property
     def mortality_now(self):
         cm = Mortality(
-            issueage=self.issue_age,
-            currentage=self.current_age,
-            isMale=self.isMale,
-            isSmoker=self.isSmoker,
-            mortrate=self.currentmort,
-            whichVBT=self.currentVBT,
+            issue_age=self.issue_age,
+            current_age=self.current_age,
+            is_male=self.isMale,
+            is_smoker=self.isSmoker,
+            mort_rate=self.currentmort,
+            which_vbt=self.currentVBT,
         )
         return cm

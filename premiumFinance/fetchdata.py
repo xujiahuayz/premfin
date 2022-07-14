@@ -46,16 +46,16 @@ lapse_tbl = pd.read_excel(
 )
 
 
-def getVBTdata(
+def get_vbt_data(
     vbt: str = "VBT15",
-    isMale: bool = True,
-    isSmoker: Optional[bool] = False,
-    issueage: int = 50,
-    currentage: Optional[int] = 70,
+    is_male: bool = True,
+    is_smoker: Optional[bool] = False,
+    issue_age: float = 50,
+    current_age: Optional[float] = 70,
 ) -> pd.Series:
 
-    tbl_index = constants.VBT_TABLES[vbt]["m" if isMale else "f"][
-        "unism" if isSmoker is None else "smoke" if isSmoker else "nonsm"
+    tbl_index = constants.VBT_TABLES[vbt]["m" if is_male else "f"][
+        "unism" if is_smoker is None else "smoke" if is_smoker else "nonsm"
     ]
 
     tbl_file = path.join(
@@ -73,13 +73,13 @@ def getVBTdata(
         pd.Series(
             {
                 m.get("t"): m.text
-                for m in sel[issueage - start_age].find("Axis").findall("Y")
+                for m in sel[issue_age - start_age].find("Axis").findall("Y")
             }
         )
         .dropna()
         .astype(float)
     )
-    ult_start = issueage + int(sel_mort.index[-1])
+    ult_start = issue_age + int(sel_mort.index[-1])
 
     if ult_start <= int(ult_mort.index[-1]):
         curv = pd.concat([sel_mort, ult_mort[str(ult_start) :]], ignore_index=True)
@@ -88,7 +88,7 @@ def getVBTdata(
         curv = sel_mort.reset_index(drop=True)
 
     mort = pd.concat(
-        [pd.Series([0]), curv[(currentage - issueage) :]], ignore_index=True
+        [pd.Series([0]), curv[(current_age - issue_age) :]], ignore_index=True
     )
     # pd.Series([0]).append(curv[(currentage - issueage) :], ignore_index=True)
 
@@ -96,14 +96,14 @@ def getVBTdata(
 
 
 # retrieve SOA data
-def getSOAdata(url: str, filename: str):
+def get_soa_data(url: str, filename: str):
     request_result = requests.get(url)
     vbt_path = path.join(PROJECT_ROOT, constants.DATA_FOLDER, filename + ".xlsx")
     with open(vbt_path, "wb") as f:
         f.write(request_result.content)
 
 
-def getYieldData(
+def get_yield_data(
     rooturl: str = constants.YIELD_URL,
     entryindex: int = 7782,
     month: int = 2,
@@ -118,14 +118,14 @@ def getYieldData(
     r_yield = requests.get(url)
     content = r_yield.content.decode("utf-8")
     root = ET.fromstring(content)
-    yieldTable = [{"duration": 0, "rate": 0}]
+    yield_table = [{"duration": 0, "rate": 0}]
 
-    yieldTable.extend(
+    yield_table.extend(
         {"duration": constants.YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
         for w in root[6][0][2:-1]
     )
 
-    return pd.DataFrame(yieldTable)
+    return pd.DataFrame(yield_table)
 
 
 def getYieldData_cdt(
@@ -139,7 +139,7 @@ def getYieldData_cdt(
     root = ET.fromstring(content)
     yieldTable = [{"duration": 0, "rate": 0}]
     entry = "{http://www.w3.org/2005/Atom}entry"
-    dat = year+"-"+month+"-"+date+"T00:00:00"
+    dat = year + "-" + month + "-" + date + "T00:00:00"
     entry_set = root.findall(entry)
     for rate in entry_set:
         if rate[6][0][1].text == dat:
@@ -165,11 +165,11 @@ def getAnnualYield(yieldTable=None, durange=range(150)):
 # or ‘next’. ‘zero’, ‘slinear’, ‘quadratic’ and ‘cubic’ refer to a spline interpolation of zeroth, first, second or third order;
 # ‘previous’ and ‘next’ simply return the previous or next value of the point;
 # ‘nearest-up’ and ‘nearest’ differ when interpolating half-integers (e.g. 0.5, 1.5) in that ‘nearest-up’ rounds up and ‘nearest’ rounds down.
-def getAnnualYield_linear(
+def get_annual_yield_linear(
     yieldTable=None, durange=range(150), intertype: str = "linear"
 ):
     if yieldTable is None:
-        yieldTable = getYieldData()
+        yieldTable = get_yield_data()
     f = interp1d(
         yieldTable["duration"],
         yieldTable["rate"],
@@ -196,7 +196,7 @@ def getMarketSize(naic_path: str = constants.NAIC_PATH, year: int = 2020) -> flo
 
 
 # retrieve the huge mortality data set from the SOA
-def getMortData(url: str = constants.MORT_URL):
+def get_mort_data(url: str = constants.MORT_URL):
     r_mort = requests.get(url)
 
     zip_ref = ZipFile(BytesIO(r_mort.content))
@@ -254,5 +254,3 @@ def getMortData(url: str = constants.MORT_URL):
 # durange = range(40)
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="linear"))
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="quadratic"))
-
-# %%
