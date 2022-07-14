@@ -49,10 +49,13 @@ lapse_tbl = pd.read_excel(
 def get_vbt_data(
     vbt: str = "VBT15",
     is_male: bool = True,
-    is_smoker: Optional[bool] = False,
+    is_smoker: Optional[bool] = None,
     issue_age: float = 50,
-    current_age: Optional[float] = 70,
+    current_age: float = 70,
 ) -> pd.Series:
+    """
+    get 1-year conditional mortality rates from VBT
+    """
 
     tbl_index = constants.VBT_TABLES[vbt]["m" if is_male else "f"][
         "unism" if is_smoker is None else "smoke" if is_smoker else "nonsm"
