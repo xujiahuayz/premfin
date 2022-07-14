@@ -9,7 +9,7 @@ from premiumFinance.util import make_list
 
 
 insured_A8 = Insured(
-    issue_age=54, isMale=True, isSmoker=False, current_age=None, issueVBT="VBT01"
+    issue_age=54, is_male=True, is_smoker=False, current_age=None, issue_vbt="VBT01"
 )
 
 policy_A8 = InsurancePolicy(
@@ -52,13 +52,13 @@ policy_A8_nolapse._variable_premium
 
 insrd_benchmark = Insured(
     issue_age=40,
-    isMale=True,
-    isSmoker=False,
+    is_male=True,
+    is_smoker=False,
     current_age=70,
     issuemort=1.0,
-    currentmort=1.0,
-    issueVBT="VBT01",
-    currentVBT="VBT15",
+    current_mort=1.0,
+    issue_vbt="VBT01",
+    current_vbt="VBT15",
 )
 
 insPol0 = InsurancePolicy(
@@ -93,7 +93,7 @@ for sr in statutory_rate_rage:
         pr = financing0.policy._level_premium
         bkv_r_mortlevel = list()
         for mort in current_mort_range:
-            insrd_benchmark.currentmort = mort
+            insrd_benchmark.current_mort = mort
             bkv_r_currentagelevel = list()
             for age in current_age_range:
                 insrd_benchmark.current_age = age
@@ -118,7 +118,7 @@ for k, v in enumerate(bkv_r_statratelevel):
         plt.ylabel("Breakeven loan rate p.a.")
         plt.title(
             f"""
-            At issue: {insrd_benchmark.issue_age}-year-old, {'' if insrd_benchmark.isSmoker else 'non-'}smoking, {insrd_benchmark.mortality_at_issue.gender}, mortality factor: {insrd_benchmark.issuemort}
+            At issue: {insrd_benchmark.issue_age}-year-old, {'' if insrd_benchmark.is_smoker else 'non-'}smoking, {insrd_benchmark.mortality_at_issue.gender}, mortality factor: {insrd_benchmark.issuemort}
             """
             f"""
             Lapse-based pricing: {lapse_range[j]}, statutory interest rate: {statutory_rate_rage[k]}, premium rate: {round(pr_statratelevel[k][j],4)}

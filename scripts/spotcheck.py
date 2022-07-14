@@ -6,13 +6,13 @@ from premiumFinance.inspolicy import InsurancePolicy
 def spot_check_premium(gender: bool, age: int):
     insrd_benchmark = Insured(
         issue_age=age,
-        isMale=gender,
-        isSmoker=False,
+        is_male=gender,
+        is_smoker=False,
         current_age=age,
         issuemort=1.0,
-        currentmort=1.0,
-        issueVBT="VBT01",
-        currentVBT="VBT15",
+        current_mort=1.0,
+        issue_vbt="VBT01",
+        current_vbt="VBT15",
     )
 
     insPol = InsurancePolicy(

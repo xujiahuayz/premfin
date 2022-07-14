@@ -27,11 +27,26 @@ mortality_experience["isSmoker"] = mortality_experience["Smoker Status"].map(
     lambda x: {"NonSmoker": False, "Smoker": True, "Unknown": None}[x]
 )
 
+mortality_experience.rename(
+    columns={
+        "Amount Exposed ": "Amount Exposed",
+        "Policies Exposed ": "Policies Exposed",
+    },
+    inplace=True,
+)
+
 mortality_experience_clean = mortality_experience[
-    ["issueage", "currentage", "isMale", "isSmoker"]
+    [
+        "issueage",
+        "currentage",
+        "isMale",
+        "isSmoker",
+        "Amount Exposed",
+        "Policies Exposed",
+    ]
 ]
-mortality_experience_clean["Amount Exposed"] = mortality_experience["Amount Exposed "]
-mortality_experience_clean["Policies Exposed"] = mortality_experience[
-    "Policies Exposed "
-]
+# mortality_experience_clean["Amount Exposed"] = mortality_experience["Amount Exposed "]
+# mortality_experience_clean["Policies Exposed"] = mortality_experience[
+#     "Policies Exposed "
+# ]
 mortality_experience_clean.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)

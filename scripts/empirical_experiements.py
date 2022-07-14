@@ -57,11 +57,11 @@ dollar_amount_untapped = (
 row = mortality_experience.iloc[23]
 this_insured = Insured(
     issue_age=row["issueage"],  # type: ignore
-    isMale=row["isMale"],  # type: ignore
-    isSmoker=row["isSmoker"],  # type: ignore
+    is_male=row["isMale"],  # type: ignore
+    is_smoker=row["isSmoker"],  # type: ignore
     current_age=row["currentage"],  # type: ignore
-    issueVBT="VBT01",
-    currentVBT="VBT15",
+    issue_vbt="VBT01",
+    current_vbt="VBT15",
 )
 this_policy = InsurancePolicy(
     insured=this_insured,
