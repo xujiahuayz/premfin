@@ -218,7 +218,7 @@ yield_curve = getAnnualYield()
 
 def calculate_lender_profit(
     row,
-    currentVBT,
+    currentVBT="VBT15",
     currentmort=1.0,
     is_level_premium=True,
     lapse_assumption=True,

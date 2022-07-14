@@ -16,7 +16,6 @@ from premiumFinance.constants import (
 organize_path = path.join(DATA_FOLDER, "sub_organize.xlsx")
 profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 wealth_path = path.join(DATA_FOLDER, "pu2020.dta")
-
 #%%
 <<<<<<< HEAD
 =======
@@ -413,6 +412,38 @@ plt.savefig(path.join(FIGURE_FOLDER, "eco_wealth_gender_age_distr_.pdf"))
 plt.show()
 
 <<<<<<< HEAD
+# %% Distribution of count of net worth
+eco_value_path = path.join(DATA_FOLDER,"eco_value.xlsx")
+eco_value = pd.read_excel(eco_value_path)
+count_arr = eco_value.groupby("Net Worth Band").count()
+count_label = list(count_arr.index)
+key_map_4=dict()
+values = count_arr['TNETWORTH'].values
+for i in range(len(count_label)):
+    key_map_4[count_label[i]] = values[i]
+heights = []
+for key in keys:
+    heights.append(key_map_4[key])
+# %%
+plt.bar(x=keys, height=heights, width=0.7, color="royalblue", label="value")
+for x, y in enumerate(heights):
+    plt.text(x, y, "%s" % round(y, 2), ha="center", va="bottom", fontsize=8)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig(path.join(FIGURE_FOLDER, "networth_distri.pdf"))
+plt.show() 
+# %%
+wealth_tb = pd.DataFrame()
+chunk_reader = pd.read_stata(wealth_path, chunksize=1000)
+for i in range(600):
+    chunk = chunk_reader.get_chunk(1000)
+    chunk = chunk.loc[
+        :, ["TNETWORTH"]
+    ].dropna()
+    wealth_tb = wealth_tb.append(chunk)
+=======
+<<<<<<< HEAD
+>>>>>>> main
 # %%
 =======
 #%%
