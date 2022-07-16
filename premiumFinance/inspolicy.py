@@ -1,15 +1,14 @@
 from dataclasses import dataclass
-import pandas as pd
+import logging
 import numpy as np
-from os import path
 import matplotlib.pyplot as plt
 from scipy import optimize
-from typing import List, Optional, Union
-from premiumFinance import insured
+from typing import Optional, Union
 
-from premiumFinance.fetchdata import lapse_tbl
 from premiumFinance.insured import Insured
 from premiumFinance.util import lapse_rate, make_list, cash_flow_pv
+
+import logging
 
 
 @dataclass
@@ -66,7 +65,12 @@ class InsurancePolicy:
         persistency_rate = []
         i = 0
         for i, w in enumerate(condSurv):
-            persistency_rate.append(w * inforcerate[i])
+            # if out of bound, just use the previous ir
+            try:
+                ir = inforcerate[i]
+            except IndexError:
+                pass
+            persistency_rate.append(w * ir)
         return persistency_rate
 
     def persistency_rate(self, assume_lapse: bool, at_issue: bool = True):
@@ -141,6 +145,8 @@ class InsurancePolicy:
         )
         unpaid_premium = premium_stream_at_issue[starting_period:]
 
+        # print(f"Pr discount {discount_rate}")
+
         return cash_flow_pv(
             cashflow=unpaid_premium, probabilities=pers, discounters=discount_rate
         )
@@ -176,6 +182,8 @@ class InsurancePolicy:
             else False,  # insureds / lenders do not assume lapse
             at_issue=at_issue,
         )
+
+        # print(f"DB discount {discount_rate}")
 
         return cash_flow_pv(
             cashflow=1, probabilities=one_period_mortality, discounters=discount_rate
@@ -222,9 +230,9 @@ class InsurancePolicy:
             at_issue=at_issue,
             discount_rate=discount_rate,
         )
-        surplus = PVpr - PVdb
-        return surplus
+        return PVpr - PVdb
         # if issuer_perspective else -surplus
+        # make sure to add "-" if policyholder perspective
 
     @property
     def _level_premium(self, newPolicy: bool = False) -> float:

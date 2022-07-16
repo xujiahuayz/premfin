@@ -1,10 +1,8 @@
 #%% import packages
-import imp
 import pandas as pd
 
 from premiumFinance.constants import (
     MORTALITY_TABLE_CLEANED_PATH,
-    UNTAPPED_PROFIT_PATH,
 )
 from premiumFinance.financing import PolicyFinancingScheme, yield_curve
 from premiumFinance.inspolicy import InsurancePolicy
@@ -14,7 +12,10 @@ from scipy import optimize
 
 
 def policyholder_policy_value(
-    row: pd.Series,
+    issue_age: float,
+    is_male: bool,
+    is_smoker: bool,
+    current_age: float,
     current_vbt: str = "VBT15",
     current_mort: float = 1.0,
     is_level_premium=True,
@@ -31,10 +32,10 @@ def policyholder_policy_value(
     calculate policy economic value in excess of its surrender value
     """
     this_insured = Insured(
-        issue_age=row["issueage"],  # type: ignore
-        is_male=row["isMale"],  # type: ignore
-        is_smoker=row["isSmoker"],  # type: ignore
-        current_age=row["currentage"],  # type: ignore
+        issue_age=issue_age,
+        is_male=is_male,
+        is_smoker=is_smoker,
+        current_age=current_age,
         issue_vbt="VBT01",
         current_vbt=current_vbt,
         current_mort=current_mort,
@@ -59,10 +60,23 @@ def policyholder_policy_value(
     )
 
 
-def find_breakeven_mortality(row: pd.Series):
+def find_breakeven_mortality(
+    issue_age: float,
+    is_male: bool,
+    is_smoker: bool,
+    current_age: float,
+    current_vbt: str = "VBT15",
+):
     result = optimize.root_scalar(
-        lambda r: policyholder_policy_value(row=row, current_mort=r),
-        bracket=[0.3, 1.9],
+        lambda r: policyholder_policy_value(
+            issue_age=issue_age,
+            is_male=is_male,
+            is_smoker=is_smoker,
+            current_age=current_age,
+            current_vbt=current_vbt,
+            current_mort=r,
+        ),
+        bracket=[0.02, 1.9],
         method="brentq",
     )
     return result.root
@@ -88,7 +102,10 @@ def generate_pv_column(
         print(col_name + " doesn't exist")
     mortality_experience[col_name] = mortality_experience.apply(
         lambda row: policyholder_policy_value(
-            row=row,
+            issue_age=row["issueage"],
+            is_male=row["isMale"],
+            is_smoker=row["isSmoker"],
+            current_age=row["currentage"],
             current_vbt=current_vbt,
             policyholder_rate=yield_curve,
             lapse_assumption=lapse_assumption,
@@ -106,4 +123,4 @@ generate_pv_column(current_vbt="VBT15", lapse_assumption=False, current_mort=1)
 generate_pv_column(current_vbt="VBT15", lapse_assumption=True, current_mort=0.5)
 
 
-mortality_experience.to_excel(UNTAPPED_PROFIT_PATH, index=False)
+mortality_experience.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)

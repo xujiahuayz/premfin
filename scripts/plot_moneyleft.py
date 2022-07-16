@@ -10,12 +10,12 @@ import brewer2mpl
 from premiumFinance.fetchdata import getMarketSize
 from premiumFinance.constants import (
     FIGURE_FOLDER,
-    UNTAPPED_PROFIT_PATH,
+    MORTALITY_TABLE_CLEANED_PATH,
 )
 
 
 #%% calculate dollar profit
-mortality_experience = pd.read_excel(UNTAPPED_PROFIT_PATH)
+mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 sample_representativeness = (
     getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
 )
