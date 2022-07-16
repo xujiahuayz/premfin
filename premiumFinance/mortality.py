@@ -53,9 +53,10 @@ class Mortality:
         # make sure to extend the mortality list sufficiently long
         last_mort_rate = cond_mort.values[-1]
         to_extend = round(math.log(1e-2, 1 - last_mort_rate))
-        cond_mort = pd.concat(
-            [cond_mort, pd.Series([last_mort_rate] * to_extend)], ignore_index=True
-        )
+        if to_extend > 0:
+            cond_mort = pd.concat(
+                [cond_mort, pd.Series([last_mort_rate] * to_extend)], ignore_index=True
+            )
         return cond_mort
 
     @property

@@ -11,6 +11,10 @@ from typing import Any, Optional, Tuple
 
 @dataclass
 class PolicyFinancingScheme:
+    """
+    define all financing related methods of a particular policy
+    """
+
     policy: InsurancePolicy
     lender_coc: float = 0.01
 
@@ -47,8 +51,9 @@ class PolicyFinancingScheme:
                 assume_lapse=False, at_issue=False
             )
 
-        # this is to make sure that unconditional mortality rate in the end converges to 0!!
-        oneperiod_mort = oneperiod_mort + [0.0] * 250
+        # change note: no need anymore as this has been considered under the Mortality class
+        # # this is to make sure that unconditional mortality rate in the end converges to 0!!
+        # oneperiod_mort = oneperiod_mort + [0.0] * 250
 
         return cash_flow_pv(
             cashflow=loan_cash_flow,
@@ -218,8 +223,8 @@ yield_curve = getAnnualYield()
 
 def calculate_lender_profit(
     row,
-    currentVBT="VBT15",
-    currentmort=1.0,
+    current_vbt="VBT15",
+    current_mort=1.0,
     is_level_premium=True,
     lapse_assumption=True,
     policyholder_rate=yield_curve,
@@ -230,12 +235,12 @@ def calculate_lender_profit(
 ):
     this_insured = Insured(
         issue_age=row["issueage"],  # type: ignore
-        isMale=row["isMale"],  # type: ignore
-        isSmoker=row["isSmoker"],  # type: ignore
+        is_male=row["isMale"],  # type: ignore
+        is_smoker=row["isSmoker"],  # type: ignore
         current_age=row["currentage"],  # type: ignore
-        issueVBT="VBT01",
-        currentVBT=currentVBT,
-        currentmort=currentmort
+        issue_vbt="VBT01",
+        current_vbt=current_vbt,
+        current_mort=current_mort,
     )
     this_policy = InsurancePolicy(
         insured=this_insured,
@@ -261,6 +266,7 @@ def calculate_lender_profit(
             loanrate=this_breakeven_loanrate, fullrecourse=True
         )
     return this_sv, this_breakeven_loanrate, max(this_lender_profit, 0.0)
+    # return this_sv, this_breakeven_loanrate, this_lender_profit
 
 
 def calculate_policyholder_IRR(
@@ -277,12 +283,12 @@ def calculate_policyholder_IRR(
 ) -> float:
     this_insured = Insured(
         issue_age=row["issueage"],  # type: ignore
-        isMale=row["isMale"],  # type: ignore
-        isSmoker=row["isSmoker"],  # type: ignore
+        is_male=row["isMale"],  # type: ignore
+        is_smoker=row["isSmoker"],  # type: ignore
         current_age=row["currentage"],  # type: ignore
-        issueVBT="VBT01",
-        currentVBT=currentVBT,
-        currentmort=currentmort
+        issue_vbt="VBT01",
+        current_vbt=currentVBT,
+        current_mort=currentmort,
     )
     this_policy = InsurancePolicy(
         insured=this_insured,
@@ -302,40 +308,3 @@ def calculate_policyholder_IRR(
     return irr
 
 
-def  policyholder_policy_value(
-    row,
-    currentVBT,
-    currentmort=1.0,
-    is_level_premium=True,
-    lapse_assumption=True,
-    policyholder_rate=yield_curve,
-    statutory_interest=0.035,
-    premium_markup=0.0,
-    # TODO: check a realistic cash interest from 2010-2015
-    # 4% P.9: 3.5% p18 https://www.dropbox.com/s/rnf0k84744xj9xe/Policy_A10.pdf?dl=0
-    # 2-3.75% P.7 https://www.dropbox.com/s/tieqon4l3znfqco/Illustration_A6.pdf?dl=0
-    cash_interest=0.03,
-) -> float:
-    this_insured = Insured(
-        issue_age=row["issueage"],  # type: ignore
-        isMale=row["isMale"],  # type: ignore
-        isSmoker=row["isSmoker"],  # type: ignore
-        current_age=row["currentage"],  # type: ignore
-        issueVBT="VBT01",
-        currentVBT=currentVBT,
-        currentmort=currentmort
-    )
-    this_policy = InsurancePolicy(
-        insured=this_insured,
-        is_level_premium=is_level_premium,
-        lapse_assumption=lapse_assumption,
-        statutory_interest=statutory_interest,
-        premium_markup=premium_markup,
-        policyholder_rate=policyholder_rate,
-        cash_interest=cash_interest,
-    )
-    return -this_policy.policy_value(
-        issuer_perspective=False,
-        at_issue=False,
-        discount_rate=policyholder_rate,
-    )

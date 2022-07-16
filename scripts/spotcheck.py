@@ -9,7 +9,7 @@ def spot_check_premium(gender: bool, age: int):
         is_male=gender,
         is_smoker=False,
         current_age=age,
-        issuemort=1.0,
+        issue_mort=1.0,
         current_mort=1.0,
         issue_vbt="VBT01",
         current_vbt="VBT15",

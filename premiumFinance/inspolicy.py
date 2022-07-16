@@ -42,7 +42,7 @@ class InsurancePolicy:
     # inforce rate starting year 1 (as opposed to year 0)
     def inforce_rate(self, assume_lapse: bool) -> list[float]:
         inforcerate = [
-            1 - x for x in lapse_rate(self.insured.isMale, assume_lapse=assume_lapse)
+            1 - x for x in lapse_rate(self.insured.is_male, assume_lapse=assume_lapse)
         ]
         inforcerate = make_list(inforcerate)[1:]
         return inforcerate

@@ -76,7 +76,6 @@ To pull data files, use
 ```
 git lfs pull
 ```
-(Could run first if error show when running)
 
 ## Run scripts
 
@@ -96,11 +95,12 @@ create a clean `mortality_experience_clean.xlsx`:
 python process_empirical_table.py
 ```
 
-get surrender value, max loan rate acceptable by policyholder, lender profit at max loan rate in one go:
+<!-- not needed for the paper anymore -->
+<!-- get surrender value, max loan rate acceptable by policyholder, lender profit at max loan rate in one go:
 
 ```zsh
 python get_surrendervalue_maxloanrate_lenderprofit.py
-```
+``` -->
 
 get different untapped profit based on different VBT tables and mortality rates from the perspective of policyholder when their cost of capital is at various levels:
 
@@ -110,17 +110,18 @@ python get_untappedprofit_policyholder.py
 
 1. plot money left based on different VBT on the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:
 2. plot distribution of life insurance value to policyhodlers on gender and age:
-3. plot avearge value to policy holders of different face value amount:
+3. plot average value to policy holders of different face value amount:
 
 ```zsh
 python plot_moneyleft.py
 ```
 
+<!--
 get untapped profit from the perspective of lender when their cost of capital is at various levels:
 
 ```zsh
 python get_lenderprofit.py
-```
+``` -->
 
 1. get median value loss from common household mistakes
 2. And its distribution on age and gender:
@@ -136,7 +137,7 @@ python plot_wealth_distr.py
 ```
 
 1. plot economic value to policy holders of different net worth based on Face Amount Band:
-2. plot economic value to policy holders of different net worth based on Face Amount Band, Attainedage and Gender:
+2. plot economic value to policy holders of different net worth based on Face Amount Band, Attained age and Gender:
 
 ```zsh
 python plot_ecovalue.py

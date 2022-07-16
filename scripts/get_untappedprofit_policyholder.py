@@ -1,140 +1,94 @@
 #%% import packages
-from os import path
 import pandas as pd
 
 from premiumFinance.constants import (
-    DATA_FOLDER,
     MORTALITY_TABLE_CLEANED_PATH,
+    UNTAPPED_PROFIT_PATH,
 )
-from premiumFinance.financing import (
-    yield_curve,
-    policyholder_policy_value,
-)
+from premiumFinance.financing import PolicyFinancingScheme, yield_curve
+from premiumFinance.inspolicy import InsurancePolicy
+from premiumFinance.insured import Insured
 
-PROFIT_PATH = path.join(DATA_FOLDER, "profits.xlsx")
+
+def policyholder_policy_value(
+    row,
+    current_vbt: str = "VBT15",
+    current_mort: float = 1.0,
+    is_level_premium=True,
+    lapse_assumption=True,
+    policyholder_rate=yield_curve,
+    statutory_interest: float = 0.035,
+    premium_markup: float = 0.0,
+    # TODO: check a realistic cash interest from 2010-2015
+    # 4% P.9: 3.5% p18 https://www.dropbox.com/s/rnf0k84744xj9xe/Policy_A10.pdf?dl=0
+    # 2-3.75% P.7 https://www.dropbox.com/s/tieqon4l3znfqco/Illustration_A6.pdf?dl=0
+    cash_interest: float = 0.03,
+) -> float:
+    this_insured = Insured(
+        issue_age=row["issueage"],  # type: ignore
+        is_male=row["isMale"],  # type: ignore
+        is_smoker=row["isSmoker"],  # type: ignore
+        current_age=row["currentage"],  # type: ignore
+        issue_vbt="VBT01",
+        current_vbt=current_vbt,
+        current_mort=current_mort,
+    )
+    this_policy = InsurancePolicy(
+        insured=this_insured,
+        is_level_premium=is_level_premium,
+        lapse_assumption=lapse_assumption,
+        statutory_interest=statutory_interest,
+        premium_markup=premium_markup,
+        policyholder_rate=policyholder_rate,
+        cash_interest=cash_interest,
+    )
+    this_financing = PolicyFinancingScheme(policy=this_policy)
+    return (
+        -this_policy.policy_value(
+            issuer_perspective=False,
+            at_issue=False,
+            discount_rate=policyholder_rate,
+        )
+        - this_financing.surrender_value()
+    )
+
+
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
-PROFIT_PATH_cnt = path.join(DATA_FOLDER, "profits_cnt.xlsx")
-PROFIT_PATH_cnt_false = path.join(DATA_FOLDER, "profits_cnt_false.xlsx")
-PROFIT_PATH_cnt_15_T_mort5 = path.join(DATA_FOLDER, "profits_cnt_15_T_0.5.xlsx")
-PROFIT_PATH_cnt_15_T_mort3 = path.join(DATA_FOLDER, "profits_cnt_15_T_0.3.xlsx")
-PROFIT_PATH_cnt_15_T_mort03 = path.join(DATA_FOLDER, "profits_cnt_15_T_0.03.xlsx")
-PROFIT_PATH_cnt_15_T_mort05 = path.join(DATA_FOLDER, "profits_cnt_15_T_0.05.xlsx")
-#%% calculate policy PV from perspective of policyholder in excess of surrender value
-def get_untappedprofit(
-    profitpath: str,
-    mortality_experience: pd.DataFrame,
-    currentVBT: str,
-    lapse_assup,
-    currentmort=1.0,
+
+def generate_pv_column(
+    current_vbt: str = "VBT15", lapse_assumption: bool = True, current_mort: float = 1
 ):
-    mortality_experience["Excess_Policy_PV_yield_curve"] = (
-        mortality_experience.apply(
-            lambda row: policyholder_policy_value(
-                row=row,
-                currentVBT=currentVBT,
-                policyholder_rate=yield_curve,
-                lapse_assumption=lapse_assup,
-                currentmort=currentmort,
-            ),
-            axis=1,
-            result_type="expand",
-        )
-        - pd.read_excel(profitpath)[0]
+    """
+    generate columns of excess policy pv in different scenarios
+    """
+    col_name = (
+        f"Excess_Policy_PV_{current_vbt}_lapse{lapse_assumption}_mort{current_mort}"
     )
 
-    for i in [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
-        print(i)
-        mortality_experience[f"Excess_Policy_PV_{i}"] = (
-            mortality_experience.apply(
-                lambda row: policyholder_policy_value(
-                    row=row,
-                    currentVBT=currentVBT,
-                    policyholder_rate=i,
-                    lapse_assumption=lapse_assup,
-                    currentmort=currentmort,
-                ),
-                axis=1,
-                result_type="expand",
-            )
-            - pd.read_excel(profitpath)[0]
-        )
-
-    #%% post-process
-
-    profit_columns = pd.read_excel(profitpath)
-    mortality_experience[
-        ["Surrender value", "Max Loan rate", "Lender profit"]
-    ] = profit_columns
-
-    mortality_experience["Dollar profit"] = (
-        mortality_experience["Lender profit"] * mortality_experience["Amount Exposed"]
+    if col_name in mortality_experience.columns:
+        print(col_name + " exists")
+        return
+    else:
+        print(col_name + " doesn't exist")
+    mortality_experience[col_name] = mortality_experience.apply(
+        lambda row: policyholder_policy_value(
+            row=row,
+            current_vbt=current_vbt,
+            policyholder_rate=yield_curve,
+            lapse_assumption=lapse_assumption,
+            current_mort=current_mort,
+        ),
+        axis=1,
+        result_type="expand",
     )
-    return mortality_experience
+    print(col_name + " generated")
 
 
-#%% currentVBT set to "VBT15"
-mortality_experience = get_untappedprofit(
-    PROFIT_PATH, mortality_experience, currentVBT="VBT15", lapse_assup=True
-)
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
-mortality_experience.to_excel(untapped_profit_path, index=False)
+generate_pv_column(current_vbt="VBT01", lapse_assumption=True, current_mort=1)
+generate_pv_column(current_vbt="VBT15", lapse_assumption=True, current_mort=1)
+generate_pv_column(current_vbt="VBT15", lapse_assumption=False, current_mort=1)
+generate_pv_column(current_vbt="VBT15", lapse_assumption=True, current_mort=0.5)
 
-#%% currentVBT set to "VBT01"
-mortality_experience = get_untappedprofit(
-    PROFIT_PATH_cnt, mortality_experience, currentVBT="VBT01", lapse_assup=True
-)
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt.xlsx")
-mortality_experience.to_excel(untapped_profit_path, index=False)
-#%% currentVBT set to "VBT15"
-mortality_experience = get_untappedprofit(
-    PROFIT_PATH_cnt_false, mortality_experience, "VBT15", lapse_assup=False
-)
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt_false.xlsx")
-mortality_experience.to_excel(untapped_profit_path, index=False)
-#%% currentVBT set to "VBT15", mort_rate = 0.5
-mortality_experience = get_untappedprofit(
-    PROFIT_PATH_cnt_15_T_mort5,
-    mortality_experience,
-    currentVBT="VBT15",
-    lapse_assup=True,
-    currentmort=0.5,
-)
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt_15_T_mort5.xlsx")
-mortality_experience.to_excel(untapped_profit_path, index=False)
-# %% currentVBT set to "VBT15", mort_rate = 0.3
-mortality_experience = get_untappedprofit(
-    PROFIT_PATH_cnt_15_T_mort3,
-    mortality_experience,
-    currentVBT="VBT15",
-    lapse_assup=True,
-    currentmort=0.3,
-)
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt_15_T_mort3.xlsx")
-mortality_experience.to_excel(untapped_profit_path, index=False)
-# %% currentVBT set to "VBT15", mort_rate = 0.03
-mortality_experience = get_untappedprofit(
-    PROFIT_PATH_cnt_15_T_mort03,
-    mortality_experience,
-    currentVBT="VBT15",
-    lapse_assup=True,
-    currentmort=0.03,
-)
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt_15_T_mort03.xlsx")
-mortality_experience.to_excel(untapped_profit_path, index=False)
-<<<<<<< HEAD
-# %% currentVBT set to "VBT15", mort_rate = 0.05
-mortality_experience = get_untappedprofit(PROFIT_PATH_cnt_15_T_mort05, mortality_experience, currentVBT="VBT15",lapse_assup=True,currentmort=0.05)
-=======
-# %% currentVBT set to "VBT15", mort_rate = 0.03
-mortality_experience = get_untappedprofit(
-    PROFIT_PATH_cnt_15_T_mort05,
-    mortality_experience,
-    currentVBT="VBT15",
-    lapse_assup=True,
-    currentmort=0.03,
-)
->>>>>>> main
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt_15_T_mort05.xlsx")
-mortality_experience.to_excel(untapped_profit_path, index=False)
-# %%
+
+mortality_experience.to_excel(UNTAPPED_PROFIT_PATH, index=False)

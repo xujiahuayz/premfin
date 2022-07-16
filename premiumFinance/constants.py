@@ -13,6 +13,7 @@ FIGURE_FOLDER = path.join(PROJECT_ROOT, "figures")
 
 MORTALITY_TABLE_CLEANED_PATH = path.join(DATA_FOLDER, "mortality_experience_clean.xlsx")
 PROCESSED_PROFITABILITY_PATH = path.join(DATA_FOLDER, "profitability.json")
+UNTAPPED_PROFIT_PATH = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 
 NAIC_PATH = path.join(DATA_FOLDER, "NAIC_1996_2020_SPGlobalofficeworkbook.xls")
 

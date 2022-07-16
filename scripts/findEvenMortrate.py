@@ -21,14 +21,14 @@ sample_representativeness = (
 def findMoneyleft(currentmort, row, currentVBT, lapse_assup):
     profit_columns = calculate_lender_profit(
         row=row,
-        currentVBT=currentVBT,
+        current_vbt=currentVBT,
         lapse_assumption=lapse_assup,
-        currentmort=currentmort,
+        current_mort=currentmort,
     )
     row["policy_value"] = (
         policyholder_policy_value(
             row=row,
-            currentVBT=currentVBT,
+            current_vbt=currentVBT,
             policyholder_rate=yield_curve,
             lapse_assumption=lapse_assup,
             currentmort=currentmort,
