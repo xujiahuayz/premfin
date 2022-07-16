@@ -1,4 +1,5 @@
 #%% import packages
+import imp
 import pandas as pd
 
 from premiumFinance.constants import (
@@ -9,9 +10,11 @@ from premiumFinance.financing import PolicyFinancingScheme, yield_curve
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
 
+from scipy import optimize
+
 
 def policyholder_policy_value(
-    row,
+    row: pd.Series,
     current_vbt: str = "VBT15",
     current_mort: float = 1.0,
     is_level_premium=True,
@@ -24,6 +27,9 @@ def policyholder_policy_value(
     # 2-3.75% P.7 https://www.dropbox.com/s/tieqon4l3znfqco/Illustration_A6.pdf?dl=0
     cash_interest: float = 0.03,
 ) -> float:
+    """
+    calculate policy economic value in excess of its surrender value
+    """
     this_insured = Insured(
         issue_age=row["issueage"],  # type: ignore
         is_male=row["isMale"],  # type: ignore
@@ -51,6 +57,15 @@ def policyholder_policy_value(
         )
         - this_financing.surrender_value()
     )
+
+
+def find_breakeven_mortality(row: pd.Series):
+    result = optimize.root_scalar(
+        lambda r: policyholder_policy_value(row=row, current_mort=r),
+        bracket=[0.3, 1.9],
+        method="brentq",
+    )
+    return result.root
 
 
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
