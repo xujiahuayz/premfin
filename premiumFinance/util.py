@@ -2,6 +2,8 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from premiumFinance.fetchdata import lapse_tbl
+from premiumFinance.insured import Insured
+from scipy import optimize
 
 LIST_LEN = 150
 # make a list with length 150

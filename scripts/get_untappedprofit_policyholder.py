@@ -1,4 +1,3 @@
-#%% import packages
 import pandas as pd
 
 from premiumFinance.constants import (
@@ -7,8 +6,6 @@ from premiumFinance.constants import (
 from premiumFinance.financing import PolicyFinancingScheme, yield_curve
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
-
-from scipy import optimize
 
 
 def policyholder_policy_value(
@@ -60,28 +57,6 @@ def policyholder_policy_value(
     )
 
 
-def find_breakeven_mortality(
-    issue_age: float,
-    is_male: bool,
-    is_smoker: bool,
-    current_age: float,
-    current_vbt: str = "VBT15",
-):
-    result = optimize.root_scalar(
-        lambda r: policyholder_policy_value(
-            issue_age=issue_age,
-            is_male=is_male,
-            is_smoker=is_smoker,
-            current_age=current_age,
-            current_vbt=current_vbt,
-            current_mort=r,
-        ),
-        bracket=[0.02, 1.9],
-        method="brentq",
-    )
-    return result.root
-
-
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
 
@@ -117,10 +92,10 @@ def generate_pv_column(
     print(col_name + " generated")
 
 
-generate_pv_column(current_vbt="VBT01", lapse_assumption=True, current_mort=1)
-generate_pv_column(current_vbt="VBT15", lapse_assumption=True, current_mort=1)
-generate_pv_column(current_vbt="VBT15", lapse_assumption=False, current_mort=1)
-generate_pv_column(current_vbt="VBT15", lapse_assumption=True, current_mort=0.5)
+if __name__ == "__main__":
+    generate_pv_column(current_vbt="VBT01", lapse_assumption=True, current_mort=1)
+    generate_pv_column(current_vbt="VBT15", lapse_assumption=True, current_mort=1)
+    generate_pv_column(current_vbt="VBT15", lapse_assumption=False, current_mort=1)
+    generate_pv_column(current_vbt="VBT15", lapse_assumption=True, current_mort=0.5)
 
-
-mortality_experience.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)
+    mortality_experience.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)

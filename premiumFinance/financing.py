@@ -306,5 +306,3 @@ def calculate_policyholder_IRR(
         print(row)
         irr = np.nan
     return irr
-
-
