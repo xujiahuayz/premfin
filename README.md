@@ -109,7 +109,7 @@ python get_untappedprofit_policyholder.py
 ```
 
 1. plot money left based on different VBT on the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:
-2. plot distribution of life insurance value to policyhodlers on gender and age:
+2. plot distribution of life insurance value to policyholders on gender and age:
 3. plot average value to policy holders of different face value amount:
 
 ```zsh
