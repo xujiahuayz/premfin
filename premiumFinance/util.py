@@ -2,8 +2,16 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from premiumFinance.fetchdata import lapse_tbl
-from premiumFinance.insured import Insured
-from scipy import optimize
+
+
+def median_(list_tuples: list[tuple[float, float]]) -> float:
+    """
+    get median from a list of tuples (value, frequency)
+    """
+    val, freq = np.array(list_tuples).T
+    ord = np.argsort(val)
+    cdf = np.cumsum(freq[ord])
+    return val[ord][np.searchsorted(cdf, cdf[-1] // 2)]
 
 LIST_LEN = 150
 # make a list with length 150
@@ -45,3 +53,4 @@ def lapse_rate(isMale: bool, assume_lapse: bool = True) -> list[float]:
             lapse_column[:-1] + [lapse_column[-2]] * (29 - 26) + [lapse_column[-1]]
         )
     return make_list(lapse_rate)
+

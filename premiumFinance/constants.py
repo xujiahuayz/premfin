@@ -1,5 +1,6 @@
 from os import path
 from premiumFinance.settings import PROJECT_ROOT
+import numpy as np
 
 VBT_UNISMOKE_URL = "https://www.soa.org/globalassets/assets/files/research/exp-study/2015-vbt-unismoke-alb-anb.xlsx"
 VBT_SMOKEDISTINCT_URL = "https://www.soa.org/globalassets/assets/files/research/exp-study/2015-vbt-smoker-distinct-alb-anb.xlsx"
@@ -45,6 +46,8 @@ VBT_TABLES = {
     },
 }
 
+AGE_BREAKPOINTS_MID = np.arange(25, 85, 10)
+AGE_BREAKPOINTS = np.append(AGE_BREAKPOINTS_MID,200)
 
 AGE_BIN = [
     "< 25",
