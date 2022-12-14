@@ -22,7 +22,10 @@ sample_representativeness = (
 
 
 def get_money_left(
-    current_vbt: str = "VBT15", lapse_assumption: bool = True, current_mort: float = 1
+    current_vbt: str = "VBT15",
+    lapse_assumption: bool = True,
+    current_mort: float = 1,
+    premium_hike: float = 0,
 ) -> float:
     """
     get money left value in different scenarios
@@ -31,7 +34,7 @@ def get_money_left(
         sum(
             w
             for w in mortality_experience[
-                f"Excess_Policy_PV_{current_vbt}_lapse{lapse_assumption}_mort{current_mort}"
+                f"Excess_Policy_PV_{current_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
             ]
             * mortality_experience["Amount Exposed"]
         )

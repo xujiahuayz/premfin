@@ -28,12 +28,12 @@ class PolicyFinancingScheme:
         pr = self.policy.premium_stream_at_issue[starting_period:]
         return pr
 
-    def PV_repay(
+    def PV_repay_list(
         self,
         loanrate: float,
         discount_rate: Any,
         oneperiod_mort: Any = None,
-    ) -> float:
+    ) -> list[float]:
         pr = make_list(self.unpaid_pr())
 
         # Note: every repay element corresponds to mortality rate,
@@ -41,8 +41,8 @@ class PolicyFinancingScheme:
         # therefore, DO NOT include this period's premium!
         cumulative_loan = 0.0
         loan_cash_flow = [cumulative_loan]
-        for i in range(len(pr))[1:]:
-            cumulative_loan = (cumulative_loan + pr[i - 1]) * (1 + loanrate)
+        for w in pr:
+            cumulative_loan = (cumulative_loan + w) * (1 + loanrate)
             loan_cash_flow.append(cumulative_loan)
 
         if oneperiod_mort is None:
@@ -61,19 +61,19 @@ class PolicyFinancingScheme:
             discounters=discount_rate,
         )
 
-        # # discount_rate = self.policy.policyholder_rate
+    def PV_repay(
+        self,
+        loanrate: float,
+        discount_rate: Any,
+        oneperiod_mort: Any = None,
+    ) -> float:
+        cash_stream = self.PV_repay_list(
+            loanrate=loanrate,
+            discount_rate=discount_rate,
+            oneperiod_mort=oneperiod_mort,
+        )
 
-        # cf = 0.0
-
-        # for i in range(len(oneperiod_mort) - 1):
-        #     debt = 0
-        #     for j in range(i):
-        #         debt += pr[j] * (1 + loanrate) ** (i + 1 - j)
-        #     debt *= oneperiod_mort[i + 1]
-
-        #     cf += debt / (1 + discount_rate[i + 1]) ** (i + 1)
-
-        # return cf
+        return sum(cash_stream)
 
     def PV_borrower(
         self,
@@ -83,7 +83,7 @@ class PolicyFinancingScheme:
         oneperiod_mort: Any = None,
     ) -> float:
         if pv_deathben is None:
-            pv_deathben = self.policy.PV_death_benefit(
+            pv_deathben = self.policy.pv_death_benefit(
                 issuer_perspective=False,
                 at_issue=False,
                 discount_rate=self.policy.policyholder_rate,
@@ -108,13 +108,13 @@ class PolicyFinancingScheme:
         in_flow = self.PV_repay(loanrate=loanrate, discount_rate=self.lender_coc)
         if not fullrecourse:
             if pv_deathben is None:
-                pv_deathben = self.policy.PV_death_benefit(
+                pv_deathben = self.policy.pv_death_benefit(
                     issuer_perspective=None,
                     at_issue=False,
                     discount_rate=self.lender_coc,
                 )
             in_flow = min(pv_deathben, in_flow)
-        pv = in_flow - self.policy.PV_unpaid_premium(
+        pv = in_flow - self.policy.pv_unpaid_premium(
             discount_rate=self.lender_coc, at_issue=False
         )
         return pv
@@ -197,7 +197,7 @@ class PolicyFinancingScheme:
         oneperiod_mort = self.policy.death_benefit_payment_probability(
             assume_lapse=False, at_issue=False
         )
-        pv_deathben = self.policy.PV_death_benefit(
+        pv_deathben = self.policy.pv_death_benefit(
             issuer_perspective=False,
             at_issue=False,
             discount_rate=self.policy.policyholder_rate,
