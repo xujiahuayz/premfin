@@ -1,6 +1,7 @@
 """
 Plot value lost waterfall
 """
+import plotly.graph_objects as go
 
 from scripts.plot_moneyleft import (
     sample_representativeness,
@@ -38,7 +39,7 @@ def policy_fund_fees(
     statutory_interest: float = 0.035,
     premium_markup: float = 0.0,
     cash_interest: float = 0.03,
-    annual_management_fee: float = 0.015,
+    annual_management_fee: float = 0.01,
     annual_performance_fee: float = 0.15,
 ) -> tuple[float, float]:
     """
@@ -128,8 +129,53 @@ performance_fee = (
     * sample_representativeness
 )
 
+policyholder_lump_sum = (
+    0.18 * sum(mortality_experience["Amount Exposed"]) * sample_representativeness
+) - broker_fee
+
+
+fig = go.Figure(
+    go.Waterfall(
+        name="20",
+        orientation="v",
+        measure=["relative", "relative", "relative", "relative", "relative", "total"],
+        x=[
+            "Life insurance value to policyholders",
+            "Policyholder lump sum",
+            "Broker fee",
+            "Management fee",
+            "Performance fee",
+            "Investor profit",
+        ],
+        textposition="outside",
+        # text=[
+        #     money_left_15_T,
+        #     policyholder_lump_sum,
+        #     broker_fee,
+        #     management_fee,
+        #     performance_fee,
+        #     "Total",
+        # ],
+        y=[
+            money_left_15_T,
+            -policyholder_lump_sum,
+            -broker_fee,
+            -management_fee,
+            -performance_fee,
+            0,
+        ],
+        connector={"line": {"color": "rgb(63, 63, 63)"}},
+    )
+)
+
+fig.update_layout(title="Profit and loss statement 2018", showlegend=True)
+
+fig.show()
 
 money_left_15_T / 1e12
-broker_fee / 1e12
-management_fee / 1e12
-performance_fee / 1e12
+(
+    policyholder_lump_sum / 1e12
+    + broker_fee / 1e12
+    + management_fee / 1e12
+    + performance_fee / 1e12
+)
