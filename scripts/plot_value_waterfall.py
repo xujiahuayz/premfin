@@ -92,7 +92,9 @@ mortality_experience["broker_fee_rate"] = [
 ]
 
 
-y = mortality_experience.apply(
+mortality_experience[
+    ["management_fee_rate", "performance_fee_rate"]
+] = mortality_experience.apply(
     lambda row: policy_fund_fees(
         issue_age=row["issueage"],
         is_male=row["isMale"],
@@ -102,3 +104,32 @@ y = mortality_experience.apply(
     axis=1,
     result_type="expand",
 )
+
+broker_fee = (
+    sum(
+        mortality_experience["broker_fee_rate"] * mortality_experience["Amount Exposed"]
+    )
+    * sample_representativeness
+)
+
+management_fee = (
+    sum(
+        mortality_experience["management_fee_rate"]
+        * mortality_experience["Amount Exposed"]
+    )
+    * sample_representativeness
+)
+
+performance_fee = (
+    sum(
+        mortality_experience["performance_fee_rate"]
+        * mortality_experience["Amount Exposed"]
+    )
+    * sample_representativeness
+)
+
+
+money_left_15_T / 1e12
+broker_fee / 1e12
+management_fee / 1e12
+performance_fee / 1e12
