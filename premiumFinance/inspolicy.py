@@ -346,9 +346,13 @@ class InsurancePolicy:
             at_issue=at_issue,
         )
 
+        sum_until = min(
+            len(probabilistic_PV_of_FV), len(discount_rate), len(unconditional_pers)
+        )
+
         fv_nav = [
             -c * (1 + discount_rate[i]) ** i / unconditional_pers[i]
-            for i, c in enumerate(probabilistic_PV_of_FV)
+            for i, c in enumerate(probabilistic_PV_of_FV[:sum_until])
         ]
 
         nav_increase = np.diff(fv_nav).tolist()
