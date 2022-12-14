@@ -148,14 +148,23 @@ fig = go.Figure(
             "Investor profit",
         ],
         textposition="outside",
-        # text=[
-        #     money_left_15_T,
-        #     policyholder_lump_sum,
-        #     broker_fee,
-        #     management_fee,
-        #     performance_fee,
-        #     "Total",
-        # ],
+        text=[
+            round(w / 1e12, 2)
+            for w in [
+                money_left_15_T,
+                policyholder_lump_sum,
+                broker_fee,
+                management_fee,
+                performance_fee,
+                (
+                    money_left_15_T
+                    - policyholder_lump_sum
+                    - broker_fee
+                    - management_fee
+                    - performance_fee
+                ),
+            ]
+        ],
         y=[
             money_left_15_T,
             -policyholder_lump_sum,
@@ -168,7 +177,6 @@ fig = go.Figure(
     )
 )
 
-fig.update_layout(title="Profit and loss statement 2018", showlegend=True)
 
 fig.show()
 
