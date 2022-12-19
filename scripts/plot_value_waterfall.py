@@ -1,6 +1,7 @@
 """
 Plot value lost waterfall
 """
+from os import path
 import plotly.graph_objects as go
 
 from scripts.plot_moneyleft import (
@@ -11,19 +12,7 @@ from scripts.plot_moneyleft import (
 from premiumFinance.financing import yield_curve
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy
-
-
-# def broker_fee_rate(
-#     excess_value: float,
-#     excess_value_rate: float = 0.3,
-#     face_vale_rate: float = 0.08,
-# ):
-#     """
-#     calculate broker fee,
-#     which by default is the lesser of
-#     30% excess value and 8% face
-#     """
-#     return min(excess_value * excess_value_rate, face_vale_rate)
+from premiumFinance.constants import FIGURE_FOLDER
 
 
 def policy_fund_fees(
@@ -166,24 +155,24 @@ fig = go.Figure(
             ]
         ],
         y=[
-            money_left_15_T,
-            -policyholder_lump_sum,
-            -broker_fee,
-            -management_fee,
-            -performance_fee,
-            0,
+            round(w / 1e12, 2)
+            for w in [
+                money_left_15_T,
+                -policyholder_lump_sum,
+                -broker_fee,
+                -management_fee,
+                -performance_fee,
+                0,
+            ]
         ],
         connector={"line": {"color": "rgb(63, 63, 63)"}},
-    )
+    ),
+    layout_yaxis_range=[-1, 14],
 )
 
-
+fig.update_layout(
+    yaxis_title="trillion USD",
+)
 fig.show()
 
-money_left_15_T / 1e12
-(
-    policyholder_lump_sum / 1e12
-    + broker_fee / 1e12
-    + management_fee / 1e12
-    + performance_fee / 1e12
-)
+fig.write_image(path.join(FIGURE_FOLDER, "waterfall.pdf"))
