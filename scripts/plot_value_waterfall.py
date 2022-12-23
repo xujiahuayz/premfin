@@ -3,6 +3,7 @@ Plot value lost waterfall
 """
 from os import path
 import plotly.graph_objects as go
+import time
 
 from scripts.plot_moneyleft import (
     sample_representativeness,
@@ -13,6 +14,8 @@ from premiumFinance.financing import yield_curve
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.constants import FIGURE_FOLDER
+
+now = time.time()
 
 
 def policy_fund_fees(
@@ -176,3 +179,5 @@ fig.update_layout(
 fig.show()
 
 fig.write_image(path.join(FIGURE_FOLDER, "waterfall.pdf"))
+
+print(f"Time elapsed: {time.time() - now} seconds")

@@ -20,18 +20,6 @@ from premiumFinance import constants
 from premiumFinance.settings import PROJECT_ROOT
 
 #%%
-# need to `pip install openpyxl`
-pers_file = path.join(constants.DATA_FOLDER, "persistency.xlsx")
-# read lapse rates
-lapse_tbl = pd.read_excel(
-    pers_file,
-    sheet_name="Universal Life",
-    index_col=0,
-    skiprows=8,
-    skipfooter=71,
-    usecols="J:K,O",
-)
-
 
 # need to `pip install openpyxl`
 pers_file = path.join(constants.DATA_FOLDER, "persistency.xlsx")
@@ -257,3 +245,5 @@ def get_mort_data(url: str = constants.MORT_URL):
 # durange = range(40)
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="linear"))
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="quadratic"))
+
+# %%
