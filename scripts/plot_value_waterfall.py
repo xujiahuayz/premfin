@@ -186,6 +186,7 @@ if "__main__" == __name__:
     fig.update_layout(
         yaxis_title="trillion USD",
     )
+
     fig.show()
 
     fig.write_image(path.join(FIGURE_FOLDER, "waterfall.pdf"))
