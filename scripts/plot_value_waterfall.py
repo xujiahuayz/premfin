@@ -15,8 +15,6 @@ from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.constants import FIGURE_FOLDER
 
-now = time.time()
-
 
 def policy_fund_fees(
     issue_age: float,
@@ -79,105 +77,117 @@ def policy_fund_fees(
     return expected_management_fee, expected_performance_fee
 
 
-mortality_experience["broker_fee_rate"] = [
-    max(min(w * 0.3, 0.08), 0)
-    for w in mortality_experience["Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"]
-]
+if "__main__" == __name__:
 
+    now = time.time()
 
-mortality_experience[
-    ["management_fee_rate", "performance_fee_rate"]
-] = mortality_experience.apply(
-    lambda row: policy_fund_fees(
-        issue_age=row["issueage"],
-        is_male=row["isMale"],
-        is_smoker=row["isSmoker"],
-        current_age=row["currentage"],
-    ),
-    axis=1,
-    result_type="expand",
-)
+    mortality_experience["broker_fee_rate"] = [
+        max(min(w * 0.3, 0.08), 0)
+        for w in mortality_experience[
+            "Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"
+        ]
+    ]
 
-broker_fee = (
-    sum(
-        mortality_experience["broker_fee_rate"] * mortality_experience["Amount Exposed"]
+    mortality_experience[
+        ["management_fee_rate", "performance_fee_rate"]
+    ] = mortality_experience.apply(
+        lambda row: policy_fund_fees(
+            issue_age=row["issueage"],
+            is_male=row["isMale"],
+            is_smoker=row["isSmoker"],
+            current_age=row["currentage"],
+        ),
+        axis=1,
+        result_type="expand",
     )
-    * sample_representativeness
-)
 
-management_fee = (
-    sum(
-        mortality_experience["management_fee_rate"]
-        * mortality_experience["Amount Exposed"]
+    broker_fee = (
+        sum(
+            mortality_experience["broker_fee_rate"]
+            * mortality_experience["Amount Exposed"]
+        )
+        * sample_representativeness
     )
-    * sample_representativeness
-)
 
-performance_fee = (
-    sum(
-        mortality_experience["performance_fee_rate"]
-        * mortality_experience["Amount Exposed"]
+    management_fee = (
+        sum(
+            mortality_experience["management_fee_rate"]
+            * mortality_experience["Amount Exposed"]
+        )
+        * sample_representativeness
     )
-    * sample_representativeness
-)
 
-policyholder_lump_sum = (
-    0.18 * sum(mortality_experience["Amount Exposed"]) * sample_representativeness
-) - broker_fee
+    performance_fee = (
+        sum(
+            mortality_experience["performance_fee_rate"]
+            * mortality_experience["Amount Exposed"]
+        )
+        * sample_representativeness
+    )
 
+    policyholder_lump_sum = (
+        0.18 * sum(mortality_experience["Amount Exposed"]) * sample_representativeness
+    ) - broker_fee
 
-fig = go.Figure(
-    go.Waterfall(
-        name="20",
-        orientation="v",
-        measure=["relative", "relative", "relative", "relative", "relative", "total"],
-        x=[
-            "Life insurance value to policyholders",
-            "Policyholder lump sum",
-            "Broker fee",
-            "Management fee",
-            "Performance fee",
-            "Investor profit",
-        ],
-        textposition="outside",
-        text=[
-            round(w / 1e12, 2)
-            for w in [
-                money_left_15_T,
-                policyholder_lump_sum,
-                broker_fee,
-                management_fee,
-                performance_fee,
-                (
-                    money_left_15_T
-                    - policyholder_lump_sum
-                    - broker_fee
-                    - management_fee
-                    - performance_fee
-                ),
-            ]
-        ],
-        y=[
-            round(w / 1e12, 2)
-            for w in [
-                money_left_15_T,
-                -policyholder_lump_sum,
-                -broker_fee,
-                -management_fee,
-                -performance_fee,
-                0,
-            ]
-        ],
-        connector={"line": {"color": "rgb(63, 63, 63)"}},
-    ),
-    layout_yaxis_range=[-1, 14],
-)
+    fig = go.Figure(
+        go.Waterfall(
+            name="20",
+            orientation="v",
+            measure=[
+                "relative",
+                "relative",
+                "relative",
+                "relative",
+                "relative",
+                "total",
+            ],
+            x=[
+                "Life insurance value to policyholders",
+                "Policyholder lump sum",
+                "Broker fee",
+                "Management fee",
+                "Performance fee",
+                "Investor profit",
+            ],
+            textposition="outside",
+            text=[
+                round(w / 1e12, 2)
+                for w in [
+                    money_left_15_T,
+                    policyholder_lump_sum,
+                    broker_fee,
+                    management_fee,
+                    performance_fee,
+                    (
+                        money_left_15_T
+                        - policyholder_lump_sum
+                        - broker_fee
+                        - management_fee
+                        - performance_fee
+                    ),
+                ]
+            ],
+            y=[
+                round(w / 1e12, 2)
+                for w in [
+                    money_left_15_T,
+                    -policyholder_lump_sum,
+                    -broker_fee,
+                    -management_fee,
+                    -performance_fee,
+                    0,
+                ]
+            ],
+            connector={"line": {"color": "rgb(63, 63, 63)"}},
+        ),
+        layout_yaxis_range=[-1, 14],
+    )
 
-fig.update_layout(
-    yaxis_title="trillion USD",
-)
-fig.show()
+    fig.update_layout(
+        yaxis_title="trillion USD",
+    )
+    fig.show()
 
-fig.write_image(path.join(FIGURE_FOLDER, "waterfall.pdf"))
+    fig.write_image(path.join(FIGURE_FOLDER, "waterfall.pdf"))
 
-print(f"Time elapsed: {time.time() - now} seconds")
+    print(f"Time elapsed: {time.time() - now} seconds")
