@@ -86,8 +86,10 @@ def get_vbt_data(
     return mort
 
 
-# retrieve SOA data
 def get_soa_data(url: str, filename: str):
+    """
+    download excel data from SOA
+    """
     request_result = requests.get(url)
     vbt_path = path.join(PROJECT_ROOT, constants.DATA_FOLDER, filename + ".xlsx")
     with open(vbt_path, "wb") as f:
