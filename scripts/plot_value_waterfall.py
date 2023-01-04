@@ -29,8 +29,8 @@ def policy_fund_fees(
     statutory_interest: float = 0.035,
     premium_markup: float = 0.0,
     cash_interest: float = 0.03,
-    annual_management_fee: float = 0.01,
-    annual_performance_fee: float = 0.15,
+    annual_management_fee: float = 0.015,
+    annual_performance_fee: float = 0.1,
 ) -> tuple[float, float]:
     """
     calculate the sum of all future probabilistic pv-discounted navs
@@ -137,6 +137,7 @@ if "__main__" == __name__:
                 "relative",
                 "relative",
                 "relative",
+                "total",
                 "relative",
                 "relative",
                 "total",
@@ -145,6 +146,7 @@ if "__main__" == __name__:
                 "Life insurance value to policyholders",
                 "Policyholder lump sum",
                 "Broker fee",
+                "Value at settlement",
                 "Management fee",
                 "Performance fee",
                 "Investor profit",
@@ -156,6 +158,7 @@ if "__main__" == __name__:
                     money_left_15_T,
                     policyholder_lump_sum,
                     broker_fee,
+                    money_left_15_T - policyholder_lump_sum - broker_fee,
                     management_fee,
                     performance_fee,
                     (
@@ -173,6 +176,7 @@ if "__main__" == __name__:
                     money_left_15_T,
                     -policyholder_lump_sum,
                     -broker_fee,
+                    0,
                     -management_fee,
                     -performance_fee,
                     0,
@@ -180,7 +184,7 @@ if "__main__" == __name__:
             ],
             connector={"line": {"color": "rgb(63, 63, 63)"}},
         ),
-        layout_yaxis_range=[-1, 14],
+        layout_yaxis_range=[-3, 14],
     )
 
     fig.update_layout(
