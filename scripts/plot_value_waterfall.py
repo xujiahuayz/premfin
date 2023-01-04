@@ -125,9 +125,13 @@ if "__main__" == __name__:
         * sample_representativeness
     )
 
-    policyholder_lump_sum = (
+    buyer_pay = (
         0.18 * sum(mortality_experience["Amount Exposed"]) * sample_representativeness
-    ) - broker_fee
+    )
+
+    broker_fee = min(buyer_pay * 0.3, broker_fee)
+
+    policyholder_lump_sum = buyer_pay - broker_fee
 
     fig = go.Figure(
         go.Waterfall(
