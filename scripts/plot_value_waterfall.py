@@ -15,6 +15,14 @@ from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.constants import FIGURE_FOLDER
 
+# https://www.investopedia.com/terms/b/brokerage-fee.asp#:~:text=The%20fees%20range%20from%200.25,to%201.5%25%20of%20the%20assets.
+BROKER_FEE = 0.01
+# https://www.investopedia.com/articles/investing/062113/mutual-funds-management-fees-vs-mer.asp#:~:text=The%20management%20fee%20encompasses%20all,assets%20under%20management%20(AUM).
+MANAGEMENT_FEE = 0.01
+
+# https://www.investopedia.com/terms/p/performance-fee.asp#:~:text=A%20performance%20fee%20is%20a,often%20both%20realized%20and%20unrealized.
+PERFORMANCE_FEE = 0.2
+
 
 def policy_fund_fees(
     issue_age: float,
@@ -29,8 +37,8 @@ def policy_fund_fees(
     statutory_interest: float = 0.035,
     premium_markup: float = 0.0,
     cash_interest: float = 0.03,
-    annual_management_fee: float = 0.015,
-    annual_performance_fee: float = 0.1,
+    annual_management_fee: float = MANAGEMENT_FEE,
+    annual_performance_fee: float = PERFORMANCE_FEE,
 ) -> tuple[float, float]:
     """
     calculate the sum of all future probabilistic pv-discounted navs
@@ -82,7 +90,7 @@ if "__main__" == __name__:
     now = time.time()
 
     mortality_experience["broker_fee_rate"] = [
-        max(min(w * 0.3, 0.08), 0)
+        max(min(w * 0.3, BROKER_FEE), 0)
         for w in mortality_experience[
             "Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"
         ]
@@ -197,6 +205,6 @@ if "__main__" == __name__:
 
     fig.show()
 
-    fig.write_image(path.join(FIGURE_FOLDER, "waterfall.pdf"))
+    fig.write_image(path.join(FIGURE_FOLDER, "waterfall2.pdf"))
 
     print(f"Time elapsed: {time.time() - now} seconds")
