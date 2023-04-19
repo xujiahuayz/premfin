@@ -15,14 +15,6 @@ from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.constants import FIGURE_FOLDER
 
-# https://www.investopedia.com/terms/b/brokerage-fee.asp#:~:text=The%20fees%20range%20from%200.25,to%201.5%25%20of%20the%20assets.
-BROKER_FEE = 0.01
-# https://www.investopedia.com/articles/investing/062113/mutual-funds-management-fees-vs-mer.asp#:~:text=The%20management%20fee%20encompasses%20all,assets%20under%20management%20(AUM).
-MANAGEMENT_FEE = 0.01
-
-# https://www.investopedia.com/terms/p/performance-fee.asp#:~:text=A%20performance%20fee%20is%20a,often%20both%20realized%20and%20unrealized.
-PERFORMANCE_FEE = 0.2
-
 
 def policy_fund_fees(
     issue_age: float,
@@ -37,8 +29,8 @@ def policy_fund_fees(
     statutory_interest: float = 0.035,
     premium_markup: float = 0.0,
     cash_interest: float = 0.03,
-    annual_management_fee: float = MANAGEMENT_FEE,
-    annual_performance_fee: float = PERFORMANCE_FEE,
+    annual_management_fee: float = 0.015,
+    annual_performance_fee: float = 0.1,
 ) -> tuple[float, float]:
     """
     calculate the sum of all future probabilistic pv-discounted navs
@@ -87,124 +79,162 @@ def policy_fund_fees(
 
 if "__main__" == __name__:
 
-    now = time.time()
+    # mortgage fund fees - from scottish mortgage investment trust
+    # https://www.hl.co.uk/shares/shares-search-results/s/scottish-mortgage-it-plc-ordinary-shares-5p
+    # https://www.investopedia.com/terms/b/brokerage-fee.asp#:~:text=The%20fees%20range%20from%200.25,to%201.5%25%20of%20the%20assets.
+    # https://www.unbiased.co.uk/discover/mortgages-property/buying-a-home/mortgage-broker-fees
+    # PE fee - broker fee!!
 
-    mortality_experience["broker_fee_rate"] = [
-        max(min(w * 0.3, BROKER_FEE), 0)
-        for w in mortality_experience[
-            "Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"
+    # https://www.investopedia.com/articles/investing/062113/mutual-funds-management-fees-vs-mer.asp#:~:text=The%20management%20fee%20encompasses%20all,assets%20under%20management%20(AUM).
+    # https://www.investopedia.com/terms/s/servicing_fee.asp
+
+    # https://www.investopedia.com/terms/p/performance-fee.asp#:~:text=A%20performance%20fee%20is%20a,often%20both%20realized%20and%20unrealized.
+
+    fees = {
+        "life_settlement": {
+            "broker_fee": 0.08,
+            "management_fee": 0.015,
+            "performance_fee": 0.1,
+        },
+        "benchmark_scheme": {
+            "broker_fee": 0.05,
+            "management_fee": 0.01,
+            "performance_fee": 0.1,
+        },
+    }
+
+    for key, value in fees.items():
+        BROKER_FEE = value["broker_fee"]
+        MANAGEMENT_FEE = value["management_fee"]
+        PERFORMANCE_FEE = value["performance_fee"]
+
+        mortality_experience["broker_fee_rate"] = [
+            max(min(w * 0.3, BROKER_FEE), 0)
+            for w in mortality_experience[
+                "Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"
+            ]
         ]
-    ]
 
-    mortality_experience[
-        ["management_fee_rate", "performance_fee_rate"]
-    ] = mortality_experience.apply(
-        lambda row: policy_fund_fees(
-            issue_age=row["issueage"],
-            is_male=row["isMale"],
-            is_smoker=row["isSmoker"],
-            current_age=row["currentage"],
-        ),
-        axis=1,
-        result_type="expand",
-    )
-
-    broker_fee = (
-        sum(
-            mortality_experience["broker_fee_rate"]
-            * mortality_experience["Amount Exposed"]
+        mortality_experience[
+            ["management_fee_rate", "performance_fee_rate"]
+        ] = mortality_experience.apply(
+            lambda row: policy_fund_fees(
+                issue_age=row["issueage"],
+                is_male=row["isMale"],
+                is_smoker=row["isSmoker"],
+                current_age=row["currentage"],
+            ),
+            axis=1,
+            result_type="expand",
         )
-        * sample_representativeness
-    )
 
-    management_fee = (
-        sum(
-            mortality_experience["management_fee_rate"]
-            * mortality_experience["Amount Exposed"]
+        broker_fee = (
+            sum(
+                mortality_experience["broker_fee_rate"]
+                * mortality_experience["Amount Exposed"]
+            )
+            * sample_representativeness
         )
-        * sample_representativeness
-    )
 
-    performance_fee = (
-        sum(
-            mortality_experience["performance_fee_rate"]
-            * mortality_experience["Amount Exposed"]
+        management_fee = (
+            sum(
+                mortality_experience["management_fee_rate"]
+                * mortality_experience["Amount Exposed"]
+            )
+            * sample_representativeness
         )
-        * sample_representativeness
-    )
 
-    buyer_pay = (
-        0.18 * sum(mortality_experience["Amount Exposed"]) * sample_representativeness
-    )
+        performance_fee = (
+            sum(
+                mortality_experience["performance_fee_rate"]
+                * mortality_experience["Amount Exposed"]
+            )
+            * sample_representativeness
+        )
 
-    broker_fee = min(buyer_pay * 0.3, broker_fee)
+        buyer_pay = (
+            0.18
+            * sum(mortality_experience["Amount Exposed"])
+            * sample_representativeness
+        )
 
-    policyholder_lump_sum = buyer_pay - broker_fee
+        broker_fee = min(buyer_pay * 0.3, broker_fee)
 
-    fig = go.Figure(
-        go.Waterfall(
-            name="20",
-            orientation="v",
-            measure=[
-                "relative",
-                "relative",
-                "relative",
-                "total",
-                "relative",
-                "relative",
-                "total",
-            ],
-            x=[
-                "Life insurance value to policyholders",
-                "Policyholder lump sum",
-                "Broker fee",
-                "Value at settlement",
-                "Management fee",
-                "Performance fee",
-                "Investor profit",
-            ],
-            textposition="outside",
-            text=[
-                round(w / 1e12, 2)
-                for w in [
-                    money_left_15_T,
-                    policyholder_lump_sum,
-                    broker_fee,
-                    money_left_15_T - policyholder_lump_sum - broker_fee,
-                    management_fee,
-                    performance_fee,
-                    (
-                        money_left_15_T
-                        - policyholder_lump_sum
-                        - broker_fee
-                        - management_fee
-                        - performance_fee
-                    ),
-                ]
-            ],
-            y=[
-                round(w / 1e12, 2)
-                for w in [
-                    money_left_15_T,
-                    -policyholder_lump_sum,
-                    -broker_fee,
-                    0,
-                    -management_fee,
-                    -performance_fee,
-                    0,
-                ]
-            ],
-            connector={"line": {"color": "rgb(63, 63, 63)"}},
-        ),
-        layout_yaxis_range=[-3, 14],
-    )
+        policyholder_lump_sum = buyer_pay - broker_fee
 
-    fig.update_layout(
-        yaxis_title="trillion USD",
-    )
+        fig = go.Figure(
+            go.Waterfall(
+                name="20",
+                orientation="v",
+                measure=[
+                    "relative",
+                    "relative",
+                    "relative",
+                    "total",
+                    "relative",
+                    "relative",
+                    "total",
+                ],
+                x=[
+                    "Life insurance value to policyholders",
+                    "Policyholder lump sum",
+                    "Broker fee",
+                    "Value at settlement",
+                    "Management fee",
+                    "Performance fee",
+                    "Investor profit",
+                ],
+                textposition="outside",
+                text=[
+                    round(w / 1e12, 2)
+                    for w in [
+                        money_left_15_T,
+                        policyholder_lump_sum,
+                        broker_fee,
+                        money_left_15_T - policyholder_lump_sum - broker_fee,
+                        management_fee,
+                        performance_fee,
+                        (
+                            money_left_15_T
+                            - policyholder_lump_sum
+                            - broker_fee
+                            - management_fee
+                            - performance_fee
+                        ),
+                    ]
+                ],
+                y=[
+                    round(w / 1e12, 2)
+                    for w in [
+                        money_left_15_T,
+                        -policyholder_lump_sum,
+                        -broker_fee,
+                        0,
+                        -management_fee,
+                        -performance_fee,
+                        0,
+                    ]
+                ],
+                connector={"line": {"color": "rgb(63, 63, 63)"}},
+            ),
+            layout_yaxis_range=[-3, 14],
+        )
 
-    fig.show()
+        fig.update_layout(
+            yaxis_title="trillion USD",
+        )
 
-    fig.write_image(path.join(FIGURE_FOLDER, "waterfall2.pdf"))
+        # add title
+        fig.update_layout(
+            title={
+                "text": "With {} fee scheme".format(key),
+                "y": 0.9,
+                "x": 0.5,
+                "xanchor": "center",
+                "yanchor": "top",
+            }
+        )
 
-    print(f"Time elapsed: {time.time() - now} seconds")
+        fig.show()
+
+        fig.write_image(path.join(FIGURE_FOLDER, "waterfall4-mortgage.pdf"))
