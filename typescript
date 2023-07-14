@@ -1,21 +1,0 @@
-Script started on Sat Jun 25 22:33:25 2022
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air premfin % [K[?2004hlls[?2004l
-LICENSE			figures			scripts			typescript
-README.md		premiumFinance		setup.py		venv
-data			premiumFinance.egg-info	setup_repo.sh
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air premfin % [K[?2004hccd scro ipts[1m/[0m[0m [?2004l
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air scripts % [K[?2004hlls[?2004l
-empirical_experiements.py			plot_income_by_age.py
-fetch_fred.py					plot_lenderprofit.py
-get_lenderprofit.py				plot_moneyleft.py
-get_median.py					plot_wealthtransferprograms.py
-get_surrendervalue_maxloanrate_lenderprofit.py	process_empirical_table.py
-get_untappedprofit_policyholder.py		spotcheck.py
-latest_SIPP.py					theoretical_experiments.py
-plot_betas.py
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air scripts % [K[?2004hppyrho   thon ploot_lenfre   derprofit.py [?2004l
-/Users/tammy/Java_Help/testVS/premfin/venv/bin/python: can't open file '/Users/tammy/Java_Help/testVS/premfin/scripts/ploot_lenderprofit.py': [Errno 2] No such file or directory
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air scripts % [K[?2004hppython [7mplot_lenderprofit.py[27m[20D[27mp[27ml[27mo[27mt[27m_[27ml[27me[27mn[27md[27me[27mr[27mp[27mr[27mo[27mf[27mi[27mt[27m.[27mp[27my[?2004l
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air scripts % [K[?2004hpython plot_lenderprofit.py[?2004l
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air scripts % [K[?2004hpython plot_lenderprofit.py[?2004l
-[1m[7m%[27m[1m[0m                                                                                                             [0m[27m[24m[J(base) tammy@Tammys-MacBook-Air scripts % [K[?2004h
