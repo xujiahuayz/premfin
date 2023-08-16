@@ -1,6 +1,6 @@
-from os import path
+from pathlib import Path
 
-PROJECT_ROOT = path.dirname(path.dirname(__file__))
+PROJECT_ROOT = Path(__file__).parent.parent
 
-CACHE_PATH = path.join(PROJECT_ROOT, ".cache")
+CACHE_PATH = PROJECT_ROOT / ".cache"
 DISK_CACHING = True

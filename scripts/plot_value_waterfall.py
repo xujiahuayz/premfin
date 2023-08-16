@@ -78,7 +78,6 @@ def policy_fund_fees(
 
 
 if "__main__" == __name__:
-
     # mortgage fund fees - from scottish mortgage investment trust
     # https://www.hl.co.uk/shares/shares-search-results/s/scottish-mortgage-it-plc-ordinary-shares-5p
     # https://www.investopedia.com/terms/b/brokerage-fee.asp#:~:text=The%20fees%20range%20from%200.25,to%201.5%25%20of%20the%20assets.

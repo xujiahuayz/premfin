@@ -9,13 +9,13 @@ PERSIST_URL = "https://www.soa.org/globalassets/assets/files/resources/research-
 MORT_URL = "http://cdn-files.soa.org/research/2009-15_Data_20180601.zip"
 YIELD_URL = "https://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData"
 YIELD_URL_cdt = "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2021"
-DATA_FOLDER = path.join(PROJECT_ROOT, "data")
-FIGURE_FOLDER = path.join(PROJECT_ROOT, "figures")
+DATA_FOLDER = PROJECT_ROOT / "data"
+FIGURE_FOLDER = PROJECT_ROOT / "figures"
 
-MORTALITY_TABLE_CLEANED_PATH = path.join(DATA_FOLDER, "mortality_experience_clean.xlsx")
-PROCESSED_PROFITABILITY_PATH = path.join(DATA_FOLDER, "profitability.json")
+MORTALITY_TABLE_CLEANED_PATH = DATA_FOLDER / "mortality_experience_clean.xlsx"
+PROCESSED_PROFITABILITY_PATH = DATA_FOLDER / "profitability.json"
 
-NAIC_PATH = path.join(DATA_FOLDER, "NAIC_1996_2020_SPGlobalofficeworkbook.xls")
+NAIC_PATH = DATA_FOLDER / "NAIC_1996_2020_SPGlobalofficeworkbook.xls"
 
 YIELD_DURATION = {
     "1MONTH": 1 / 12,
@@ -84,15 +84,6 @@ DATE_ID = {
 
 FRED_URL_ROOT = "https://fred.stlouisfed.org/graph/fredgraph.csv?id="
 
-# ;2001;2002;2003;2004;2005;2006;2007;2008;2009;2010;2011;2012;2013;2014;2015;2016
-# secaap;1.7;3.1;4.9;7.1;11.2;13.7;15.8;12.7;7.1;4.9;5.4;2.4;2.7;2.2;2.5;
-# tertaap;;;;;;;;;0.5;7.1;2.1;2.3;3.7;8.1;6.5;
-# inforceaap;5;8;13;20;32;45;61;74;81;84;87;88;90;91;92;
-# secrocky;2.124304;3.239994;9.224147;11.354099;18.961073;36.4064;55.528331;60.352221;37.090352;23.476263;9.969372;5.359877;3.323124;3.001531;1.929556;3.001531
-# tertrocky;;;;;;;0.554775;1.005053;3.068822;10.901611;11.628785;7.819896;4.075349;9.062552;7.294591;5.0055
-# tockytot;2.124304;3.239994;9.224147;11.354099;18.961073;36.4064;56.083106;61.357274;40.159174;34.377874;21.598157;13.179773;7.398473;12.064083;9.224147;8.007031
-# secdf;;;;;;;;;;;5.06;2.12;2.57;1.65;1.65;
-# seccon;;2;2.6;3.3;5.5;6.1;12.2;11.8;7.6;3.8;1.3;2;2.6;1.7;1.7;
 
 LIFE_SETTLEMENTS_SIZE = {
     "secondary_volume": {
