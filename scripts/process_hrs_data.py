@@ -15,7 +15,7 @@ def get_hrs_data(table_name: str) -> pd.DataFrame:
 # Wills and Life Insurance
 hrs_mergede = get_hrs_data("T_R")
 hrs_demographics = get_hrs_data("B_R")
-hrs_assets = get_hrs_data("U_H")
+hrs_assets = get_hrs_data("Q_H")
 hrs_health = get_hrs_data("C_R")
 hrs_person = get_hrs_data("PR_R")
 hrs_job = get_hrs_data("M1_R")
@@ -43,7 +43,20 @@ hrs_merged = (
         on=id_cols,
         how="outer",
     )
-    .merge(hrs_assets["HHID"], on="HHID", how="outer")
+    .merge(
+        hrs_assets[
+            [
+                "HHID",
+                "RQ015",  # What was your income from self-employment, before taxes and other deductions
+                "RQ020",  # About how much wage and salary income did you receive
+                "RQ025",
+                "RQ030",
+                "RQ035",
+            ]
+        ],
+        on="HHID",
+        how="outer",
+    )
     .merge(
         hrs_health[
             id_cols
@@ -121,6 +134,35 @@ plot_cross_distribution(
 )
 
 plot_cross_distribution("RX067_R", "RC001", df=hrs_merged)
+
+# sum hrs_merged["RQ020"] and hrs_merged["RQ015"], result only na if both are na, if only one is na, then replace that na with 0
+hrs_merged["income"] = (
+    hrs_merged["RQ020"].fillna(0)
+    + hrs_merged["RQ015"].fillna(0)
+    + hrs_merged["RQ025"].fillna(0)
+    + hrs_merged["RQ030"].fillna(0)
+    + hrs_merged["RQ035"].fillna(0)
+)
+# replace 0 with nan where  both hrs_merged["RQ020"] and hrs_merged["RQ015"] are na
+hrs_merged["income"][
+    hrs_merged["RQ020"].isna()
+    & hrs_merged["RQ015"].isna()
+    & hrs_merged["RQ025"].isna()
+    & hrs_merged["RQ030"].isna()
+    & hrs_merged["RQ035"].isna()
+] = None
+
+
+# calculate mean income by RT041
+hrs_merged.groupby("RT041")["income"].mean()
+hrs_merged.groupby("RT041")["income"].median()
+
+hrs_merged.groupby("RT042")["income"].mean()
+hrs_merged.groupby("RT042")["income"].median()
+
+hrs_merged.groupby("RT043")["income"].mean()
+hrs_merged.groupby("RT043")["income"].median()
+
 
 # csv_health = hrs_merged[["RT043", "RC001"]].value_counts().sort_index()
 # # filter with RT043 = 1 or 5
