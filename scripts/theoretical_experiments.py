@@ -97,7 +97,7 @@ for sr in statutory_rate_rage:
             bkv_r_currentagelevel = list()
             for age in current_age_range:
                 insrd_benchmark.current_age = age
-                bkv_r = financing0.max_loan_rate_borrower(fullrecourse=True)
+                bkv_r = financing0.max_loan_rate_borrower(fullrecourse=True)[1]
                 bkv_r_currentagelevel.append(bkv_r)
                 print(age)
             bkv_r_mortlevel.append(bkv_r_currentagelevel)
