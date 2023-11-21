@@ -1,28 +1,34 @@
-#%%
-import requests
+# %%
 import csv
-from os import path
-import pandas as pd
-from io import TextIOWrapper, BytesIO
-from zipfile import ZipFile
-from pprint import pprint
 import xml.etree.ElementTree as ET
-from scipy.interpolate import interp1d
-import numpy as np
-
-from nelson_siegel_svensson.calibrate import calibrate_ns_ols
-
+from io import BytesIO, TextIOWrapper
+from pathlib import Path
+from pprint import pprint
+from typing import Iterable, Optional
+from zipfile import ZipFile
 
 # must build from source with mac M1
 import matplotlib.pyplot as plt
-from typing import Optional
-from premiumFinance import constants
+import numpy as np
+import pandas as pd
+import requests
+from nelson_siegel_svensson.calibrate import calibrate_ns_ols
+from scipy.interpolate import interp1d
+
+from premiumFinance.constants import (
+    DATA_FOLDER,
+    MORT_URL,
+    NAIC_PATH,
+    TREASURY_YIELD_URL,
+    VBT_TABLES,
+    YIELD_DURATION,
+)
 from premiumFinance.settings import PROJECT_ROOT
 
-#%%
+# %%
 
 # need to `pip install openpyxl`
-pers_file = path.join(constants.DATA_FOLDER, "persistency.xlsx")
+pers_file = DATA_FOLDER / "persistency.xlsx"
 # read lapse rates
 lapse_tbl = pd.read_excel(
     pers_file,
@@ -45,13 +51,12 @@ def get_vbt_data(
     get 1-year conditional mortality rates from VBT
     """
 
-    tbl_index = constants.VBT_TABLES[vbt]["m" if is_male else "f"][
+    tbl_index = VBT_TABLES[vbt]["m" if is_male else "f"][
         "unism" if is_smoker is None else "smoke" if is_smoker else "nonsm"
     ]
 
-    tbl_file = path.join(
-        PROJECT_ROOT, constants.DATA_FOLDER, f"VBTXML/t{tbl_index}.xml"
-    )
+    tbl_file = PROJECT_ROOT / DATA_FOLDER / f"VBTXML/t{tbl_index}.xml"
+
     vbt_tbl = ET.parse(tbl_file)
     root = vbt_tbl.getroot()
     [sel, ult] = root.findall("Table/Values")
@@ -91,64 +96,110 @@ def get_soa_data(url: str, filename: str):
     download excel data from SOA
     """
     request_result = requests.get(url)
-    vbt_path = path.join(PROJECT_ROOT, constants.DATA_FOLDER, filename + ".xlsx")
+    vbt_path = PROJECT_ROOT / DATA_FOLDER / f"{filename}.xlsx"
     with open(vbt_path, "wb") as f:
         f.write(request_result.content)
 
 
-def get_yield_data(
-    rooturl: str = constants.YIELD_URL,
-    entryindex: int = 7782,
-    month: int = 2,
-    year: int = 2021,
-):
-    if entryindex is None:
-        url = (
-            f"{rooturl}?$filter=month(NEW_DATE) eq {month} and year(NEW_DATE) eq {year}"
-        )
-    else:
-        url = f"{rooturl}({entryindex})"
-    r_yield = requests.get(url)
+# def get_yield_data(
+#     rooturl: str = YIELD_URL,
+#     entryindex: int = 7782,
+#     month: int = 2,
+#     year: int = 2021,
+# ):
+#     if entryindex is None:
+#         url = (
+#             f"{rooturl}?$filter=month(NEW_DATE) eq {month} and year(NEW_DATE) eq {year}"
+#         )
+#     else:
+#         url = f"{rooturl}({entryindex})"
+#     r_yield = requests.get(url)
+#     content = r_yield.content.decode("utf-8")
+#     root = ET.fromstring(content)
+#     yield_table = [{"duration": 0, "rate": 0}]
+
+#     yield_table.extend(
+#         {"duration": constants.YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
+#         for w in root[6][0][2:-1]
+#     )
+
+#     return pd.DataFrame(yield_table)
+
+
+def fetch_treasury_yield(
+    rooturl: str = TREASURY_YIELD_URL,
+    date: str = "20",
+    month: str = "11",
+    year: int = 2023,
+) -> pd.DataFrame:
+    r_yield = requests.get(f"{rooturl}&field_tdr_date_value={year}")
     content = r_yield.content.decode("utf-8")
     root = ET.fromstring(content)
-    yield_table = [{"duration": 0, "rate": 0}]
+    dat = f"{year}-{month}-{date}T00:00:00"
+    for entry in root.findall(".//{http://www.w3.org/2005/Atom}entry"):
+        if (
+            entry.find(
+                ".//{http://schemas.microsoft.com/ado/2007/08/dataservices}NEW_DATE"
+            ).text
+            == dat
+        ):
+            rates = {
+                child.tag.split("}")[1]: child.text
+                for child in entry.find(
+                    ".//{http://schemas.microsoft.com/ado/2007/08/dataservices/metadata}properties"
+                )
+            }
 
-    yield_table.extend(
-        {"duration": constants.YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
-        for w in root[6][0][2:-1]
-    )
-
-    return pd.DataFrame(yield_table)
-
-
-def getYieldData_cdt(
-    rooturl: str = constants.YIELD_URL_cdt,
-    date: str = "05",
-    month: str = "02",
-    year: str = "2021",
-):
-    r_yield = requests.get(rooturl)
-    content = r_yield.content.decode("utf-8")
-    root = ET.fromstring(content)
     yieldTable = [{"duration": 0, "rate": 0}]
-    entry = "{http://www.w3.org/2005/Atom}entry"
-    dat = year + "-" + month + "-" + date + "T00:00:00"
-    entry_set = root.findall(entry)
-    for rate in entry_set:
-        if rate[6][0][1].text == dat:
-            root = rate
+
     yieldTable.extend(
-        {"duration": constants.YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
-        for w in root[6][0][2:-1]
+        {"duration": YIELD_DURATION[key[3:]], "rate": float(value) / 100}
+        for key, value in rates.items()
+        if key.startswith("BC_") and (key.endswith("YEAR") or key.endswith("MONTH"))
     )
+    # entry = "{http://www.w3.org/2005/Atom}entry"
+
+    # entry_set = root.findall(entry)
+    # for rate in entry_set:
+    #     if rate[6][0][1].text == dat:
+    #         root = rate
+    # yieldTable.extend(
+    #     {"duration": YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
+    #     for w in root[6][0][2:-1]
+    # )
     return pd.DataFrame(yieldTable[1:])
 
 
-def getAnnualYield(yieldTable=None, durange=range(150)):
-    if yieldTable is None:
-        yieldTable = getYieldData_cdt()
+# def getYieldData_cdt(
+#     rooturl: str = "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2021",
+#     date: str = "05",
+#     month: str = "02",
+#     year: str = "2021",
+# ):
+#     r_yield = requests.get(rooturl)
+#     content = r_yield.content.decode("utf-8")
+#     root = ET.fromstring(content)
+#     yieldTable = [{"duration": 0, "rate": 0}]
+#     entry = "{http://www.w3.org/2005/Atom}entry"
+#     dat = year + "-" + month + "-" + date + "T00:00:00"
+#     entry_set = root.findall(entry)
+#     for rate in entry_set:
+#         if rate[6][0][1].text == dat:
+#             root = rate
+#     yieldTable.extend(
+#         {"duration": YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
+#         for w in root[6][0][2:-1]
+#     )
+#     return pd.DataFrame(yieldTable[1:])
+
+
+def get_annual_yield(
+    yield_table: pd.DataFrame | None = None, durange: Iterable = range(150)
+):
+    if yield_table is None:
+        yield_table = fetch_treasury_yield()
     curve, status = calibrate_ns_ols(
-        np.array(yieldTable["duration"]), np.array(yieldTable["rate"]), tau0=1.0
+        np.array(yield_table["duration"]), np.array(yield_table["rate"]), tau0=1.0
     )  # starting value of 1.0 for the optimization of tau
     assert status.success
     return curve(np.array(durange))
@@ -158,23 +209,23 @@ def getAnnualYield(yieldTable=None, durange=range(150)):
 # or ‘next’. ‘zero’, ‘slinear’, ‘quadratic’ and ‘cubic’ refer to a spline interpolation of zeroth, first, second or third order;
 # ‘previous’ and ‘next’ simply return the previous or next value of the point;
 # ‘nearest-up’ and ‘nearest’ differ when interpolating half-integers (e.g. 0.5, 1.5) in that ‘nearest-up’ rounds up and ‘nearest’ rounds down.
-def get_annual_yield_linear(
-    yieldTable=None, durange=range(150), intertype: str = "linear"
-):
-    if yieldTable is None:
-        yieldTable = get_yield_data()
-    f = interp1d(
-        yieldTable["duration"],
-        yieldTable["rate"],
-        kind=intertype,
-        fill_value=tuple(yieldTable.iloc[[0, -1]]["rate"]),
-        bounds_error=False,
-    )
-    return f(durange)
+# def get_annual_yield_linear(
+#     yieldTable=None, durange=range(150), intertype: str = "linear"
+# ):
+#     if yieldTable is None:
+#         yieldTable = get_yield_data()
+#     f = interp1d(
+#         yieldTable["duration"],
+#         yieldTable["rate"],
+#         kind=intertype,
+#         fill_value=tuple(yieldTable.iloc[[0, -1]]["rate"]),
+#         bounds_error=False,
+#     )
+#     return f(durange)
 
 
 # amount in dollar
-def getMarketSize(naic_path: str = constants.NAIC_PATH, year: int = 2020) -> float:
+def getMarketSize(naic_path: Path = NAIC_PATH, year: int = 2020) -> float:
     lapse_tbl = pd.read_excel(
         naic_path,
         index_col=0,
@@ -189,7 +240,7 @@ def getMarketSize(naic_path: str = constants.NAIC_PATH, year: int = 2020) -> flo
 
 
 # retrieve the huge mortality data set from the SOA
-def get_mort_data(url: str = constants.MORT_URL):
+def get_mort_data(url: str = MORT_URL):
     r_mort = requests.get(url)
 
     zip_ref = ZipFile(BytesIO(r_mort.content))

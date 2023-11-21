@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy
-from premiumFinance.fetchdata import getAnnualYield
+from premiumFinance.fetchdata import get_annual_yield
 from premiumFinance.financing import PolicyFinancingScheme
 from premiumFinance.util import make_list
 

@@ -5,7 +5,7 @@ from scipy import optimize
 import numpy as np
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy, make_list
-from premiumFinance.fetchdata import getAnnualYield
+from premiumFinance.fetchdata import get_annual_yield
 from typing import Any, Optional, Tuple
 
 
@@ -133,7 +133,6 @@ class PolicyFinancingScheme:
         return pv
 
     def surrender_value(self) -> float:
-
         variablepr = self.policy._variable_premium
         pr = self.policy.premium_stream_at_issue
         pr = make_list(pr)
@@ -218,7 +217,7 @@ class PolicyFinancingScheme:
         return sv, sol.root
 
 
-yield_curve = getAnnualYield()
+yield_curve = get_annual_yield()
 
 
 def calculate_lender_profit(
