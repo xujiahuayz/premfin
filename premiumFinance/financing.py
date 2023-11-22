@@ -6,7 +6,7 @@ import numpy as np
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy, make_list
 from premiumFinance.fetchdata import get_annual_yield
-from typing import Any, Optional, Tuple
+from typing import Any, Iterable, Optional, Tuple
 
 
 @dataclass
@@ -79,7 +79,7 @@ class PolicyFinancingScheme:
         self,
         loanrate: float,
         fullrecourse: bool = True,
-        pv_deathben: Optional[float] = None,
+        pv_deathben: float | None = None,
         oneperiod_mort: Any = None,
     ) -> float:
         if pv_deathben is None:
@@ -270,11 +270,11 @@ def calculate_lender_profit(
 
 def calculate_policyholder_IRR(
     row,
-    currentVBT,
-    currentmort=1.0,
-    is_level_premium=True,
-    lapse_assumption=True,
-    policyholder_rate=yield_curve,
+    currentVBT: str = "VBT15",
+    currentmort: float = 1.0,
+    is_level_premium: bool = True,
+    lapse_assumption: bool = True,
+    policyholder_rate: float | Iterable[float] = yield_curve,
     statutory_interest=0.035,
     premium_markup=0.0,
     cash_interest=0.03,

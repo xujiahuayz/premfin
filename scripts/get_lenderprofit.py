@@ -1,10 +1,11 @@
-#%% import packages
+# %% import packages
+
+import json
+import multiprocessing
+from time import time
 
 import numpy as np
 import pandas as pd
-import multiprocessing
-from time import time
-import json
 
 from premiumFinance.constants import (
     MORTALITY_TABLE_CLEANED_PATH,
@@ -14,17 +15,18 @@ from premiumFinance.financing import calculate_lender_profit, yield_curve
 
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
-#%% calculate profit rate
+
+# %% calculate profit rate
 def get_average_profitability(
-    is_level_premium=True,
-    lapse_assumption=True,
-    policyholder_rate=yield_curve,
-    statutory_interest=0.035,
-    premium_markup=0.0,
-    cash_interest=0.001,
-    lender_coc=0.01,
-    data_frame=mortality_experience,
-):
+    is_level_premium: bool = True,
+    lapse_assumption: bool = True,
+    policyholder_rate: float | np.ndarray = yield_curve,
+    statutory_interest: float = 0.035,
+    premium_markup: float = 0.0,
+    cash_interest: float = 0.001,
+    lender_coc: float = 0.01,
+    data_frame: pd.DataFrame = mortality_experience,
+) -> tuple[float, pd.DataFrame]:
     profit_columns = data_frame.apply(
         lambda row: calculate_lender_profit(
             row=row,
@@ -64,7 +66,7 @@ def tempfunc_f(x):
 lender_coc_value = np.arange(start=0.01, stop=0.2, step=0.01)
 
 
-#%% tbd
+# %% tbd
 if __name__ == "__main__":
     pool = multiprocessing.Pool()
 

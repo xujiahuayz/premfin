@@ -1,4 +1,4 @@
-#%% import packages
+# %% import packages
 import numpy as np
 from os import path
 import pandas as pd
@@ -22,7 +22,7 @@ IRR_PATH = path.join(DATA_FOLDER, "irrs.xlsx")
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
 
-#%% exploratory plot
+# %% exploratory plot
 row = mortality_experience.iloc[58]
 this_insured = Insured(
     issue_age=row["issueage"],  # type: ignore
@@ -63,7 +63,7 @@ plt.axhline(y=0, c="r")
 plt.show()
 
 
-#%% calculate irr -- slightly time consuming
+# %% calculate irr -- slightly time consuming
 irr_columns = mortality_experience.apply(
     lambda row: calculate_policyholder_IRR(
         row=row,

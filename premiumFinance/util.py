@@ -1,6 +1,8 @@
-from typing import Union
+from typing import Iterable
+
 import numpy as np
 import pandas as pd
+
 from premiumFinance.fetchdata import lapse_tbl
 
 
@@ -15,6 +17,8 @@ def median_(list_tuples: list[tuple[float, float]]) -> float:
 
 
 LIST_LEN = 150
+
+
 # make a list with length 150
 def make_list(x, to_length: int = LIST_LEN) -> list[float]:
     if type(x) == np.ndarray:
@@ -32,9 +36,9 @@ def make_list(x, to_length: int = LIST_LEN) -> list[float]:
 
 
 def cash_flow_pv(
-    cashflow: Union[float, list[float], np.ndarray, pd.Series],
-    probabilities: Union[float, list[float], np.ndarray, pd.Series],
-    discounters: Union[float, list[float], np.ndarray, pd.Series],
+    cashflow: float | Iterable[float],
+    probabilities: float | Iterable[float],
+    discounters: float | Iterable[float],
 ) -> list[float]:
     cashflow = make_list(cashflow)
     probabilities = make_list(probabilities)
@@ -42,10 +46,6 @@ def cash_flow_pv(
     return [
         c * probabilities[i] / (1 + discounters[i]) ** i for i, c in enumerate(cashflow)
     ]
-
-    # sum(
-    #     c * probabilities[i] / (1 + discounters[i]) ** i for i, c in enumerate(cashflow)
-    # )
 
 
 # lapse rate dependent on gender; lapse == 0 with no lapse assumption

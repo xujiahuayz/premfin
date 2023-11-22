@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import optimize
-from typing import Optional, Union
+from typing import Iterable
 
 from premiumFinance.insured import Insured
 from premiumFinance.util import lapse_rate, make_list, cash_flow_pv
@@ -23,10 +23,10 @@ class InsurancePolicy:
     premium_markup: float = 0
     surrender_penalty_rate: float = 0
     cash_interest: float = 0.03
-    is_level_premium: Optional[bool] = None
-    premium_stream_at_issue: Union[float, list[float], None] = None
-    statutory_interest: Union[float, list[float]] = 0.035
-    policyholder_rate: Union[float, list[float]] = 0.01  # should be some risk free rate
+    is_level_premium: bool | None = None
+    premium_stream_at_issue: float | Iterable[float] | None = None
+    statutory_interest: float | Iterable[float] = 0.035
+    policyholder_rate: float | Iterable[float] = 0.01  # should be some risk free rate
 
     def __post_init__(self):
         assert (
@@ -139,9 +139,9 @@ class InsurancePolicy:
     def pv_unpaid_premium_list(
         self,
         at_issue: bool = False,
-        issuer_perspective: Optional[bool] = None,
-        premium_stream_at_issue: Union[float, list[float], None] = None,
-        discount_rate: Union[float, list[float], None] = None,
+        issuer_perspective: bool | None = None,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> list[float]:
         """
         unpaid premium stream discounted to present value
@@ -182,9 +182,9 @@ class InsurancePolicy:
     def pv_unpaid_premium(
         self,
         at_issue: bool = False,
-        issuer_perspective: Optional[bool] = None,
-        premium_stream_at_issue: Union[float, list[float], None] = None,
-        discount_rate: Union[float, list[float], None] = None,
+        issuer_perspective: bool | None = None,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> float:
         """
         present value of all unpaid, probabilistic premium
@@ -201,9 +201,9 @@ class InsurancePolicy:
 
     def pv_death_benefit_list(
         self,
-        issuer_perspective: Optional[bool] = None,
+        issuer_perspective: bool | None = None,
         at_issue: bool = True,
-        discount_rate: Union[float, list[float], None] = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> list[float]:
         """
         probabilistic death benefit payments discount to present value
@@ -232,9 +232,9 @@ class InsurancePolicy:
 
     def pv_death_benefit(
         self,
-        issuer_perspective: Optional[bool] = None,
+        issuer_perspective: bool | None = None,
         at_issue: bool = True,
-        discount_rate: Union[float, list[float], None] = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> float:
         """
         present value of death benefit payment
@@ -250,10 +250,10 @@ class InsurancePolicy:
 
     def policy_value_list(
         self,
-        premium_stream_at_issue: Union[float, list[float], None] = None,
-        issuer_perspective: Optional[bool] = None,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        issuer_perspective: bool | None = None,
         at_issue: bool = True,
-        discount_rate: Union[float, list[float], None] = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> list[float]:
         """
         present value of probabilistic cash flow (premium - death benefit)
@@ -280,10 +280,10 @@ class InsurancePolicy:
 
     def policy_value(
         self,
-        premium_stream_at_issue: Union[float, list[float], None] = None,
-        issuer_perspective: Optional[bool] = None,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        issuer_perspective: bool | None = None,
         at_issue: bool = True,
-        discount_rate: Union[float, list[float], None] = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> float:
         """
         present value of a policy
@@ -300,10 +300,10 @@ class InsurancePolicy:
 
     def policy_value_future_list(
         self,
-        premium_stream_at_issue: Union[float, list[float], None] = None,
-        issuer_perspective: Optional[bool] = None,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        issuer_perspective: bool | None = None,
         at_issue: bool = True,
-        discount_rate: Union[float, list[float], None] = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> list[float]:
         """
         probabilistic present values of future values (one value per period) of the policy
@@ -324,8 +324,8 @@ class InsurancePolicy:
     def nav_gain(
         self,
         at_issue: bool = False,
-        premium_stream_at_issue: Union[float, list[float], None] = None,
-        discount_rate: Union[float, list[float], None] = None,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        discount_rate: float | Iterable[float] | None = None,
     ) -> list[float]:
         """
         year-by-year gain in policy nav
@@ -384,7 +384,6 @@ class InsurancePolicy:
         issuer_perspecitve: bool = True,
         at_issue: bool = True,
     ):
-
         sol = optimize.root_scalar(
             lambda r: self.policy_value(
                 premium_stream_at_issue=self.premium_stream_at_issue,

@@ -193,11 +193,8 @@ def fetch_treasury_yield(
 #     return pd.DataFrame(yieldTable[1:])
 
 
-def get_annual_yield(
-    yield_table: pd.DataFrame | None = None, durange: Iterable = range(150)
-):
-    if yield_table is None:
-        yield_table = fetch_treasury_yield()
+def get_annual_yield(durange: Iterable = range(150), **kwargs):
+    yield_table = fetch_treasury_yield(**kwargs)
     curve, status = calibrate_ns_ols(
         np.array(yield_table["duration"]), np.array(yield_table["rate"]), tau0=1.0
     )  # starting value of 1.0 for the optimization of tau
