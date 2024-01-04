@@ -1,5 +1,4 @@
 # %% import packages
-from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -129,7 +128,7 @@ if __name__ == "__main__":
     plt.legend(custom_lines, ["VBT01 T 1", "VBT15 T 1", "VBT15 F 1"])
     plt.ylim(0, sum(heights[3:]) * 1.3)
     plt.tight_layout()
-    plt.savefig(path.join(FIGURE_FOLDER, "moneyleft.pdf"))
+    plt.savefig(FIGURE_FOLDER / "moneyleft.pdf")
     plt.show()
 
 
