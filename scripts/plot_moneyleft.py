@@ -1,22 +1,10 @@
-# %% import packages
-import pandas as pd
+import brewer2mpl
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-import brewer2mpl
 
-
+from premiumFinance.constants import FIGURE_FOLDER
 from premiumFinance.fetchdata import get_market_size
-from premiumFinance.constants import (
-    FIGURE_FOLDER,
-    MORTALITY_TABLE_CLEANED_PATH,
-)
-
-
-# %% calculate dollar profit
-mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
-sample_representativeness = (
-    get_market_size(year=2020) / mortality_experience["Amount Exposed"].sum()
-)
+from scripts.sample_represent import mortality_experience, sample_representativeness
 
 
 def get_money_left(
