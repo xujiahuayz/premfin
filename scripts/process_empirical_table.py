@@ -1,4 +1,3 @@
-from os import path
 import numpy as np
 import re
 import pandas as pd
@@ -9,9 +8,9 @@ def get_representative_age(x: str) -> int:
     return int(np.mean([int(x) for x in re.split("[+-]", x) if x != ""]))
 
 
-#%% prepare datatable
+# %% prepare datatable
 if __name__ == "__main__":
-    mortality_experience_path = path.join(DATA_FOLDER, "mortalityexperience.xlsx")
+    mortality_experience_path = DATA_FOLDER / "mortalityexperience.xlsx"
 
     mortality_experience = pd.read_excel(mortality_experience_path)
 

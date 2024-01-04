@@ -95,6 +95,12 @@ create a clean `mortality_experience_clean.xlsx`:
 python process_empirical_table.py
 ```
 
+calculate standard LE (with mortality rate of 1) of each cohort
+
+```zsh
+pyython get_le.py
+```
+
 <!-- not needed for the paper anymore -->
 <!-- get surrender value, max loan rate acceptable by policyholder, lender profit at max loan rate in one go:
 

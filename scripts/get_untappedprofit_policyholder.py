@@ -1,8 +1,6 @@
 import pandas as pd
 
-from premiumFinance.constants import (
-    MORTALITY_TABLE_CLEANED_PATH,
-)
+from premiumFinance.constants import MORTALITY_TABLE_CLEANED_PATH
 from premiumFinance.financing import PolicyFinancingScheme, yield_curve
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured

@@ -1,12 +1,13 @@
 from dataclasses import dataclass
-
-from premiumFinance.util import cash_flow_pv
-from scipy import optimize
-import numpy as np
-from premiumFinance.insured import Insured
-from premiumFinance.inspolicy import InsurancePolicy, make_list
-from premiumFinance.fetchdata import get_annual_yield
 from typing import Any, Iterable, Optional, Tuple
+
+import numpy as np
+from scipy import optimize
+from treasury_yield import yield_curve
+
+from premiumFinance.inspolicy import InsurancePolicy, make_list
+from premiumFinance.insured import Insured
+from premiumFinance.util import cash_flow_pv
 
 
 @dataclass
@@ -215,9 +216,6 @@ class PolicyFinancingScheme:
             method="brentq",
         )
         return sv, sol.root
-
-
-yield_curve = get_annual_yield()
 
 
 def calculate_lender_profit(
