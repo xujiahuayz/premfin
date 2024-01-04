@@ -1,6 +1,6 @@
-#%%
+# %%
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
-from premiumFinance.fetchdata import getMarketSize
+from premiumFinance.fetchdata import get_market_size
 from premiumFinance.util import lapse_rate
 
 import pandas as pd
@@ -8,7 +8,7 @@ from os import path
 import matplotlib.pyplot as plt
 import numpy as np
 
-#%%
+# %%
 # untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
 untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt.xlsx")
 mortality_experience = pd.read_excel(untapped_profit_path)
@@ -25,7 +25,7 @@ mortality_experience["lapsed_economic_value"] = (
 )
 
 sample_representativeness = (
-    getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
+    get_market_size(year=2020) / mortality_experience["Amount Exposed"].sum()
 )
 
 lapsed_value_all = (
@@ -53,9 +53,8 @@ WEALTHTRANSFER_PROGRAMS_DICT = {
     ],
 }
 
-#%%
+# %%
 if __name__ == "__main__":
-
     x_pos = range(len(WEALTHTRANSFER_PROGRAMS_DICT["labelname"]))
     heights = WEALTHTRANSFER_PROGRAMS_DICT["value"]
 

@@ -4,7 +4,7 @@ from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from premiumFinance.fetchdata import getMarketSize
+from premiumFinance.fetchdata import get_market_size
 from premiumFinance.constants import (
     DATA_FOLDER,
     MORTALITY_TABLE_CLEANED_PATH,
@@ -88,7 +88,7 @@ mortality_experience["Dollar profit"].sum() / mortality_experience[
     "Amount Exposed"
 ].sum()
 sample_representativeness = (
-    getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
+    get_market_size(year=2020) / mortality_experience["Amount Exposed"].sum()
 )
 
 dollar_amount_untapped = (

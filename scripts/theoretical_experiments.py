@@ -112,7 +112,7 @@ for k, v in enumerate(bkv_r_statratelevel):
         plt.close()
         for i, x in enumerate(w):
             plt.plot(current_age_range, x, label=round(current_mort_range[i], 1))
-            plt.ylim([0, 1])
+            plt.ylim([0, 0.34])
         plt.legend(title="Current mortality factor", loc="upper left")
         plt.xlabel("Current age")
         plt.ylabel("Breakeven loan rate p.a.")

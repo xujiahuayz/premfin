@@ -1,4 +1,4 @@
-#%% import packages
+# %% import packages
 from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,17 +6,17 @@ from matplotlib.lines import Line2D
 import brewer2mpl
 
 
-from premiumFinance.fetchdata import getMarketSize
+from premiumFinance.fetchdata import get_market_size
 from premiumFinance.constants import (
     FIGURE_FOLDER,
     MORTALITY_TABLE_CLEANED_PATH,
 )
 
 
-#%% calculate dollar profit
+# %% calculate dollar profit
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 sample_representativeness = (
-    getMarketSize(year=2020) / mortality_experience["Amount Exposed"].sum()
+    get_market_size(year=2020) / mortality_experience["Amount Exposed"].sum()
 )
 
 
@@ -44,7 +44,6 @@ def get_money_left(
 money_left_15_T = get_money_left(current_vbt="VBT15", lapse_assumption=True)
 
 if __name__ == "__main__":
-
     money_left_01_T = get_money_left(current_vbt="VBT01", lapse_assumption=True)
     money_left_15_F = get_money_left(current_vbt="VBT15", lapse_assumption=False)
 
@@ -55,18 +54,18 @@ if __name__ == "__main__":
     real_estate_change = (23523.6 - 18874.5) / 1e3
 
     WIDTH = 1
-    #%%
+    # %%
     bmap_5 = brewer2mpl.get_map("greens", "sequential", 5)
     bmap_3 = brewer2mpl.get_map("dark2", "qualitative", 3)
     colors = bmap_3.mpl_colors
     colors_5 = bmap_5.mpl_colors
     colors.extend(colors_5[::-1])
-    #%%
+    # %%
 
-    #%% latest plot
+    # %% latest plot
     heights = [
         real_estate_nominal,
-        getMarketSize(year=2020) / 1e12,
+        get_market_size(year=2020) / 1e12,
         real_estate_change,
         money_left_01_T / 1e12,
         money_left_15_T / 1e12,
