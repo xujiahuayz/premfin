@@ -101,31 +101,6 @@ def get_soa_data(url: str, filename: str):
         f.write(request_result.content)
 
 
-# def get_yield_data(
-#     rooturl: str = YIELD_URL,
-#     entryindex: int = 7782,
-#     month: int = 2,
-#     year: int = 2021,
-# ):
-#     if entryindex is None:
-#         url = (
-#             f"{rooturl}?$filter=month(NEW_DATE) eq {month} and year(NEW_DATE) eq {year}"
-#         )
-#     else:
-#         url = f"{rooturl}({entryindex})"
-#     r_yield = requests.get(url)
-#     content = r_yield.content.decode("utf-8")
-#     root = ET.fromstring(content)
-#     yield_table = [{"duration": 0, "rate": 0}]
-
-#     yield_table.extend(
-#         {"duration": constants.YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
-#         for w in root[6][0][2:-1]
-#     )
-
-#     return pd.DataFrame(yield_table)
-
-
 def fetch_treasury_yield(
     rooturl: str = TREASURY_YIELD_URL,
     date: str = "20",
@@ -170,29 +145,6 @@ def fetch_treasury_yield(
     return pd.DataFrame(yieldTable[1:])
 
 
-# def getYieldData_cdt(
-#     rooturl: str = "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2021",
-#     date: str = "05",
-#     month: str = "02",
-#     year: str = "2021",
-# ):
-#     r_yield = requests.get(rooturl)
-#     content = r_yield.content.decode("utf-8")
-#     root = ET.fromstring(content)
-#     yieldTable = [{"duration": 0, "rate": 0}]
-#     entry = "{http://www.w3.org/2005/Atom}entry"
-#     dat = year + "-" + month + "-" + date + "T00:00:00"
-#     entry_set = root.findall(entry)
-#     for rate in entry_set:
-#         if rate[6][0][1].text == dat:
-#             root = rate
-#     yieldTable.extend(
-#         {"duration": YIELD_DURATION[w.tag[58:]], "rate": float(w.text) / 100}
-#         for w in root[6][0][2:-1]
-#     )
-#     return pd.DataFrame(yieldTable[1:])
-
-
 def get_annual_yield(durange: Iterable = range(150), **kwargs):
     yield_table = fetch_treasury_yield(**kwargs)
     curve, status = calibrate_ns_ols(
@@ -222,7 +174,7 @@ def get_annual_yield(durange: Iterable = range(150), **kwargs):
 
 
 # amount in dollar
-def getMarketSize(naic_path: Path = NAIC_PATH, year: int = 2020) -> float:
+def get_market_size(naic_path: Path = NAIC_PATH, year: int = 2020) -> float:
     lapse_tbl = pd.read_excel(
         naic_path,
         index_col=0,
@@ -295,5 +247,3 @@ def get_mort_data(url: str = MORT_URL):
 # durange = range(40)
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="linear"))
 # plt.plot(durange, getAnnualYield(durange=durange, intertype="quadratic"))
-
-# %%
