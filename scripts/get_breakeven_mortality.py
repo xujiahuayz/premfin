@@ -1,12 +1,8 @@
 import pandas as pd
-
-from premiumFinance.constants import (
-    MORTALITY_TABLE_CLEANED_PATH,
-)
-from premiumFinance.insured import Insured
-
 from scipy import optimize
 
+from premiumFinance.constants import MORTALITY_TABLE_CLEANED_PATH
+from premiumFinance.insured import Insured
 from scripts.get_untappedprofit_policyholder import policyholder_policy_value
 
 

@@ -1,41 +1,16 @@
-# %%
-from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
-from premiumFinance.fetchdata import get_market_size
-from premiumFinance.util import lapse_rate
-
-import pandas as pd
-from os import path
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
-# %%
-# untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit.xlsx")
-untapped_profit_path = path.join(DATA_FOLDER, "untappedprofit_cnt.xlsx")
-mortality_experience = pd.read_excel(untapped_profit_path)
+from premiumFinance.constants import FIGURE_FOLDER
+from scripts.process_mortality_table import mortality_experience
+from scripts.sample_represent import sample_representativeness
 
-mortality_experience["lapse_rate"] = mortality_experience.apply(
-    lambda row: lapse_rate(isMale=row["isMale"])[row["currentage"] - row["issueage"]],
-    axis=1,
-)
-
-mortality_experience["lapsed_economic_value"] = (
-    mortality_experience["lapse_rate"]
-    * mortality_experience["Excess_Policy_PV_yield_curve"]
-    * mortality_experience["Amount Exposed"]
-)
-
-sample_representativeness = (
-    get_market_size(year=2020) / mortality_experience["Amount Exposed"].sum()
-)
-
-lapsed_value_all = (
-    mortality_experience["lapsed_economic_value"].sum() * sample_representativeness
-)
+lapsed_value_all = mortality_experience["lapsed_economic_value"].sum()
 
 
 # lapsed_value_positive_only = (
 #     sum(w for w in mortality_experience["lapsed_economic_value"] if w > 0)
-#     * sample_representativeness
 # )
 
 WEALTHTRANSFER_PROGRAMS_DICT = {
@@ -82,7 +57,7 @@ if __name__ == "__main__":
 
     plt.tight_layout()
 
-    plt.savefig(path.join(FIGURE_FOLDER, "wealthtransferprograms.pdf"))
+    plt.savefig(FIGURE_FOLDER / "wealthtransferprograms.pdf")
     # %%
     # Breakdown lapsed economic value
     plt.show()
@@ -144,7 +119,5 @@ if __name__ == "__main__":
     plt.xlabel("age")
     plt.legend()
     plt.tight_layout()
-    plt.savefig(path.join(FIGURE_FOLDER, "lap_bd.pdf"))
+    plt.savefig(FIGURE_FOLDER / "lap_bd.pdf")
     plt.show()
-
-# %%

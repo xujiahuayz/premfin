@@ -98,7 +98,7 @@ python process_empirical_table.py
 calculate standard LE (with mortality rate of 1) of each cohort
 
 ```zsh
-pyython get_le.py
+python get_le.py
 ```
 
 <!-- not needed for the paper anymore -->
@@ -112,6 +112,12 @@ get different untapped profit based on different VBT tables and mortality rates 
 
 ```zsh
 python get_untappedprofit_policyholder.py
+```
+
+plot life insurance value to policyholders by LE bin
+
+```zsh
+python plot_le_distr.py
 ```
 
 1. plot money left based on different VBT on the table from the perspective of policyholder in comparison with real estate value loss during the financial crisis:

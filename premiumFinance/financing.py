@@ -3,10 +3,10 @@ from typing import Any, Iterable, Optional, Tuple
 
 import numpy as np
 from scipy import optimize
-from treasury_yield import yield_curve
 
 from premiumFinance.inspolicy import InsurancePolicy, make_list
 from premiumFinance.insured import Insured
+from premiumFinance.treasury_yield import yield_curve
 from premiumFinance.util import cash_flow_pv
 
 

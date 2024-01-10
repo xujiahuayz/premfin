@@ -1,4 +1,3 @@
-from os import path
 from premiumFinance.settings import PROJECT_ROOT
 import numpy as np
 
