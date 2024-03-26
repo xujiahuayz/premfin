@@ -37,6 +37,8 @@ if __name__ == "__main__":
 
     mortality_experience_clean = mortality_experience[
         [
+            "Issue Age Group",
+            "Attained Age Group",
             "issueage",
             "currentage",
             "isMale",

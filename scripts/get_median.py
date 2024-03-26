@@ -1,11 +1,11 @@
-from premiumFinance.constants import FIGURE_FOLDER
-
-import pandas as pd
-import numpy as np
 from os import path
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from process_mortality_table import mortality_experience
 
+from premiumFinance.constants import FIGURE_FOLDER
 
 mortality_experience_sorted = mortality_experience.sort_values(
     by=["average_lapsed_amount"], ignore_index=True
