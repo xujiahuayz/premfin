@@ -31,7 +31,7 @@ def policyholder_policy_value(
         current_age=current_age,
         issue_vbt="VBT01",
         current_vbt=current_vbt,
-        current_mort=current_mort,
+        current_mortality_factor=current_mort,
     )
 
     # premium markup = 0 for default case to calculate

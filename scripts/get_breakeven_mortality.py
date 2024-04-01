@@ -40,7 +40,7 @@ def find_breakeven_mortality(
         current_age=current_age,
         issue_vbt="VBT01",
         current_vbt=current_vbt,
-        current_mort=result,
+        current_mortality_factor=result,
     )
     print(result)
     return result, this_insured.mortality_now.life_expectancy + current_age
@@ -49,17 +49,17 @@ def find_breakeven_mortality(
 if __name__ == "__main__":
     mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
-    mortality_experience[
-        ["breakeven_mortality", "breakeven"]
-    ] = mortality_experience.apply(
-        lambda row: find_breakeven_mortality(
-            issue_age=row["issueage"],
-            is_male=row["isMale"],
-            is_smoker=row["isSmoker"],
-            current_age=row["currentage"],
-            current_vbt="VBT15",
-        ),
-        axis=1,
-        result_type="expand",
+    mortality_experience[["breakeven_mortality", "breakeven"]] = (
+        mortality_experience.apply(
+            lambda row: find_breakeven_mortality(
+                issue_age=row["issueage"],
+                is_male=row["isMale"],
+                is_smoker=row["isSmoker"],
+                current_age=row["currentage"],
+                current_vbt="VBT15",
+            ),
+            axis=1,
+            result_type="expand",
+        )
     )
     mortality_experience.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)

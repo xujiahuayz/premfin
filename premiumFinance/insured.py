@@ -18,8 +18,8 @@ class Insured:
     current_age: float
     is_male: bool = True
     is_smoker: Optional[bool] = False
-    issue_mort: float = 1
-    current_mort: float = 1
+    issue_mortality_factor: float = 1
+    current_mortality_factor: float = 1
     issue_vbt: str = "VBT01"
     current_vbt: str = "VBT15"
 
@@ -40,7 +40,7 @@ class Insured:
             current_age=self.issue_age,  # current_age = issue_age at policy issuance
             is_male=self.is_male,
             is_smoker=self.is_smoker,
-            mort_rate=self.issue_mort,
+            mort_rate=self.issue_mortality_factor,
             which_vbt=self.issue_vbt,
         )
 
@@ -54,6 +54,6 @@ class Insured:
             current_age=self.current_age,
             is_male=self.is_male,
             is_smoker=self.is_smoker,
-            mort_rate=self.current_mort,
+            mort_rate=self.current_mortality_factor,
             which_vbt=self.current_vbt,
         )

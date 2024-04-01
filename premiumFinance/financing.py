@@ -237,7 +237,7 @@ def calculate_lender_profit(
         current_age=row["currentage"],  # type: ignore
         issue_vbt="VBT01",
         current_vbt=current_vbt,
-        current_mort=current_mort,
+        current_mortality_factor=current_mort,
     )
     this_policy = InsurancePolicy(
         insured=this_insured,
@@ -285,7 +285,7 @@ def calculate_policyholder_IRR(
         current_age=row["currentage"],  # type: ignore
         issue_vbt="VBT01",
         current_vbt=currentVBT,
-        current_mort=currentmort,
+        current_mortality_factor=currentmort,
     )
     this_policy = InsurancePolicy(
         insured=this_insured,

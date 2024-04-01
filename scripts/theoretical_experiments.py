@@ -55,8 +55,8 @@ insrd_benchmark = Insured(
     is_male=True,
     is_smoker=False,
     current_age=70,
-    issue_mort=1.0,
-    current_mort=1.0,
+    issue_mortality_factor=1.0,
+    current_mortality_factor=1.0,
     issue_vbt="VBT01",
     current_vbt="VBT15",
 )
@@ -93,7 +93,7 @@ for sr in statutory_rate_rage:
         pr = financing0.policy._level_premium
         bkv_r_mortlevel = list()
         for mort in current_mort_range:
-            insrd_benchmark.current_mort = mort
+            insrd_benchmark.current_mortality_factor = mort
             bkv_r_currentagelevel = list()
             for age in current_age_range:
                 insrd_benchmark.current_age = age
@@ -118,7 +118,7 @@ for k, v in enumerate(bkv_r_statratelevel):
         plt.ylabel("Breakeven loan rate p.a.")
         plt.title(
             f"""
-            At issue: {insrd_benchmark.issue_age}-year-old, {'' if insrd_benchmark.is_smoker else 'non-'}smoking, {insrd_benchmark.mortality_at_issue.gender}, mortality factor: {insrd_benchmark.issue_mort}
+            At issue: {insrd_benchmark.issue_age}-year-old, {'' if insrd_benchmark.is_smoker else 'non-'}smoking, {insrd_benchmark.mortality_at_issue.gender}, mortality factor: {insrd_benchmark.issue_mortality_factor}
             """
             f"""
             Lapse-based pricing: {lapse_range[j]}, statutory interest rate: {statutory_rate_rage[k]}, premium rate: {round(pr_statratelevel[k][j],4)}

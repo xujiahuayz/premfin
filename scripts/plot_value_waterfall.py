@@ -1,6 +1,7 @@
 """
 Plot value lost waterfall
 """
+
 from os import path
 import plotly.graph_objects as go
 import time
@@ -43,7 +44,7 @@ def policy_fund_fees(
         current_age=current_age,
         issue_vbt="VBT01",
         current_vbt=current_vbt,
-        current_mort=current_mort,
+        current_mortality_factor=current_mort,
     )
 
     this_policy = InsurancePolicy(
@@ -114,17 +115,17 @@ if "__main__" == __name__:
             ]
         ]
 
-        mortality_experience[
-            ["management_fee_rate", "performance_fee_rate"]
-        ] = mortality_experience.apply(
-            lambda row: policy_fund_fees(
-                issue_age=row["issueage"],
-                is_male=row["isMale"],
-                is_smoker=row["isSmoker"],
-                current_age=row["currentage"],
-            ),
-            axis=1,
-            result_type="expand",
+        mortality_experience[["management_fee_rate", "performance_fee_rate"]] = (
+            mortality_experience.apply(
+                lambda row: policy_fund_fees(
+                    issue_age=row["issueage"],
+                    is_male=row["isMale"],
+                    is_smoker=row["isSmoker"],
+                    current_age=row["currentage"],
+                ),
+                axis=1,
+                result_type="expand",
+            )
         )
 
         broker_fee = (

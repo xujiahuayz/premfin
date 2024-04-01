@@ -31,7 +31,7 @@ this_insured = Insured(
     current_age=row["currentage"],  # type: ignore
     issue_vbt="VBT01",
     current_vbt="VBT15",
-    current_mort=0.1,
+    current_mortality_factor=0.1,
 )
 this_policy = InsurancePolicy(
     insured=this_insured,
