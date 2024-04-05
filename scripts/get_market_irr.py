@@ -1,6 +1,7 @@
 from typing import Iterable
 
 from matplotlib import pyplot as plt
+import numpy as np
 from scipy import optimize
 
 from premiumFinance.constants import FIGURE_FOLDER
@@ -9,16 +10,21 @@ from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
 from premiumFinance.treasury_yield import yield_curve
 from premiumFinance.util import cash_flow_pv
-from scripts.process_aapartners import aapartners_grouped
+from scripts.process_aapartners import tpr_model
 from scripts.process_mortality_table import (
     mortality_experience,
     # sample_representativeness,
 )
 
-# based on mortality_experience['isMale'], get 'tp_rate' from aapartners_grouped
-mortality_experience["tp_rate"] = mortality_experience["isMale"].map(
-    lambda x: aapartners_grouped.loc[x, "tp_rate"]
-)
+# based on logged mortality_experience['life_expectancy'] get tpr
+
+mortality_experience["ln_le"] = np.log(mortality_experience["life_expectancy"])
+mortality_experience["tpr"] = tpr_model.predict(mortality_experience)
+mortality_experience["tp_rate"] = (
+    mortality_experience["tpr"] + mortality_experience["surrender_value"]
+).clip(
+    0, 1
+)  # make sure tp_rate is between 0 and 1 (although it already is even before clip)
 
 
 def condiscounted_cash_flow(
@@ -72,7 +78,7 @@ for mort_mult in [0.5, 1, 1.5]:
         result_type="expand",
     )
 
-    for tp_factor in [0, 0.5, 1, 1.5, 2]:
+    for tp_factor in [0, 0.5, 1, 1.5]:
         ## deduct transaction cost times tp_factor for column 0
         probablistic_cash_flows_rate[0] -= tp_factor * mortality_experience["tp_rate"]
 

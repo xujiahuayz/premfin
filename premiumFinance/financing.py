@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable
 
 import numpy as np
 from scipy import optimize
@@ -102,7 +102,7 @@ class PolicyFinancingScheme:
         self,
         loanrate: float,
         fullrecourse: bool = True,
-        pv_deathben: Optional[float] = None,
+        pv_deathben: float | None = None,
     ) -> float:
         if loanrate is np.nan:
             return 0
@@ -123,7 +123,7 @@ class PolicyFinancingScheme:
     def PV_lender_maxed(
         self,
         fullrecourse: bool = True,
-        pv_deathben: Optional[float] = None,
+        pv_deathben: float | None = None,
     ) -> float:
         _, loanrate = self.max_loan_rate_borrower(fullrecourse=fullrecourse)
         pv = self.PV_lender(
@@ -191,7 +191,7 @@ class PolicyFinancingScheme:
     def max_loan_rate_borrower(
         self,
         fullrecourse: bool = True,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         sv = self.surrender_value()
         # no lapse assumption for death benefit payment
         oneperiod_mort = self.policy.death_benefit_payment_probability(
@@ -229,7 +229,7 @@ def calculate_lender_profit(
     premium_markup=0.0,
     cash_interest=0.03,
     lender_coc=0.01,
-):
+) -> tuple[float, float, float]:
     this_insured = Insured(
         issue_age=row["issueage"],  # type: ignore
         is_male=row["isMale"],  # type: ignore

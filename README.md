@@ -101,12 +101,11 @@ calculate standard LE (with mortality rate of 1) of each cohort
 python get_le.py
 ```
 
-<!-- not needed for the paper anymore -->
-<!-- get surrender value, max loan rate acceptable by policyholder, lender profit at max loan rate in one go:
+get surrender value, max loan rate acceptable by policyholder, lender profit at max loan rate in one go:
 
 ```zsh
 python get_surrendervalue_maxloanrate_lenderprofit.py
-``` -->
+```
 
 get different untapped profit based on different VBT tables and mortality rates from the perspective of policyholder when their cost of capital is at various levels:
 
