@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from scipy import optimize
 
-from premiumFinance.constants import FIGURE_FOLDER
+from premiumFinance.constants import FIGURE_FOLDER, DATA_FOLDER
 from premiumFinance.financing import PolicyFinancingScheme
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
@@ -20,11 +20,6 @@ from scripts.process_mortality_table import (
 
 mortality_experience["ln_le"] = np.log(mortality_experience["life_expectancy"])
 mortality_experience["tpr"] = tpr_model.predict(mortality_experience)
-mortality_experience["tp_rate"] = (
-    mortality_experience["tpr"] + mortality_experience["surrender_value"]
-).clip(
-    0, 1
-)  # make sure tp_rate is between 0 and 1 (although it already is even before clip)
 
 
 def condiscounted_cash_flow(
@@ -65,95 +60,144 @@ def condiscounted_cash_flow(
     )
 
 
-for mort_mult in [0.5, 1, 1.5]:
-    probablistic_cash_flows_rate = mortality_experience.apply(
-        lambda row: [
-            -w
-            for w in condiscounted_cash_flow(
-                row=row,
-                currentmort=mort_mult,
-            )
-        ],
-        axis=1,
-        result_type="expand",
-    )
-
-    for tp_factor in [0, 0.5, 1, 1.5]:
-        ## deduct transaction cost times tp_factor for column 0
-        probablistic_cash_flows_rate[0] -= tp_factor * mortality_experience["tp_rate"]
-
-        # for each row, multiply rate by amount exposed, lapse_rate and sample_representativeness
-        probablistic_cash_flows = probablistic_cash_flows_rate.mul(
-            mortality_experience["Amount Exposed"]
-            # * mortality_experience["lapse_rate"]
-            # * sample_representativeness
-            ,
-            axis=0,
+results = []
+for premium_markup in [0, 0.1, 0.2]:
+    for mort_mult in [0.5, 1, 1.5]:
+        probablistic_cash_flows_rate = mortality_experience.apply(
+            lambda row: [
+                -w
+                for w in condiscounted_cash_flow(
+                    row=row, currentmort=mort_mult, premium_markup=premium_markup
+                )
+            ],
+            axis=1,
+            result_type="expand",
         )
 
-        # # # deduct transaction cost times tp_factor for column 0
-        # probablistic_cash_flows[0] -= (
-        #     mortality_experience["Amount Exposed"]
-        #     * mortality_experience["tp_rate"]
-        #     # * 0.01
-        # )
+        for tp_factor in [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]:
 
-        for ranges in [
-            (0, 100),
-            (0, 20),
-            # (0, 30), (20, 50),
-            (50, 100),
-        ]:
+            # # tx price rate method 1: multiply regression-fitted tpr
+            # mortality_experience["tp_rate"] = (
+            #     tp_factor * mortality_experience["tpr"]
+            #     + mortality_experience["surrender_value"]
+            # ).clip(
+            #     0, 1
+            # )  # make sure tp_rate is between 0 and 1 (although it already is even before clip)
 
-            aggregated_cash_flow = probablistic_cash_flows[
-                mortality_experience["life_expectancy"].between(*ranges)
-            ].sum(axis=0)
+            # # tx price rate method 2: multiply surrender value
+            # mortality_experience["tp_rate"] = (
+            #     tp_factor * mortality_experience["surrender_value"]
+            # ).clip(
+            #     0, 1
+            # )  # make sure tp_rate is between 0 and 1
 
-            # calculate Macaulay Duration using the aggregated cash flow and yield curve
-            pv_cash_flow = cash_flow_pv(
-                cashflow=aggregated_cash_flow, probabilities=1, discounters=yield_curve
-            )
-            time_weighted_cash_flow = [
-                t * c for t, c in enumerate(pv_cash_flow, start=0)
-            ]
-            macaulay_duration = sum(time_weighted_cash_flow) / sum(pv_cash_flow)
+            # tx price rate method 3: multiply face
+            mortality_experience["tp_rate"] = (
+                mortality_experience["surrender_value"] + tp_factor
+            ).clip(
+                0, 0.9
+            )  # make sure tp_rate is between 0 and 90%
 
-            sol = optimize.root_scalar(
-                lambda r: sum(
-                    cash_flow_pv(
-                        cashflow=aggregated_cash_flow, probabilities=1, discounters=r
-                    )
-                ),
-                x0=0.1,
-                bracket=[-0.6, 2],
-                method="brentq",
+            ## deduct transaction cost times tp_factor for column 0
+            probablistic_cash_flows_rate[0] -= mortality_experience["tp_rate"]
+
+            # for each row, multiply rate by amount exposed, lapse_rate and sample_representativeness
+            probablistic_cash_flows = probablistic_cash_flows_rate.mul(
+                mortality_experience["Amount Exposed"]
+                # * mortality_experience["lapse_rate"]
+                # * sample_representativeness
+                ,
+                axis=0,
             )
 
-            # normalize aggregated_cash_flow such that initial cash flow is -1
-            aggregated_cash_flow /= -aggregated_cash_flow[0]
+            # # # deduct transaction cost times tp_factor for column 0
+            # probablistic_cash_flows[0] -= (
+            #     mortality_experience["Amount Exposed"]
+            #     * mortality_experience["tp_rate"]
+            #     # * 0.01
+            # )
 
-            plt.bar(
-                x=range(len(aggregated_cash_flow)),
-                height=aggregated_cash_flow,
-                alpha=0.3,
-                # contour with solid line
-                edgecolor="black",
-                label=f"LE range: {ranges} \nIRR: {sol.root*100:.2f}%",
-                # + f" \n Macaulay Duration: {macaulay_duration:.2f}",
+            for ranges in [
+                (0, 100),
+                (0, 30),
+                (50, 100),
+            ]:
+
+                aggregated_cash_flow = probablistic_cash_flows[
+                    mortality_experience["life_expectancy"].between(*ranges)
+                ].sum(axis=0)
+
+                # calculate Macaulay Duration using the aggregated cash flow and yield curve
+                pv_cash_flow = cash_flow_pv(
+                    cashflow=aggregated_cash_flow,
+                    probabilities=1,
+                    discounters=yield_curve,
+                )
+                time_weighted_cash_flow = [
+                    t * c for t, c in enumerate(pv_cash_flow, start=0)
+                ]
+                macaulay_duration = sum(time_weighted_cash_flow) / sum(pv_cash_flow)
+
+                sol = optimize.root_scalar(
+                    lambda r: sum(
+                        cash_flow_pv(
+                            cashflow=aggregated_cash_flow,
+                            probabilities=1,
+                            discounters=r,
+                        )
+                    ),
+                    x0=0.1,
+                    bracket=[-0.6, 2],
+                    method="brentq",
+                )
+
+                # save result to dict
+                results.append(
+                    {
+                        "tp_factor": tp_factor,
+                        "mort_mult": mort_mult,
+                        "premium_markup": premium_markup,
+                        "ranges": ranges,
+                        "irr": sol.root,
+                        "macaulay": macaulay_duration,
+                        "aggregated_cash_flow": aggregated_cash_flow,
+                    }
+                )
+
+                # normalize aggregated_cash_flow such that initial cash flow is -1
+                aggregated_cash_flow /= -aggregated_cash_flow[0]
+
+                plt.bar(
+                    x=range(len(aggregated_cash_flow)),
+                    height=aggregated_cash_flow,
+                    alpha=0.3,
+                    # contour with solid line
+                    edgecolor="black",
+                    label=f"LE range: {ranges} \nIRR: {sol.root*100:.2f}%",
+                    # + f" \n Macaulay Duration: {macaulay_duration:.2f}",
+                )
+
+                plt.xlabel("Year since portfolio establishment")
+                plt.ylabel("Cash flow")
+                plt.xlim(-2, 107)
+
+            plt.legend()
+
+            plt.title(
+                f"price multiplier: {tp_factor}, mortality multiplier: {mort_mult}"
             )
 
-            plt.xlabel("Year since portfolio establishment")
-            plt.ylabel("Cash flow")
-            plt.xlim(-2, 107)
+            # # save to pdf
+            # plt.savefig(
+            #     FIGURE_FOLDER
+            #     / f"tp_factor_{tp_factor}_mort_mult_{mort_mult}_premium_markup_{premium_markup}.pdf",
+            #     bbox_inches="tight",
+            # )
 
-        plt.legend()
+            plt.show()
 
-        plt.title(f"TP Factor: {tp_factor}, Mortality Multiplier: {mort_mult}")
+# save results to pickle
+import pickle
 
-        # save to pdf
-        plt.savefig(
-            FIGURE_FOLDER / f"tp_factor_{tp_factor}_mort_mult_{mort_mult}.pdf",
-            bbox_inches="tight",
-        )
-
-        plt.show()
+with open(DATA_FOLDER / "irr_results.pickle", "wb") as f:
+    pickle.dump(results, f)

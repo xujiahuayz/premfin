@@ -2,9 +2,7 @@
 Plot value lost waterfall
 """
 
-from os import path
 import plotly.graph_objects as go
-import time
 
 from scripts.plot_moneyleft import (
     sample_representativeness,
@@ -24,8 +22,8 @@ def policy_fund_fees(
     current_age: float,
     current_vbt: str = "VBT15",
     current_mort: float = 1.0,
-    is_level_premium=True,
-    lapse_assumption=True,
+    is_level_premium: bool = True,
+    lapse_assumption: bool = True,
     policyholder_rate=yield_curve,
     statutory_interest: float = 0.035,
     premium_markup: float = 0.0,
@@ -237,4 +235,4 @@ if "__main__" == __name__:
 
         fig.show()
 
-        fig.write_image(path.join(FIGURE_FOLDER, "waterfall4-mortgage.pdf"))
+        fig.write_image(FIGURE_FOLDER / "waterfall4-mortgage.pdf")
