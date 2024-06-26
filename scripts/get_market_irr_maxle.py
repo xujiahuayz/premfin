@@ -1,10 +1,9 @@
 from typing import Iterable
 
-from matplotlib import pyplot as plt
 import numpy as np
 from scipy import optimize
 
-from premiumFinance.constants import FIGURE_FOLDER, DATA_FOLDER
+from premiumFinance.constants import DATA_FOLDER
 from premiumFinance.financing import PolicyFinancingScheme
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
@@ -13,7 +12,7 @@ from premiumFinance.util import cash_flow_pv
 from scripts.process_aapartners import tpr_model
 from scripts.process_mortality_table import (
     mortality_experience,
-    # sample_representativeness,
+    sample_representativeness,
 )
 import pickle
 
@@ -65,8 +64,8 @@ def condiscounted_cash_flow(
 if __name__ == "__main__":
 
     results = []
-    for premium_markup in [0, 0.1, 0.2]:
-        for mort_mult in [1, 3]:
+    for premium_markup in [0]:
+        for mort_mult in [1]:
             probablistic_cash_flows_rate = mortality_experience.apply(
                 lambda row: [
                     -w
@@ -78,28 +77,14 @@ if __name__ == "__main__":
                 result_type="expand",
             )
 
-            for tp_factor in [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]:
+            for tp_factor in [0]:
 
-                # # tx price rate method 1: multiply regression-fitted tpr
-                # mortality_experience["tp_rate"] = (
-                #     tp_factor * mortality_experience["tpr"]
-                #     + mortality_experience["surrender_value"]
-                # ).clip(
-                #     0, 1
-                # )  # make sure tp_rate is between 0 and 1 (although it already is even before clip)
-
-                # # tx price rate method 2: multiply surrender value
-                # mortality_experience["tp_rate"] = (
-                #     tp_factor * mortality_experience["surrender_value"]
-                # ).clip(
-                #     0, 1
-                # )  # make sure tp_rate is between 0 and 1
-
-                # tx price rate method 3: multiply face
                 mortality_experience["tp_rate"] = (
-                    mortality_experience["surrender_left"] + tp_factor
+                    mortality_experience["tpr"]
+                    + mortality_experience["surrender_value"]
+                    + tp_factor
                 ).clip(
-                    0, 0.9
+                    0, 1
                 )  # make sure tp_rate is between 0 and 90%
 
                 ## deduct transaction cost times tp_factor for column 0
@@ -114,22 +99,27 @@ if __name__ == "__main__":
                     axis=0,
                 )
 
-                # # # deduct transaction cost times tp_factor for column 0
-                # probablistic_cash_flows[0] -= (
-                #     mortality_experience["Amount Exposed"]
-                #     * mortality_experience["tp_rate"]
-                #     # * 0.01
-                # )
-
-                for ranges in [
-                    (0, 100),
-                    (0, 30),
-                    (50, 100),
+                for maxle in [
+                    5,
+                    10,
+                    15,
+                    20,
+                    25,
+                    30,
+                    40,
+                    50,
+                    60,
+                    70,
+                    80,
+                    90,
+                    100,
                 ]:
-
-                    aggregated_cash_flow = probablistic_cash_flows[
-                        mortality_experience["life_expectancy"].between(*ranges)
-                    ].sum(axis=0)
+                    row_range = mortality_experience["life_expectancy"].between(
+                        *(0, maxle)
+                    )
+                    aggregated_cash_flow = probablistic_cash_flows[row_range].sum(
+                        axis=0
+                    )
 
                     # calculate Macaulay Duration using the aggregated cash flow and yield curve
                     pv_cash_flow = cash_flow_pv(
@@ -154,53 +144,28 @@ if __name__ == "__main__":
                         bracket=[-0.6, 2],
                         method="brentq",
                     )
+                    result = {
+                        "aggregated_face": mortality_experience["Amount Exposed"][
+                            row_range
+                        ].sum()
+                        * sample_representativeness,
+                        "ev": mortality_experience[
+                            "Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"
+                        ][row_range].sum()
+                        * sample_representativeness,
+                        "tp_factor": tp_factor,
+                        "mort_mult": mort_mult,
+                        "premium_markup": premium_markup,
+                        "maxle": maxle,
+                        "irr": sol.root,
+                        "macaulay": macaulay_duration,
+                        "aggregated_cash_flow": aggregated_cash_flow,
+                    }
+
+                    print(result)
 
                     # save result to dict
-                    results.append(
-                        {
-                            "tp_factor": tp_factor,
-                            "mort_mult": mort_mult,
-                            "premium_markup": premium_markup,
-                            "ranges": ranges,
-                            "irr": sol.root,
-                            "macaulay": macaulay_duration,
-                            "aggregated_cash_flow": aggregated_cash_flow,
-                        }
-                    )
+                    results.append(result)
 
-                    # normalize aggregated_cash_flow such that initial cash flow is -1
-                    aggregated_cash_flow /= -aggregated_cash_flow[0]
-
-                    plt.bar(
-                        x=range(len(aggregated_cash_flow)),
-                        height=aggregated_cash_flow,
-                        alpha=0.3,
-                        # contour with solid line
-                        edgecolor="black",
-                        label=f"LE range: {ranges} \nIRR: {sol.root*100:.2f}%",
-                        # + f" \n Macaulay Duration: {macaulay_duration:.2f}",
-                    )
-
-                    plt.xlabel("Year since portfolio establishment")
-                    plt.ylabel("Cash flow")
-                    plt.xlim(-2, 107)
-
-                plt.legend()
-
-                plt.title(
-                    f"price multiplier: {tp_factor}, mortality multiplier: {mort_mult}"
-                )
-
-                # # save to pdf
-                # plt.savefig(
-                #     FIGURE_FOLDER
-                #     / f"tp_factor_{tp_factor}_mort_mult_{mort_mult}_premium_markup_{premium_markup}.pdf",
-                #     bbox_inches="tight",
-                # )
-
-                plt.show()
-
-    # save results to pickle
-
-    with open(DATA_FOLDER / "irr_results.pickle", "wb") as f:
+    with open(DATA_FOLDER / "irr_results_maxle.pickle", "wb") as f:
         pickle.dump(results, f)

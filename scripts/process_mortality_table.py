@@ -40,3 +40,15 @@ mortality_experience["lapsed_economic_value"] = (
     * mortality_experience["Amount Exposed"]
     * sample_representativeness
 )
+
+mortality_experience["policy_age"] = (
+    mortality_experience["currentage"] - mortality_experience["issueage"]
+)
+# if policy age is below 7, then 1, afterwards decrease by 0.125 each year
+mortality_experience["surrender_penalty"] = mortality_experience["policy_age"].apply(
+    lambda x: 1 if x < 2 else max(1 - 0.125 * (x - 1), 0)
+)
+
+mortality_experience["surrender_left"] = mortality_experience["surrender_value"] * (
+    1 - mortality_experience["surrender_penalty"]
+)

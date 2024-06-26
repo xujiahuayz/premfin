@@ -65,8 +65,8 @@ def condiscounted_cash_flow(
 if __name__ == "__main__":
 
     results = []
-    for premium_markup in [0, 0.1, 0.2]:
-        for mort_mult in [1, 3]:
+    for premium_markup in [0]:
+        for mort_mult in [1]:
             probablistic_cash_flows_rate = mortality_experience.apply(
                 lambda row: [
                     -w
@@ -78,7 +78,26 @@ if __name__ == "__main__":
                 result_type="expand",
             )
 
-            for tp_factor in [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]:
+            for tp_factor in [
+                1,
+                1.1,
+                1.2,
+                1.3,
+                1.4,
+                1.5,
+                1.6,
+                1.7,
+                1.8,
+                1.9,
+                2,
+                2.2,
+                2.5,
+                3,
+                4,
+                5,
+                7,
+                10,
+            ]:
 
                 # # tx price rate method 1: multiply regression-fitted tpr
                 # mortality_experience["tp_rate"] = (
@@ -97,9 +116,9 @@ if __name__ == "__main__":
 
                 # tx price rate method 3: multiply face
                 mortality_experience["tp_rate"] = (
-                    mortality_experience["surrender_left"] + tp_factor
+                    mortality_experience["surrender_left"] * tp_factor
                 ).clip(
-                    0, 0.9
+                    0.01, 0.9
                 )  # make sure tp_rate is between 0 and 90%
 
                 ## deduct transaction cost times tp_factor for column 0
@@ -202,5 +221,5 @@ if __name__ == "__main__":
 
     # save results to pickle
 
-    with open(DATA_FOLDER / "irr_results.pickle", "wb") as f:
+    with open(DATA_FOLDER / "irr_results_svl.pickle", "wb") as f:
         pickle.dump(results, f)
