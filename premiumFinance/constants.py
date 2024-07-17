@@ -245,3 +245,9 @@ LIFE_SETTLEMENTS_SIZE = {
 }
 # 2009-2013 Individual Life Insurance Mortality Experience Report
 # https://www.soa.org/resources/experience-studies/2017/2009-13-indiv-life-ins-mort-exp/
+
+DOLLAR_MAGNITUDES = {
+    6: "million",
+    9: "billion",
+    12: "trillion",
+}
