@@ -66,7 +66,7 @@ if __name__ == "__main__":
     results = []
     for premium_markup in [0]:
         for mort_mult in [1]:
-            probablistic_cash_flows_rate = mortality_experience.apply(
+            probablistic_cash_flows_df = mortality_experience.apply(
                 lambda row: [
                     -w
                     for w in condiscounted_cash_flow(
@@ -77,12 +77,13 @@ if __name__ == "__main__":
                 result_type="expand",
             )
 
-            for tp_factor in [0]:
+            for tp_factor in [0, 0.5, 1, 1.5]:
+                # make a copy for probablistic_cash_flows_rate
+                probablistic_cash_flows_rate = probablistic_cash_flows_df.copy()
 
                 mortality_experience["tp_rate"] = (
-                    mortality_experience["tpr"]
+                    mortality_experience["tpr"] * tp_factor
                     + mortality_experience["surrender_value"]
-                    + tp_factor
                 ).clip(
                     0, 1
                 )  # make sure tp_rate is between 0 and 90%
@@ -149,10 +150,9 @@ if __name__ == "__main__":
                             row_range
                         ].sum()
                         * sample_representativeness,
-                        "ev": mortality_experience[
-                            "Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"
-                        ][row_range].sum()
-                        * sample_representativeness,
+                        "ev": (mortality_experience["lapsed_economic_value"])[
+                            row_range
+                        ].sum(),
                         "tp_factor": tp_factor,
                         "mort_mult": mort_mult,
                         "premium_markup": premium_markup,

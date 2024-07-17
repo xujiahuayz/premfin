@@ -12,7 +12,8 @@ def get_representative_age(x: str) -> int:
 if __name__ == "__main__":
     mortality_experience_path = DATA_FOLDER / "mortalityexperience.xlsx"
 
-    mortality_experience = pd.read_excel(mortality_experience_path)
+    mortality_experience = pd.read_excel(mortality_experience_path, engine='openpyxl')
+
 
     mortality_experience["issueage"] = mortality_experience["Issue Age Group"].map(
         get_representative_age
@@ -52,3 +53,5 @@ if __name__ == "__main__":
     #     "Policies Exposed "
     # ]
     mortality_experience_clean.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)
+
+# %%

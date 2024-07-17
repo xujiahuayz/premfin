@@ -1,14 +1,8 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from premiumFinance.constants import FIGURE_FOLDER
+from premiumFinance.constants import FIGURE_FOLDER, DOLLAR_MAGNITUDES
 from scripts.process_mortality_table import mortality_experience
-
-dollar_magnitudes = {
-    6: "million",
-    9: "billion",
-    12: "trillion",
-}
 
 
 def le_distr(
@@ -40,7 +34,7 @@ def le_distr(
         )
 
     ax.set_xlabel("Life expectancy")
-    ax.set_ylabel(f"{y_label} ({dollar_magnitudes[scale_down]} USD)")
+    ax.set_ylabel(f"{y_label} ({DOLLAR_MAGNITUDES[scale_down]} USD)")
 
     # save figure pdf
     fig.savefig(str(FIGURE_FOLDER / f"le_dstr_{col_name}.pdf"), bbox_inches="tight")

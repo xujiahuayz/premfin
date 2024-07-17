@@ -42,3 +42,8 @@ for premium_markup in [0]:
         plt.legend()
 
         plt.title(f"mort_mult: {mort_mult}, premium_markup: {premium_markup}")
+        # save to pdf
+        plt.savefig(
+            FIGURE_FOLDER
+            / f"irr_tp_factor_premium_markup_{premium_markup}_mort_mult_{mort_mult}.pdf"
+        )
