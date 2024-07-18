@@ -64,7 +64,7 @@ def condiscounted_cash_flow(
 if __name__ == "__main__":
 
     results = []
-    for premium_markup in [0]:
+    for premium_markup in [0, 0.1, 0.2]:
         for mort_mult in [1]:
             probablistic_cash_flows_df = mortality_experience.apply(
                 lambda row: [
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
                 mortality_experience["tp_rate"] = (
                     mortality_experience["tpr"] * tp_factor
-                    + mortality_experience["surrender_value"]
+                    + mortality_experience["surrender_left"]
                 ).clip(
                     0, 1
                 )  # make sure tp_rate is between 0 and 90%
@@ -101,6 +101,7 @@ if __name__ == "__main__":
                 )
 
                 for maxle in [
+                    # 1,
                     5,
                     10,
                     15,
@@ -131,7 +132,7 @@ if __name__ == "__main__":
                     time_weighted_cash_flow = [
                         t * c for t, c in enumerate(pv_cash_flow, start=0)
                     ]
-                    macaulay_duration = sum(time_weighted_cash_flow) / sum(pv_cash_flow)
+                    # macaulay_duration = sum(time_weighted_cash_flow) / sum(pv_cash_flow)
 
                     sol = optimize.root_scalar(
                         lambda r: sum(
@@ -158,7 +159,7 @@ if __name__ == "__main__":
                         "premium_markup": premium_markup,
                         "maxle": maxle,
                         "irr": sol.root,
-                        "macaulay": macaulay_duration,
+                        # "macaulay": macaulay_duration,
                         "aggregated_cash_flow": aggregated_cash_flow,
                     }
 

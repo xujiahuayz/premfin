@@ -67,7 +67,7 @@ if __name__ == "__main__":
     results = []
     for premium_markup in [0, 0.1, 0.2]:
         for mort_mult in [1, 3]:
-            probablistic_cash_flows_rate = mortality_experience.apply(
+            probablistic_cash_flows_rate_df = mortality_experience.apply(
                 lambda row: [
                     -w
                     for w in condiscounted_cash_flow(
@@ -79,6 +79,7 @@ if __name__ == "__main__":
             )
 
             for tp_factor in [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]:
+                probablistic_cash_flows_rate = probablistic_cash_flows_rate_df.copy()
 
                 # # tx price rate method 1: multiply regression-fitted tpr
                 # mortality_experience["tp_rate"] = (

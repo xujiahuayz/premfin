@@ -1,7 +1,11 @@
 from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
-from premiumFinance.constants import DATA_FOLDER, MORTALITY_TABLE_CLEANED_PATH
+from premiumFinance.constants import (
+    DATA_FOLDER,
+    MORTALITY_TABLE_CLEANED_PATH,
+    FIGURE_FOLDER,
+)
 from scripts.process_mortality_table import mortality_experience
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
@@ -71,6 +75,9 @@ tpr_model = smf.glm(
 
 if __name__ == "__main__":
 
+    # increase font size
+    plt.rcParams.update({"font.size": 12})
+
     # scatter plot TP/FA and Blended, isMale True blue, isMale False red, isSmoker True marker "x", isSmoker False marker "o"
     for isMale, marker in zip([True, False], [".", "x"]):  # Define marker styles
         for isSmoker, color in zip([True, False], ["red", "blue"]):  # Define colors
@@ -87,8 +94,8 @@ if __name__ == "__main__":
                 label=f'{"Male" if isMale else "Female"}, {"Smoker" if isSmoker else "Non-Smoker"}',
             )
 
-    plt.xlabel("LE")
-    plt.ylabel("TPR")
+    plt.xlabel("Life expectancy $LE$ (years)")
+    plt.ylabel("Excess transaction price rate $p$")
 
     plt.legend(ncol=2)
 
@@ -104,5 +111,10 @@ if __name__ == "__main__":
 
     # log x-axis
     plt.xscale("log")
+
+    # tight layout
+    plt.tight_layout()
+    # save to FIGURE_FOLDER / "tpr_vs_le.pdf"
+    plt.savefig(FIGURE_FOLDER / "tpr_vs_le.pdf", bbox_inches="tight")
 
     plt.show()

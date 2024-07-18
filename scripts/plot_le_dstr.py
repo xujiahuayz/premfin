@@ -33,7 +33,7 @@ def le_distr(
             verticalalignment="bottom",
         )
 
-    ax.set_xlabel("Life expectancy")
+    ax.set_xlabel("Life expectancy $LE$ (years)")
     ax.set_ylabel(f"{y_label} ({DOLLAR_MAGNITUDES[scale_down]} USD)")
 
     # save figure pdf
