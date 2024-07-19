@@ -94,7 +94,7 @@ if __name__ == "__main__":
                 # for each row, multiply rate by amount exposed, lapse_rate and sample_representativeness
                 probablistic_cash_flows = probablistic_cash_flows_rate.mul(
                     mortality_experience["Amount Exposed"]
-                    # * mortality_experience["lapse_rate"]
+                    * mortality_experience["lapse_rate"]
                     # * sample_representativeness
                     ,
                     axis=0,

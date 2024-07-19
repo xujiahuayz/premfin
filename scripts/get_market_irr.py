@@ -17,7 +17,7 @@ from scripts.process_mortality_table import (
 )
 import pickle
 
-
+colors = {(0, 100): "blue", (0, 30): "green", (50, 100): "red"}
 # based on logged mortality_experience['life_expectancy'] get tpr
 
 mortality_experience["ln_le"] = np.log(mortality_experience["life_expectancy"])
@@ -78,29 +78,15 @@ if __name__ == "__main__":
                 result_type="expand",
             )
 
-            for tp_factor in [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]:
+            for tp_factor in [0, 0.1, 0.3, 0.5, 0.8, 1, 1.2, 1.5]:
+                # make a copy for probablistic_cash_flows_rate
                 probablistic_cash_flows_rate = probablistic_cash_flows_rate_df.copy()
 
-                # # tx price rate method 1: multiply regression-fitted tpr
-                # mortality_experience["tp_rate"] = (
-                #     tp_factor * mortality_experience["tpr"]
-                #     + mortality_experience["surrender_value"]
-                # ).clip(
-                #     0, 1
-                # )  # make sure tp_rate is between 0 and 1 (although it already is even before clip)
-
-                # # tx price rate method 2: multiply surrender value
-                # mortality_experience["tp_rate"] = (
-                #     tp_factor * mortality_experience["surrender_value"]
-                # ).clip(
-                #     0, 1
-                # )  # make sure tp_rate is between 0 and 1
-
-                # tx price rate method 3: multiply face
                 mortality_experience["tp_rate"] = (
-                    mortality_experience["surrender_left"] + tp_factor
+                    mortality_experience["tpr"] * tp_factor
+                    + mortality_experience["surrender_left"]
                 ).clip(
-                    0, 0.9
+                    0, 1
                 )  # make sure tp_rate is between 0 and 90%
 
                 ## deduct transaction cost times tp_factor for column 0
@@ -109,7 +95,7 @@ if __name__ == "__main__":
                 # for each row, multiply rate by amount exposed, lapse_rate and sample_representativeness
                 probablistic_cash_flows = probablistic_cash_flows_rate.mul(
                     mortality_experience["Amount Exposed"]
-                    # * mortality_experience["lapse_rate"]
+                    * mortality_experience["lapse_rate"]
                     # * sample_representativeness
                     ,
                     axis=0,
@@ -121,12 +107,7 @@ if __name__ == "__main__":
                 #     * mortality_experience["tp_rate"]
                 #     # * 0.01
                 # )
-
-                for ranges in [
-                    (0, 100),
-                    (0, 30),
-                    (50, 100),
-                ]:
+                for ranges, color in colors.items():
 
                     aggregated_cash_flow = probablistic_cash_flows[
                         mortality_experience["life_expectancy"].between(*ranges)
@@ -183,7 +164,7 @@ if __name__ == "__main__":
                     )
 
                     plt.xlabel("Year since portfolio establishment")
-                    plt.ylabel("Cash flow")
+                    plt.ylabel("Normalized cash flow")
                     plt.xlim(-2, 107)
 
                 plt.legend()
@@ -192,12 +173,12 @@ if __name__ == "__main__":
                     f"price multiplier: {tp_factor}, mortality multiplier: {mort_mult}"
                 )
 
-                # # save to pdf
-                # plt.savefig(
-                #     FIGURE_FOLDER
-                #     / f"tp_factor_{tp_factor}_mort_mult_{mort_mult}_premium_markup_{premium_markup}.pdf",
-                #     bbox_inches="tight",
-                # )
+                # save to pdf
+                plt.savefig(
+                    FIGURE_FOLDER
+                    / f"tp_factor_{tp_factor}_mort_mult_{mort_mult}_premium_markup_{premium_markup}.pdf",
+                    bbox_inches="tight",
+                )
 
                 plt.show()
 

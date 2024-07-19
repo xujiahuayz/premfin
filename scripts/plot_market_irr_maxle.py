@@ -1,6 +1,5 @@
 # read irr_results.pickle
 
-import pickle
 
 from matplotlib import pyplot as plt
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER, DOLLAR_MAGNITUDES
@@ -49,7 +48,7 @@ tp_factor_handle = [
 # increase font size
 # adjust figure size to make sure that the labels are not cut off, especially for the y axis on the right
 
-plt.rcParams.update({"font.size": 20})
+plt.rcParams.update({"font.size": 18})
 
 plt.figure(figsize=(8, 6))
 
