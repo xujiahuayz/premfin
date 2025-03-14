@@ -14,7 +14,7 @@ FIGURE_FOLDER = PROJECT_ROOT / "figures"
 MORTALITY_TABLE_CLEANED_PATH = DATA_FOLDER / "mortality_experience_clean.xlsx"
 PROCESSED_PROFITABILITY_PATH = DATA_FOLDER / "profitability.json"
 
-NAIC_PATH = DATA_FOLDER / "NAIC_1996_2020_SPGlobalofficeworkbook.xls"
+YIELD_CURVE_YEAR = 2025
 
 YIELD_DURATION = {
     "1MONTH": 1 / 12,

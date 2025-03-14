@@ -220,9 +220,9 @@ class InsurancePolicy:
             )
 
         one_period_mortality = self.death_benefit_payment_probability(
-            assume_lapse=self.lapse_assumption
-            if issuer_perspective
-            else False,  # insureds / lenders do not assume lapse
+            assume_lapse=(
+                self.lapse_assumption if issuer_perspective else False
+            ),  # insureds / lenders do not assume lapse
             at_issue=at_issue,
         )
 
@@ -411,3 +411,18 @@ class InsurancePolicy:
                 ),
             )
         ]
+
+
+if __name__ == "__main__":
+
+    Alice = Insured(
+        issue_age=50,
+        current_age=75,
+    )
+    Alice_policy = InsurancePolicy(Alice, is_level_premium=True, lapse_assumption=True)
+    Alice_policy._level_premium
+
+    Alice_policy2 = InsurancePolicy(
+        Alice, is_level_premium=True, lapse_assumption=False
+    )
+    Alice_policy2._level_premium

@@ -75,11 +75,11 @@ def generate_pv_column(
     """
     col_name = f"Excess_Policy_PV_{current_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
 
-    if col_name in mortality_experience.columns:
-        print(col_name + " exists")
-        return
-    else:
-        print(col_name + " doesn't exist")
+    # if col_name in mortality_experience.columns:
+    #     print(col_name + " exists")
+    #     return
+    # else:
+    #     print(col_name + " doesn't exist")
     mortality_experience[col_name] = mortality_experience.apply(
         lambda row: policyholder_policy_value(
             issue_age=row["issueage"],

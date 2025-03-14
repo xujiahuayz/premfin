@@ -49,12 +49,12 @@ def cash_flow_pv(
 
 
 # lapse rate dependent on gender; lapse == 0 with no lapse assumption
-def lapse_rate(isMale: bool, assume_lapse: bool = True) -> list[float]:
+def lapse_rate(isMale: bool, assume_lapse: bool | float = True) -> list[float]:
     lapse_rate = [0.0]
-    if assume_lapse:
-        col_ind = 0 if isMale else 1
-        lapse_column = (lapse_tbl.iloc[:, col_ind] / 100).to_list()
-        lapse_rate.extend(
-            lapse_column[:-1] + [lapse_column[-2]] * (29 - 26) + [lapse_column[-1]]
-        )
-    return make_list(lapse_rate)
+    # if assume_lapse:
+    col_ind = 0 if isMale else 1
+    lapse_column = (lapse_tbl.iloc[:, col_ind] / 100).to_list()
+    lapse_rate.extend(
+        lapse_column[:-1] + [lapse_column[-2]] * (29 - 26) + [lapse_column[-1]]
+    )
+    return make_list([min(assume_lapse * l, 1 - 1e-5) for l in lapse_rate])

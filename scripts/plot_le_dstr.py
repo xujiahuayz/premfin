@@ -12,8 +12,9 @@ def le_distr(
     df: pd.DataFrame = mortality_experience,
 ):
     # create a column of life_expectancy bin
-    df["le_bin"] = pd.cut(df["life_expectancy"], bins=range(0, 90, 10))
-    df[col_name] = df[col_name] / 10**scale_down
+    df = mortality_experience.copy()
+
+    df[col_name] = df[col_name] / (10**scale_down)
 
     money_left_by_le = df.groupby("le_bin")[col_name].sum().reset_index()
 
@@ -40,6 +41,15 @@ def le_distr(
     fig.savefig(str(FIGURE_FOLDER / f"le_dstr_{col_name}.pdf"), bbox_inches="tight")
     plt.show()
 
+
+# plt.rcParams.update({"font.size": 15})
+
+# plt.figure(figsize=(8, 6))
+
+
+mortality_experience["le_bin"] = pd.cut(
+    mortality_experience["life_expectancy"], bins=range(0, 90, 10)
+)
 
 le_distr("money_left", 12, y_label="Life insurance value to policyholders")
 le_distr("lapsed_economic_value", 9, y_label="Lapsed economic value")

@@ -92,6 +92,7 @@ plt.legend(
     title="LE range",
 )
 
+plt.tight_layout()
 
 # save to pdf
-plt.savefig(FIGURE_FOLDER / f"irr_tp_factor_premium_markup.pdf")
+plt.savefig(FIGURE_FOLDER / f"irr_tp_factor_premium_markup.pdf", bbox_inches="tight")

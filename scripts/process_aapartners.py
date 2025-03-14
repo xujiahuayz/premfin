@@ -72,6 +72,8 @@ tpr_model = smf.glm(
     formula=model_formula, data=aapartners, family=sm.families.Binomial(link=Logit())
 ).fit()
 
+# (TP - CSV)/FV ~ Ln(LE)
+
 
 if __name__ == "__main__":
 

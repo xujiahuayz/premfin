@@ -122,5 +122,4 @@ if __name__ == "__main__":
 
     plt.savefig(path.join(FIGURE_FOLDER, "betas.pdf"))
 
-    #need to download statsmodel.
-    
+    # need to download statsmodel.

@@ -18,7 +18,6 @@ from scipy.interpolate import interp1d
 from premiumFinance.constants import (
     DATA_FOLDER,
     MORT_URL,
-    NAIC_PATH,
     TREASURY_YIELD_URL,
     VBT_TABLES,
     YIELD_DURATION,
@@ -103,9 +102,9 @@ def get_soa_data(url: str, filename: str):
 
 def fetch_treasury_yield(
     rooturl: str = TREASURY_YIELD_URL,
-    date: str = "20",
-    month: str = "11",
-    year: int = 2023,
+    date: str = "02",
+    month: str = "01",
+    year: int = 2025,
 ) -> pd.DataFrame:
     r_yield = requests.get(f"{rooturl}&field_tdr_date_value={year}")
     content = r_yield.content.decode("utf-8")
@@ -174,16 +173,18 @@ def get_annual_yield(durange: Iterable = range(150), **kwargs):
 
 
 # amount in dollar
-def get_market_size(naic_path: Path = NAIC_PATH, year: int = 2020) -> float:
-    lapse_tbl = pd.read_excel(
-        naic_path,
+def get_market_size(year: int = 2020) -> float:
+    tbl = pd.read_excel(
+        DATA_FOLDER / 'SP'/ "Exhibit of Life Insurance.xlsx",
         index_col=0,
-        skiprows=8,
-        skipfooter=21,
-        usecols="A:Z",
+        skiprows=9,
+        # skipfooter=37,
+        usecols="A:AD",
+        # choose the right tab
+        sheet_name="Ordinary - Amount of Insurance",
     ).T
     market_size = (
-        1000 * lapse_tbl["Face Amount of In Force  - Ordinary Life"][f"{year}-12-31"]
+        1000 * tbl["Insurance in Force"][f"{year}-12-31"]
     )
     return market_size
 

@@ -53,15 +53,15 @@ plt.rcParams.update({"font.size": 18})
 plt.figure(figsize=(8, 6))
 
 
-#  draw maxle vs aggregated_face with surface filled between the plotted line and 0
-plt.fill_between(maxle_aggface.index, maxle_aggface / 10**scale_down, 0, alpha=0.3)
-plt.ylabel(f"Lapsed economic value ({DOLLAR_MAGNITUDES[scale_down]} USD)")
+# #  draw maxle vs aggregated_face with surface filled between the plotted line and 0
+# plt.fill_between(maxle_aggface.index, maxle_aggface / 10**scale_down, 0, alpha=0.3)
+# plt.ylabel(f"Lapsed economic value ({DOLLAR_MAGNITUDES[scale_down]} USD)")
 
-plt.ylim(0, 194)
+# plt.ylim(0, 194)
 plt.xlabel("Max life expectancy in the portfolio $\max(LE)$ (years)")
 
 # plot irr in the same graph on a different y axis
-plt.twinx()
+# plt.twinx()
 
 
 for premium_markup, line_style in line_types.items():
