@@ -62,35 +62,19 @@ if __name__ == "__main__":
     x_pos = [0, WIDTH, 3 * WIDTH, 4 * WIDTH]
 
     plt.bar(
-        x=x_pos[:3],
-        height=heights[:3],
+        x=x_pos,
+        height=heights,
         width=WIDTH,
-        color=colors[:3],
+        color=['blue','green','blue','green'],
         edgecolor="k",
     )
-    for i in range(3, len(heights)):
-        plt.bar(
-            x=x_pos[3],
-            height=heights[i],
-            width=WIDTH,
-            color=colors[i],
-            edgecolor="k",
-        )
 
-    for i, h in enumerate(heights[0:3]):
+
+    for i, h in enumerate(heights):
         plt.text(
             x=x_pos[i],
             y=1.02 * heights[i],
             s="{:.2f}".format(heights[i]),
-            ha="center",
-            va="bottom",
-            rotation=0,
-        )
-    for i, h in enumerate(heights[3:]):
-        plt.text(
-            x=x_pos[3],
-            y=heights[i + 3],
-            s="{:.2f}".format(heights[i + 3]),
             ha="center",
             va="bottom",
             rotation=0,
