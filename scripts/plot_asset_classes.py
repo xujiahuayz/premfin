@@ -8,6 +8,7 @@
 # US 2023
 # Equity market cap
 # 48,979.3977 $B
+# https://siblisresearch.com/data/us-stock-market-value/#:~:text=As%20of%20January%201%2C%202025,%2462.2%20trillion%20(%2462%2C204%2C752.9%20million).
 
 # US Holdings of Equities - Market Value
 # household holding
@@ -17,11 +18,12 @@
 # US municipal bonds 2023
 # outstanding
 # 4,056.922 $B
+# 4188.048
 
 # US corporate bonds 2023
 # outstanding
 # 10,730.194 $B
-
+# 11220.765
 
 # https://www.federalreserve.gov/apps/FOF/Guide/L217.pdf
 
@@ -30,7 +32,7 @@ from premiumFinance.constants import FIGURE_FOLDER
 import matplotlib.pyplot as plt
 
 
-life_insurance_market = get_market_size(year=2020) / 1e12
+life_insurance_market = get_market_size(year=2024) / 1e12
 
 
 #  bar chart with life insurance market size, equity market cap, corporate bond outstanding, and municipal bonds outstanding
@@ -38,9 +40,9 @@ life_insurance_market = get_market_size(year=2020) / 1e12
 
 heights = [
     life_insurance_market,
-    48.9793977,
-    10.730194,
-    4.056922,
+    62.2047529,
+    11.220765,
+    4.188048,
 ]
 
 # x_pos = [0, 1, 2, 3]
