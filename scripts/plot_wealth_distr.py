@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
 
-wealth_path = DATA_FOLDER / "Wealth_tables_dy2019.xlsx"
+wealth_path = DATA_FOLDER / "Wealth_tables_dy2022.xlsx"
 wealth = pd.read_excel(wealth_path)
-wealth = wealth.iloc[82:90, [0, 1, 18]]
+wealth = wealth.iloc[84:90, [0, 1, 18]]
 
 # change column names to 'band', 'cv_life', 'median_asset'
 column_names = ["band", "median_asset", "cv_life"]
