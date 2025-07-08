@@ -1,30 +1,44 @@
 # get data from "Universal Life" tab of persistency.xlsx file in DATA_FOLDER, column CE:CF
+import numpy as np
 import pandas as pd
 from premiumFinance.constants import DATA_FOLDER
 from premiumFinance.insured import Insured
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.financing import PolicyFinancingScheme
-from premiumFinance.expectedutility import Utility
+# from premiumFinance.expectedutility import Utility
 from premiumFinance.constants import MORTALITY_TABLE_CLEANED_PATH
 
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
+mortality_experience['mean_face'] = mortality_experience['Amount Exposed'] / mortality_experience['Policies Exposed']
 
-def utility_input(age: int, is_male: bool = False, lapse_assumption: bool = True,
-         is_level_premium: bool = True, statutory_interest: float = 0.035,
+
+def insured_utility(wealth: float) -> float:
+    """
+    Calculate the utility of wealth for an insured individual.
+    The utility is a simple logarithmic function of wealth.
+    """
+    wealth = max(wealth, 0)  # Avoid log(0) or negative wealth 
+    return np.log(1+wealth)  # Example utility function, can be adjusted
+
+def utility_input(age: int, wealth: float, is_male: bool = False, lapse_assumption: bool = True,
+         is_level_premium: bool = True,
+         with_insurance: bool = True,
+         before_proposal: bool = True,
+         statutory_interest: float = 0.035,
          premium_markup: float = 0.0, policyholder_rate: float = 0.035,
          cash_interest: float = 0.03, current_vbt: str = "VBT15",
-         current_mort: float = 1) -> tuple[float,float,float,float,float]:
+         current_mort: float = 1) -> tuple[float,float,float]:
     
-    issue_age=age-5 
+    issue_age=age
     # select the row in mortality_experience based on issuage, currentage, isMale, and isSmoker
-    mortality_experience['mean_face'] = mortality_experience['Amount Exposed'] / mortality_experience['Policies Exposed']
     the_row_face = mortality_experience[
         (mortality_experience["issueage"] == issue_age) &
         (mortality_experience["currentage"] == age) &
         (mortality_experience["isMale"] == is_male) &
         mortality_experience["isSmoker"].isnull()
     ]['mean_face']
-    face_value = the_row_face.iloc[0] 
+
+    face_value = the_row_face.iloc[0] if with_insurance else 0
     this_insured = Insured(
         issue_age=issue_age,
         is_male=is_male,
@@ -47,44 +61,69 @@ def utility_input(age: int, is_male: bool = False, lapse_assumption: bool = True
     )
     this_financing = PolicyFinancingScheme(policy=this_policy)
 
-    sv = this_financing.surrender_value()
-    ev = -this_policy.policy_value(
-                issuer_perspective=False,
-                at_issue=False,
-                discount_rate=policyholder_rate,
-            )
-    loss = max(sv, ev) 
-    mortality = this_insured.mortality_now.conditional_mortality_curve[1]
-    premium = this_policy.premium_stream_at_issue[0]
-    lapse_rate = 1- this_policy.in_force_rate(assume_lapse=True)[0]
-    return loss * face_value, mortality, premium * face_value,lapse_rate, face_value
+    in_force_rate = [1] + this_policy.in_force_rate(assume_lapse=lapse_assumption)
+    mortality = this_insured.mortality_now.conditional_mortality_curve
+    premium = [p * face_value for p in this_policy.premium_stream_at_issue] if with_insurance else [0] * len(mortality)
+
+    consumption = 77_280
+    expected_utility = insured_utility(consumption-premium[0])
+    inforce = 1
+    for i, q in enumerate(mortality):
+
+        sv = this_financing.surrender_value() * face_value 
+
+        # ev = -this_policy.policy_value(
+        #             issuer_perspective=False,
+        #             at_issue=False,
+        #             discount_rate=policyholder_rate,
+        #         )  * face_value 
+
+        inforce *= ((1 - q)*in_force_rate[i])
+
+        period = i + 1
+        this_utility = insured_utility(wealth + face_value) * mortality[period] + (
+            insured_utility(sv if before_proposal else (-this_policy.policy_value(
+                    issuer_perspective=False,
+                    at_issue=False,
+                    discount_rate=policyholder_rate,
+                )  * face_value )) * (1-in_force_rate[period]) + insured_utility(consumption-premium[i]) * in_force_rate[period]
+        ) * (1- mortality[period])
+        expected_utility += (this_utility * inforce * 0.9** period)
+
+        this_insured.current_age += 1
+
+        if this_insured.current_age >= 100:
+            break
 
 
-def final_utility(wealth:float, premium_now: float, 
-                  premium_later: float,
-                  lapse_rate: float, loss: float, probability_of_loss:float) -> tuple[float,float,float]:
-    """
-    Calculate the final expected utility of wealth for an insured individual.
+    return face_value, premium[0], expected_utility
+
+
+# def final_utility(wealth:float, premium_now: float, 
+#                   premium_later: float,
+#                   lapse_rate: float, loss: float, probability_of_loss:float) -> tuple[float,float,float]:
+#     """
+#     Calculate the final expected utility of wealth for an insured individual.
     
-    Parameters:
-    - premium: Insurance premium paid.
-    - lapse_rate: Rate at which the insurance policy lapses.
-    - loss: Amount lost if the loss occurs.
+#     Parameters:
+#     - premium: Insurance premium paid.
+#     - lapse_rate: Rate at which the insurance policy lapses.
+#     - loss: Amount lost if the loss occurs.
     
-    Returns:
-    - Final expected utility of wealth after considering insurance and lapse rate.
-    """
-    utility = Utility(
-        wealth=wealth,
-         probability_of_loss=probability_of_loss,
-            loss_amount=loss
-    )
-    return utility.expected_insured_utility_with_insurance(
-        premium=premium_now,
-        lapse_rate=lapse_rate
-    ), utility.expected_insured_utility_with_insurance(
-        premium=premium_later,
-        lapse_rate=0), utility.expected_insured_utility_without_insurance()
+#     Returns:
+#     - Final expected utility of wealth after considering insurance and lapse rate.
+#     """
+#     utility = Utility(
+#         wealth=wealth,
+#          probability_of_death=probability_of_loss,
+#             face_amount=loss
+#     )
+#     return utility.expected_insured_utility_with_insurance(
+#         premium=premium_now,
+#         lapse_rate=lapse_rate
+#     ), utility.expected_insured_utility_with_insurance(
+#         premium=premium_later,
+#         lapse_rate=0), utility.expected_insured_utility_without_insurance()
 
 
 wealth_value = pd.read_excel(
@@ -114,34 +153,43 @@ wealth['cash_life'] = wealth_value['Cash Value Life Insurance']
 
 
 
-# for each row in wealth, calculate the loss and mortality
-wealth['loss_amount'], wealth['probability_of_loss'], wealth['premium_now'], wealth['lapse_rate'], wealth['face'] = zip(*wealth.apply(
-    lambda row: utility_input(
-        age=row['age'],
-        is_male=row['is_male'],
-        lapse_assumption=True
-    ), axis=1
-)
-)
+# wealth['loss_amount'], wealth['probability_of_loss'], wealth['premium_now'], wealth['lapse_rate'], wealth['face'] = zip(*wealth.apply(
+#     lambda row: utility_input(
+#         age=row['age'],
+#         is_male=row['is_male'],
+#         lapse_assumption=True
+#     ), axis=1
+# )
+# )
 
-_, _, wealth['premium_later'],_,_ = zip(*wealth.apply(
-    lambda row: utility_input(
-        age=row['age'],
-        is_male=row['is_male'],
-        lapse_assumption=False
-    ), axis=1
-)
-)
+# # for each row in wealth, calculate the loss and mortality
+# wealth['loss_amount'], wealth['probability_of_loss'], wealth['premium_now'], wealth['lapse_rate'], wealth['face'] = zip(*wealth.apply(
+#     lambda row: utility_input(
+#         age=row['age'],
+#         is_male=row['is_male'],
+#         lapse_assumption=True
+#     ), axis=1
+# )
+# )
+
+# _, _, wealth['premium_later'],_,_ = zip(*wealth.apply(
+#     lambda row: utility_input(
+#         age=row['age'],
+#         is_male=row['is_male'],
+#         lapse_assumption=False
+#     ), axis=1
+# )
+# )
 
 # make age, is_male ... until the last column index columns of the wealth dataframe
 wealth = wealth.drop(columns=['Characteristic', 'Number of Households (thousands)'])
 # make index
-wealth.set_index(['age', 'is_male', 'num_households', 'cash_life', 'loss_amount', 'probability_of_loss', 'premium_now', 'premium_later', 'lapse_rate', 'face'], inplace=True)
+wealth.set_index(['age', 'is_male', 'num_households', 'cash_life'], inplace=True)
 row_num = wealth.shape[0]
 
 wealth_long = wealth.stack().reset_index()
 wealth_long.rename(columns={
-    'level_10': 'wealth', 
+    'level_4': 'wealth', 
     0: 'households_in_bin'
 }, inplace=True)
 
@@ -149,13 +197,38 @@ wealth_long['wealth'] = pd.to_numeric(wealth_long['wealth'], errors='coerce').fi
 
 
 
-wealth_long['utility_ins_before'], wealth_long['utility_ins_after'], wealth_long['utility_no_ins']  = zip(*wealth_long.apply(
-    lambda row: final_utility(
+
+wealth_long['face_value'], wealth_long['premium_before'], wealth_long['utility_before']  = zip(*wealth_long.apply(
+    lambda row: utility_input(
+        age=row['age'],
         wealth=row['wealth'],
-        premium_now=row['premium_now'],
-        premium_later=row['premium_later'],
-        lapse_rate=row['lapse_rate'],
-        loss=row['loss_amount'],
-        probability_of_loss=row['probability_of_loss']
+        is_male=row['is_male'],
+        with_insurance=True,
+        lapse_assumption=True,
+        is_level_premium=True,
+    ), axis=1
+))
+
+
+_, _, wealth_long['utility_no_ins']  = zip(*wealth_long.apply(
+    lambda row: utility_input(
+        age=row['age'],
+        wealth=row['wealth'],
+        is_male=row['is_male'],
+        with_insurance=False,
+        lapse_assumption=True,
+        is_level_premium=True,
+    ), axis=1
+))
+
+_, wealth_long['premium_after'], wealth_long['utility_after']  = zip(*wealth_long.apply(
+    lambda row: utility_input(
+        age=row['age'],
+        wealth=row['wealth'],
+        is_male=row['is_male'],
+        before_proposal=False,
+        with_insurance=True,
+        lapse_assumption=False,
+        is_level_premium=True,
     ), axis=1
 ))

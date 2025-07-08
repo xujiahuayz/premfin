@@ -141,7 +141,7 @@ class PolicyFinancingScheme:
 
         cash_interest = self.policy.cash_interest
         surrender_value = 0
-        for i in range(int(obs_period)):
+        for i in range(int(obs_period)+1):
             surrender_value = (
                 pr[i] - variablepr[i] + surrender_value * (1 + cash_interest)
             )

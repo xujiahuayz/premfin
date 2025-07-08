@@ -40,11 +40,11 @@ def cash_flow_pv(
     probabilities: float | Iterable[float],
     discounters: float | Iterable[float],
 ) -> list[float]:
-    cashflow = make_list(cashflow)
-    probabilities = make_list(probabilities)
-    discounters = make_list(discounters)
     return [
-        c * probabilities[i] / (1 + discounters[i]) ** i for i, c in enumerate(cashflow)
+        c * p / (1 + d) ** t
+        for t, (c, p, d) in enumerate(
+            zip(make_list(cashflow), make_list(probabilities), make_list(discounters))
+        )
     ]
 
 

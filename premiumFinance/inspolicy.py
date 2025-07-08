@@ -3,13 +3,14 @@ Insurance policy class and its methods
 """
 
 from dataclasses import dataclass
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import optimize
 from typing import Iterable
 
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy import optimize
+
 from premiumFinance.insured import Insured
-from premiumFinance.util import lapse_rate, make_list, cash_flow_pv
+from premiumFinance.util import cash_flow_pv, lapse_rate, make_list
 
 
 @dataclass
@@ -21,11 +22,11 @@ class InsurancePolicy:
     insured: Insured
     lapse_assumption: bool = True
     premium_markup: float = 0
-    surrender_penalty_rate: float = 0
-    cash_interest: float = 0.03
+    surrender_penalty_rate: float = 0.3
+    cash_interest: float = 0.002
     is_level_premium: bool | None = None
     premium_stream_at_issue: float | Iterable[float] | None = None
-    statutory_interest: float | Iterable[float] = 0.035
+    statutory_interest: float | Iterable[float] = 0.04
     policyholder_rate: float | Iterable[float] = 0.01  # should be some risk free rate
 
     def __post_init__(self):
@@ -52,8 +53,7 @@ class InsurancePolicy:
         inforcerate = [
             1 - x for x in lapse_rate(self.insured.is_male, assume_lapse=assume_lapse)
         ]
-        inforcerate = make_list(inforcerate)[1:]
-        return inforcerate
+        return make_list(inforcerate)
 
     def conditional_persistency_curve(
         self,
@@ -70,11 +70,12 @@ class InsurancePolicy:
         else:
             condSurv = self.insured.mortality_now.conditional_survival_curve
             inforcerate = inforcerate[
-                (self.insured.current_age - self.insured.issue_age) :
+                (self.insured.current_age - self.insured.issue_age+1) :
             ]
+            # in year 0, inforce rate must be 100%
+            inforcerate = [1] + inforcerate
 
-        # in year 0, inforce rate must be 100%
-        inforcerate = [1] + inforcerate
+        
         persistency_rate = []
         i = 0
         for i, w in enumerate(condSurv):
@@ -127,13 +128,44 @@ class InsurancePolicy:
             if at_issue
             else self.insured.mortality_now.conditional_mortality_curve
         )
-        dbpayrate = [
+        return [
             a * b
             for a, b in zip(
                 [1] + persistency.tolist(), one_period_conditional_mortality.to_list()
             )
         ]
-        return dbpayrate
+    
+
+    def cash_surrender_probability(
+        self, assume_lapse: bool, at_issue: bool = True
+    ) -> list[float]:
+        """
+        probabilities of death benefit payment
+        """
+
+        persistency = self.persistency_rate(
+            assume_lapse=assume_lapse, at_issue=at_issue
+        )
+        one_period_conditional_mortality = (
+            self.insured.mortality_at_issue.conditional_mortality_curve
+            if at_issue
+            else self.insured.mortality_now.conditional_mortality_curve
+        )
+
+        inforcerate = self.in_force_rate(assume_lapse=assume_lapse)
+        if not at_issue:
+            inforcerate = inforcerate[
+                (self.insured.current_age - self.insured.issue_age) :
+            ]
+             # in year 0, inforce rate must be 100%
+            inforcerate = [1] + inforcerate
+
+        return [
+            a * (1-b) * (1-c)
+            for a, b, c in zip(
+                [1] + persistency.tolist(), one_period_conditional_mortality.to_list(), inforcerate
+            )
+        ]
 
     # `pr` is premium rate: premium / death benefit
     def pv_unpaid_premium_list(
@@ -190,14 +222,13 @@ class InsurancePolicy:
         present value of all unpaid, probabilistic premium
         """
 
-        cash_stream = self.pv_unpaid_premium_list(
+        return sum(
+            self.pv_unpaid_premium_list(
             at_issue=at_issue,
             issuer_perspective=issuer_perspective,
             premium_stream_at_issue=premium_stream_at_issue,
             discount_rate=discount_rate,
-        )
-
-        return sum(cash_stream)
+        ))
 
     def pv_death_benefit_list(
         self,
@@ -240,13 +271,92 @@ class InsurancePolicy:
         present value of death benefit payment
         """
 
-        cash_stream = self.pv_death_benefit_list(
+        return sum(
+            self.pv_death_benefit_list(
             issuer_perspective=issuer_perspective,
             at_issue=at_issue,
             discount_rate=discount_rate,
-        )
+        ))
+    
+    def cash_value_list(
+        self,
+        premium_stream_at_issue: float | Iterable[float] | None = None
+    ) -> list[float]:
+        """
+        probabilistic present values of future values (one value per period) of the policy
+        """
 
-        return sum(cash_stream)
+        if premium_stream_at_issue is None:
+            premium_stream_at_issue = self.premium_stream_at_issue
+
+        premium_stream_at_issue = make_list(premium_stream_at_issue)
+
+        variablepr = self._variable_premium
+        # obs_period = self.insured.current_age - self.insured.issue_age
+        cash_interest = self.cash_interest
+
+        surrender_value_list = []
+        surrender_value = 0
+        for i, vpr in enumerate(variablepr):
+            surrender_value = max((
+                premium_stream_at_issue[i] - vpr + surrender_value * (1 + cash_interest)
+            ),0) 
+            surrender_value_list.append(surrender_value * (1 - self.surrender_penalty_rate))
+
+        return surrender_value_list
+    
+    def pv_csv_list(
+        self,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        issuer_perspective: bool | None = None,
+        at_issue: bool = True,
+        discount_rate: float | Iterable[float] | None = None,
+    ) -> list[float]:
+        """
+        present value of death benefit payment
+        """
+
+        if discount_rate is None:
+            assert (
+                issuer_perspective is not None
+            ), "discount_rate and issuer_perspective cannot be simultaneously None"
+            discount_rate = (
+                self.statutory_interest
+                if issuer_perspective
+                else self.policyholder_rate
+            )
+
+
+        return cash_flow_pv(
+            cashflow=self.cash_value_list(premium_stream_at_issue=premium_stream_at_issue), 
+            probabilities=self.cash_surrender_probability(
+            assume_lapse=(
+                self.lapse_assumption if issuer_perspective else False
+            ),  # insureds / lenders do not assume lapse
+            at_issue=at_issue,
+        ), 
+            discounters=discount_rate
+        )
+    
+
+    def pv_csv(
+        self,
+        premium_stream_at_issue: float | Iterable[float] | None = None,
+        issuer_perspective: bool | None = None,
+        at_issue: bool = True,
+        discount_rate: float | Iterable[float] | None = None,
+    ) -> float:
+        """
+        present value of death benefit payment
+        """
+
+        return sum(self.pv_csv_list(
+            premium_stream_at_issue=premium_stream_at_issue,
+            issuer_perspective=issuer_perspective,
+            at_issue=at_issue,
+            discount_rate=discount_rate,
+        ))
+            
 
     def policy_value_list(
         self,
@@ -256,7 +366,7 @@ class InsurancePolicy:
         discount_rate: float | Iterable[float] | None = None,
     ) -> list[float]:
         """
-        present value of probabilistic cash flow (premium - death benefit)
+        present value of probabilistic cash flow (premium - death benefit - cash surrender value)
         """
 
         if premium_stream_at_issue is None:
@@ -276,7 +386,14 @@ class InsurancePolicy:
             discount_rate=discount_rate,
         )
 
-        return [pv_pr[i] - pv_db[i] for i in range(min(len(pv_pr), len(pv_db)))]
+        pv_sv = self.pv_csv_list(
+            premium_stream_at_issue=premium_stream_at_issue,
+            issuer_perspective=issuer_perspective,
+            at_issue=at_issue,
+            discount_rate=discount_rate,
+        )
+
+        return [p - d - s  for d, p, s in zip(pv_db, pv_pr, pv_sv)]
 
     def policy_value(
         self,
@@ -289,14 +406,12 @@ class InsurancePolicy:
         present value of a policy
         """
 
-        cash_stream = self.policy_value_list(
+        return sum(self.policy_value_list(
             premium_stream_at_issue=premium_stream_at_issue,
             issuer_perspective=issuer_perspective,
             at_issue=at_issue,
             discount_rate=discount_rate,
-        )
-
-        return sum(cash_stream)
+        ))
 
     def policy_value_future_list(
         self,
@@ -320,6 +435,8 @@ class InsurancePolicy:
             probabilistic_PV_of_FV.append(sum(cash_stream[i:]))
 
         return probabilistic_PV_of_FV
+
+    
 
     def nav_gain(
         self,
@@ -416,11 +533,21 @@ class InsurancePolicy:
 if __name__ == "__main__":
 
     Alice = Insured(
-        issue_age=50,
+        issue_age=35,
         current_age=75,
+        is_male=True
     )
     Alice_policy = InsurancePolicy(Alice, is_level_premium=True, lapse_assumption=True)
+
+    Alice_policy.persistency_rate(assume_lapse=True, at_issue=True)
+    Alice_policy.cash_surrender_probability(
+        assume_lapse=True, at_issue=True
+    )
+    Alice_policy.death_benefit_payment_probability(
+        assume_lapse=True, at_issue=True)
+    
     Alice_policy._level_premium
+    Alice_policy._variable_premium
 
     Alice_policy2 = InsurancePolicy(
         Alice, is_level_premium=True, lapse_assumption=False
