@@ -26,7 +26,7 @@ class InsurancePolicy:
     cash_interest: float = 0.002
     is_level_premium: bool | None = None
     premium_stream_at_issue: float | Iterable[float] | None = None
-    statutory_interest: float | Iterable[float] = 0.04
+    statutory_interest: float | Iterable[float] = 0.05
     policyholder_rate: float | Iterable[float] = 0.01  # should be some risk free rate
 
     def __post_init__(self):
@@ -533,9 +533,10 @@ class InsurancePolicy:
 if __name__ == "__main__":
 
     Alice = Insured(
-        issue_age=35,
+        issue_age=60,
         current_age=75,
-        is_male=True
+        is_male=True,
+        issue_vbt="VBT01",
     )
     Alice_policy = InsurancePolicy(Alice, is_level_premium=True, lapse_assumption=True)
 
