@@ -386,14 +386,19 @@ class InsurancePolicy:
             discount_rate=discount_rate,
         )
 
+        if not issuer_perspective:
+            # insureds do not expect to surrender
+            return [d - p  for d, p in zip(pv_db, pv_pr)]
+
         pv_sv = self.pv_csv_list(
             premium_stream_at_issue=premium_stream_at_issue,
             issuer_perspective=issuer_perspective,
             at_issue=at_issue,
             discount_rate=discount_rate,
-        )
-
+        ) 
         return [p - d - s  for d, p, s in zip(pv_db, pv_pr, pv_sv)]
+
+        
 
     def policy_value(
         self,
@@ -436,7 +441,8 @@ class InsurancePolicy:
 
         return probabilistic_PV_of_FV
 
-    
+        
+
 
     def nav_gain(
         self,

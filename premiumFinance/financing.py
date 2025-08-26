@@ -9,6 +9,8 @@ from premiumFinance.insured import Insured
 from premiumFinance.treasury_yield import yield_curve
 from premiumFinance.util import cash_flow_pv
 
+from matplotlib import pyplot as plt
+
 
 @dataclass
 class PolicyFinancingScheme:
@@ -146,7 +148,27 @@ class PolicyFinancingScheme:
                 pr[i] - variablepr[i] + surrender_value * (1 + cash_interest)
             )
 
-        return max(surrender_value, 0)
+        return max(surrender_value * (1 - self.policy.surrender_penalty_rate), 0)
+
+    
+    def break_even_premium_increase(self) -> float:
+        """
+        break-even premium increase that would make the policy value equal to surrender value
+        """
+        surrender_value = self.surrender_value()
+        # root find the increase that would make the policy value equal to surrender value
+        sol = optimize.root_scalar(
+            lambda increase: self.policy.policy_value(
+                premium_stream_at_issue=self.policy._level_premium * (1+increase),
+                issuer_perspective=False,
+                at_issue=False,
+                discount_rate=self.policy.policyholder_rate,
+            ) - surrender_value,
+            x0=0.01,
+            bracket=[0, 100],
+            method="brentq",
+        )
+        return sol.root
 
     def policyholder_IRR(
         self,
@@ -303,3 +325,32 @@ def calculate_policyholder_IRR(
         print(row)
         irr = np.nan
     return irr
+
+
+if __name__ == "__main__":
+
+    for issue_age in [35, 50, 65, 80]:
+
+        increases = []
+        current_ages = np.arange(issue_age, 100, 5)
+
+        for current_age in current_ages:
+            this_scheme = PolicyFinancingScheme(
+                policy=InsurancePolicy(
+                    insured=Insured(
+                        issue_age=issue_age,
+                        is_male=True,
+                        is_smoker=False,
+                        current_age=current_age,
+                    ),
+                    is_level_premium=True,
+                )
+            )
+            increase = this_scheme.break_even_premium_increase()
+            print(f"current age: {current_age}, increase: {increase}")
+            increases.append(increase)
+        # plot current age vs increase
+        plt.plot(current_ages, increases)
+        plt.xlabel("current age")
+        plt.title(f"issue age: {issue_age}")
+        plt.show()

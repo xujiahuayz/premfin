@@ -89,6 +89,8 @@ def plot_stacked_bars(
     offset: float,
     bar_label: str,
     scale: float,
+    colors: list[str] = POLICY_COLORS,
+    policy_type: list[str] = POLICY_TYPES_ORDER,
     width: float = 0.35,
 ) -> None:
     """
@@ -97,7 +99,7 @@ def plot_stacked_bars(
     """
     bottom = np.zeros(len(years))
     
-    for i, p_type in enumerate(POLICY_TYPES_ORDER):
+    for i, p_type in enumerate(policy_type):
         # Filter for the specific policy type and align with years
         type_data = data[data["Type"] == p_type].set_index("Year").reindex(years).fillna(0)
    
@@ -110,7 +112,7 @@ def plot_stacked_bars(
             width,
             label=p_type,
             bottom=bottom,
-            color=POLICY_COLORS[i],
+            color=colors[i],
             alpha=0.8,
         )
         
@@ -179,25 +181,25 @@ for stts in ["In Force", "Terminated"]:
     bar_width = 0.35  # the width of each bar group
 
     fig, ax1 = plt.subplots(figsize=(18, 10))
-    ax2 = ax1.twinx()  # Create a second y-axis sharing the x-axis
+    ax = ax1.twinx()  # Create a second y-axis sharing the x-axis
 
     # 5. Plot the Data
     # Plot 'Number of Policies' on the primary axis (ax1)
-    plot_stacked_bars(
-        axis=ax1,
-        data=num_plot_data,
-        years=YEARS,
-        x_coords=x,
-        offset=-bar_width / 1.7,
-        bar_label="Number of Policies (in millions)",
-        scale=1e6, # Values are in single units, scale to millions
-        width=bar_width
-    )
+    # plot_stacked_bars(
+    #     axis=ax1,
+    #     data=num_plot_data,
+    #     years=YEARS,
+    #     x_coords=x,
+    #     offset=-bar_width / 1.7,
+    #     bar_label="Number of Policies (in millions)",
+    #     scale=1e6, # Values are in single units, scale to millions
+    #     width=bar_width
+    # )
 
     # Plot 'Amount of Insurance' on the secondary axis (ax2)
     # Note: Excel values are already in thousands, so 1e9 makes it trillions
     plot_stacked_bars(
-        axis=ax2,
+        axis=ax,
         data=amount_plot_data,
         years=YEARS,
         x_coords=x,
@@ -216,7 +218,7 @@ for stts in ["In Force", "Terminated"]:
     # ax2.tick_params(axis='y', labelsize=12)
 
     # Create a single, shared legend
-    handles, labels = ax1.get_legend_handles_labels()
+    handles, labels = ax.get_legend_handles_labels()
     # Since we use a defined order, we can map labels to handles safely
     unique_labels = dict(zip(labels, handles))
     fig.legend(
@@ -229,6 +231,6 @@ for stts in ["In Force", "Terminated"]:
         title_fontsize=13
     )
 
-    ax1.grid(axis='y', linestyle='--', alpha=0.7)
+    ax.grid(axis='y', linestyle='--', alpha=0.7)
     fig.tight_layout(rect=[0, 0, 1, 0.95]) # Adjust layout to make room for title and legend
     plt.show()

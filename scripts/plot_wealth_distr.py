@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
 
-wealth_path = DATA_FOLDER / "Wealth_tables_dy2022.xlsx"
+# https://www.census.gov/data/tables/2023/demo/wealth/wealth-asset-ownership.html
+wealth_path = DATA_FOLDER / 'SIPP' / "wealth_tables_dy2023.xlsx"
 wealth = pd.read_excel(wealth_path)
 wealth = wealth.iloc[84:90, [0, 1, 18]]
 
