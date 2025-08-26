@@ -53,7 +53,9 @@ if __name__ == "__main__":
         health_income_demography["Income_After_Taxes"]
     )
 
-    data_to_plot = health_income_ratio.loc["2020-01-01"]
+    # data_to_plot = health_income_ratio.loc["2023-01-01"]
+    # plot the last row
+    data_to_plot = health_income_ratio.iloc[-1]
 
     plt.subplots()
 

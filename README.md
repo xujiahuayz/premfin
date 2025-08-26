@@ -147,6 +147,13 @@ plot value to policy holders of different net worth band:
 python plot_wealth_distr.py
 ```
 
+plot health spending as a fraction of income by age
+
+```zsh
+python fetch_fred.py
+python plot_income_by_age.py
+```
+
 1. plot economic value to policy holders of different net worth based on Face Amount Band:
 2. plot economic value to policy holders of different net worth based on Face Amount Band, Attained age and Gender:
 
