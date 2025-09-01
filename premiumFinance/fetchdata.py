@@ -173,18 +173,18 @@ def get_annual_yield(durange: Iterable = range(150), **kwargs):
 
 
 # amount in dollar
-def get_market_size(year: int = 2020) -> float:
+def get_market_size(year: int = 2024) -> float:
     tbl = pd.read_excel(
-        DATA_FOLDER / 'SP'/ "Exhibit of Life Insurance.xlsx",
+        DATA_FOLDER / 'SP'/ "Life Fraternal Five Year Histo Data.xlsx",
         index_col=0,
-        skiprows=9,
+        skiprows=8,
         # skipfooter=37,
         usecols="A:AD",
         # choose the right tab
-        sheet_name="Ordinary - Amount of Insurance",
+        sheet_name="Life Fraternal Five Year Histo",
     ).T
     market_size = (
-        1000 * tbl["Insurance in Force"][f"{year}-12-31"]
+        1000 * tbl["Ordinary Contracts: Whole Life & Endowment Amount"][f"{year}-12-31"]
     )
     return market_size
 
@@ -240,7 +240,8 @@ def get_mort_data(url: str = MORT_URL):
                 #  'Smoker Status': 'NonSmoker'}
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    print(get_market_size())
 # getYieldData(entryindex=7790)
 # getSOAdata(url=constants.VBT_UNISMOKE_URL, filename="unismoke")
 # getSOAdata(url=constants.VBT_SMOKEDISTINCT_URL, filename="smokedistinct")

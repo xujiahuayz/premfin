@@ -15,7 +15,7 @@ lapsed_value_all = mortality_experience["lapsed_economic_value"].sum()
 
 WEALTHTRANSFER_PROGRAMS_DICT = {
     "value": [
-        84,
+        111.221,
         799.4,
         613.5,
         lapsed_value_all / 1e9,

@@ -1,5 +1,3 @@
-from os import path
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -108,5 +106,5 @@ if __name__ == "__main__":
 
     plt.tight_layout()
 
-    plt.savefig(path.join(FIGURE_FOLDER, "householdmistakes.pdf"))
+    plt.savefig(FIGURE_FOLDER / "householdmistakes.pdf")
     plt.show()
