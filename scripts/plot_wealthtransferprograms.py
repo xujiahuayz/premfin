@@ -12,12 +12,13 @@ lapsed_value_all = mortality_experience["lapsed_economic_value"].sum()
 # lapsed_value_positive_only = (
 #     sum(w for w in mortality_experience["lapsed_economic_value"] if w > 0)
 # )
+# https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/nhe-fact-sheet
 
 WEALTHTRANSFER_PROGRAMS_DICT = {
     "value": [
         111.221,
-        799.4,
-        613.5,
+        1_029.8,
+        871.7,
         lapsed_value_all / 1e9,
     ],
     "labelname": [

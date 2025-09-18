@@ -1,16 +1,19 @@
 import pandas as pd
 
 from premiumFinance.constants import MORTALITY_TABLE_CLEANED_PATH
-from premiumFinance.financing import PolicyFinancingScheme, yield_curve
+from premiumFinance.fetchdata import get_annual_yield
+from premiumFinance.financing import PolicyFinancingScheme
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
 
+yield_curve = get_annual_yield(year=2020)
 
 def policyholder_policy_value(
     issue_age: float,
     is_male: bool,
     is_smoker: bool,
     current_age: float,
+    issue_vbt: str ="VBT01",
     current_vbt: str = "VBT15",
     current_mort: float = 1.0,
     is_level_premium=True,
@@ -18,8 +21,9 @@ def policyholder_policy_value(
     policyholder_rate=yield_curve,
     statutory_interest: float = 0.035,
     premium_markup: float = 0.0,
-    cash_interest: float = 0.03,
+    cash_interest: float = 0.0,
     premium_hike: float = 0.0,
+    # on pricing, policyholder rate doesn't matter
 ) -> float:
     """
     calculate policy economic value in excess of its surrender value
@@ -29,7 +33,7 @@ def policyholder_policy_value(
         is_male=is_male,
         is_smoker=is_smoker,
         current_age=current_age,
-        issue_vbt="VBT01",
+        issue_vbt=issue_vbt,
         current_vbt=current_vbt,
         current_mortality_factor=current_mort,
     )
@@ -52,7 +56,7 @@ def policyholder_policy_value(
     ]
 
     return (
-        -this_policy.policy_value(
+        this_policy.policy_value(
             issuer_perspective=False,
             at_issue=False,
             discount_rate=policyholder_rate,
@@ -65,6 +69,7 @@ mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
 
 def generate_pv_column(
+    issue_vbt: str = "VBT01",
     current_vbt: str = "VBT15",
     lapse_assumption: bool = True,
     current_mort: float = 1,
@@ -73,7 +78,7 @@ def generate_pv_column(
     """
     generate columns of excess policy pv in different scenarios
     """
-    col_name = f"Excess_Policy_PV_{current_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
+    col_name = f"Excess_Policy_PV_{issue_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
 
     # if col_name in mortality_experience.columns:
     #     print(col_name + " exists")
@@ -86,6 +91,7 @@ def generate_pv_column(
             is_male=row["isMale"],
             is_smoker=row["isSmoker"],
             current_age=row["currentage"],
+            issue_vbt=issue_vbt,
             current_vbt=current_vbt,
             policyholder_rate=yield_curve,
             lapse_assumption=lapse_assumption,
@@ -100,23 +106,23 @@ def generate_pv_column(
 
 if __name__ == "__main__":
     generate_pv_column(
-        current_vbt="VBT15", lapse_assumption=True, current_mort=1, premium_hike=0
+        issue_vbt="VBT15", lapse_assumption=True, current_mort=1, premium_hike=0
     )
     generate_pv_column(
-        current_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=0
+        issue_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=0
     )
     generate_pv_column(
-        current_vbt="VBT15", lapse_assumption=False, current_mort=1, premium_hike=0
+        issue_vbt="VBT01", lapse_assumption=False, current_mort=1, premium_hike=0
     )
     generate_pv_column(
-        current_vbt="VBT15", lapse_assumption=True, current_mort=0.5, premium_hike=0
+        issue_vbt="VBT01", lapse_assumption=True, current_mort=0.5, premium_hike=0
     )
     generate_pv_column(
-        current_vbt="VBT15", lapse_assumption=True, current_mort=1, premium_hike=0.3
+        issue_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=0.3
     )
 
     generate_pv_column(
-        current_vbt="VBT15", lapse_assumption=True, current_mort=1, premium_hike=1.0
+        issue_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=1.0
     )
 
     mortality_experience.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)

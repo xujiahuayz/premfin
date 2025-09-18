@@ -22,11 +22,11 @@ class InsurancePolicy:
     insured: Insured
     lapse_assumption: bool = True
     premium_markup: float = 0
-    surrender_penalty_rate: float = 0.3
-    cash_interest: float = 0.002
+    surrender_penalty_rate: float = 0.2
+    cash_interest: float = 0.03
     is_level_premium: bool | None = None
     premium_stream_at_issue: float | Iterable[float] | None = None
-    statutory_interest: float | Iterable[float] = 0.05
+    statutory_interest: float | Iterable[float] = 0.035
     policyholder_rate: float | Iterable[float] = 0.01  # should be some risk free rate
 
     def __post_init__(self):

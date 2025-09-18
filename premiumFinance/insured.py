@@ -3,7 +3,6 @@ define Insured class and its methods
 """
 
 from dataclasses import dataclass
-from typing import Optional
 
 from premiumFinance.mortality import Mortality
 
@@ -17,7 +16,7 @@ class Insured:
     issue_age: float
     current_age: float
     is_male: bool = True
-    is_smoker: Optional[bool] = False
+    is_smoker: bool | None = False
     issue_mortality_factor: float = 1
     current_mortality_factor: float = 1
     issue_vbt: str = "VBT01"
