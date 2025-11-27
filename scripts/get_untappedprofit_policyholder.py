@@ -1,12 +1,10 @@
 import pandas as pd
 
 from premiumFinance.constants import MORTALITY_TABLE_CLEANED_PATH
-from premiumFinance.fetchdata import get_annual_yield
+from premiumFinance.treasury_yield import yield_curve
 from premiumFinance.financing import PolicyFinancingScheme
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
-
-yield_curve = get_annual_yield(year=2020)
 
 def policyholder_policy_value(
     issue_age: float,
@@ -105,24 +103,20 @@ def generate_pv_column(
 
 
 if __name__ == "__main__":
-    generate_pv_column(
-        issue_vbt="VBT15", lapse_assumption=True, current_mort=1, premium_hike=0
-    )
+    # generate_pv_column(
+    #     issue_vbt="VBT15", lapse_assumption=True, current_mort=1, premium_hike=0
+    # )
     generate_pv_column(
         issue_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=0
     )
-    generate_pv_column(
-        issue_vbt="VBT01", lapse_assumption=False, current_mort=1, premium_hike=0
-    )
-    generate_pv_column(
-        issue_vbt="VBT01", lapse_assumption=True, current_mort=0.5, premium_hike=0
-    )
-    generate_pv_column(
-        issue_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=0.3
-    )
-
-    generate_pv_column(
-        issue_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=1.0
-    )
+    # generate_pv_column(
+    #     issue_vbt="VBT01", lapse_assumption=False, current_mort=1, premium_hike=0
+    # )
+    # generate_pv_column(
+    #     issue_vbt="VBT01", lapse_assumption=True, current_mort=0.5, premium_hike=0
+    # )
+    # generate_pv_column(
+    #     issue_vbt="VBT01", lapse_assumption=True, current_mort=1, premium_hike=0.3
+    # )
 
     mortality_experience.to_excel(MORTALITY_TABLE_CLEANED_PATH, index=False)

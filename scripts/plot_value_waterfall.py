@@ -4,15 +4,15 @@ Plot value lost waterfall
 
 import plotly.graph_objects as go
 
+from premiumFinance.constants import FIGURE_FOLDER
+from premiumFinance.financing import yield_curve
+from premiumFinance.inspolicy import InsurancePolicy
+from premiumFinance.insured import Insured
 from scripts.plot_moneyleft import (
-    sample_representativeness,
     money_left_15_T,
     mortality_experience,
+    sample_representativeness,
 )
-from premiumFinance.financing import yield_curve
-from premiumFinance.insured import Insured
-from premiumFinance.inspolicy import InsurancePolicy
-from premiumFinance.constants import FIGURE_FOLDER
 
 
 def policy_fund_fees(
@@ -94,11 +94,11 @@ if "__main__" == __name__:
             "management_fee": 0.015,
             "performance_fee": 0.1,
         },
-        "benchmark_scheme": {
-            "broker_fee": 0.05,
-            "management_fee": 0.01,
-            "performance_fee": 0.1,
-        },
+        # "benchmark_scheme": {
+        #     "broker_fee": 0.05,
+        #     "management_fee": 0.01,
+        #     "performance_fee": 0.1,
+        # },
     }
 
     for key, value in fees.items():
@@ -109,7 +109,7 @@ if "__main__" == __name__:
         mortality_experience["broker_fee_rate"] = [
             max(min(w * 0.3, BROKER_FEE), 0)
             for w in mortality_experience[
-                "Excess_Policy_PV_VBT15_lapseTrue_mort1_coihike_0"
+                "Excess_Policy_PV_VBT01_lapseTrue_mort1_coihike_0"
             ]
         ]
 
@@ -215,7 +215,7 @@ if "__main__" == __name__:
                 ],
                 connector={"line": {"color": "rgb(63, 63, 63)"}},
             ),
-            layout_yaxis_range=[-3, 14],
+            layout_yaxis_range=[-1, 2],
         )
 
         fig.update_layout(

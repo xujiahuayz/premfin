@@ -21,7 +21,7 @@ median_value_lapsed = mortality_experience_sorted.loc[
     "average_lapsed_amount",
 ].iat[0]
 # 46190.03282643981
-WORKING_LIFE_YEARS = 25
+WORKING_LIFE_YEARS = 15
 Underdiversification_LOSS = 0.0204
 
 age_freq = mortality_experience.groupby("currentage")["Policies Exposed"].sum()
@@ -69,40 +69,45 @@ HOUSEHOLD_MISTAKES_DICT = {
         median_value_lapsed,
     ],
     "labelname": [
-        "Failure to refinance mortgage",
-        "Unnecessary credit card debt",
-        "Underdiversification",
-        "Lapsation of life insurance",
+        "Failure to \n refinance mortgage",
+        "Unnecessary \n credit card debt",
+        "Underdiversification \n of stock market",
+        "Lapsation of \n life insurance",
     ],
 }
 
 
 if __name__ == "__main__":
 
-    x_pos = range(len(HOUSEHOLD_MISTAKES_DICT["labelname"]))
-    heights = HOUSEHOLD_MISTAKES_DICT["value"]
+    y_pos = range(len(HOUSEHOLD_MISTAKES_DICT["labelname"]))
+    widths = HOUSEHOLD_MISTAKES_DICT["value"]
 
-    barlist = plt.bar(x=x_pos, height=heights)
+    # Change to barh (horizontal bar)
+    barlist = plt.barh(y=y_pos, width=widths, color="gray")
     barlist[-1].set_color("green")
 
-    plt.xticks(
-        x_pos,
+    # Change xticks to yticks
+    plt.yticks(
+        y_pos,
         HOUSEHOLD_MISTAKES_DICT["labelname"],
-        rotation=45,
     )
-    plt.ylabel("USD")
+    
+    # Label moves to x-axis
+    plt.xlabel("USD")
 
-    for i, h in enumerate(heights):
+    # Adjust text coordinates for horizontal layout
+    for i, w in enumerate(widths):
         plt.text(
-            x=x_pos[i],
-            y=1.02 * heights[i],
-            s="{:,}".format(round(heights[i])),
-            ha="center",
-            va="bottom",
+            x=w * 1.02,          # Place text slightly to the right of the bar end
+            y=y_pos[i],          # Align with the y-position of the bar
+            s="{:,}".format(round(w)),
+            va="center",         # Vertically align to the center of the bar
+            ha="left",           # Horizontally align to the left (text starts after x)
             rotation=0,
         )
 
-    plt.ylim(0, max(heights) * 1.1)
+    # Set x limits instead of y limits (add extra space for text)
+    plt.xlim(0, max(widths) * 1.25)
 
     plt.tight_layout()
 

@@ -1,11 +1,7 @@
 import pandas as pd
 
-from premiumFinance.constants import (
-    MORTALITY_TABLE_CLEANED_PATH,
-)
-from premiumFinance.financing import (
-    calculate_lender_profit,
-)
+from premiumFinance.constants import MORTALITY_TABLE_CLEANED_PATH
+from premiumFinance.financing import calculate_lender_profit
 
 
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)

@@ -1,6 +1,5 @@
 import brewer2mpl
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 
 from premiumFinance.constants import FIGURE_FOLDER
 from premiumFinance.fetchdata import get_market_size
@@ -8,7 +7,7 @@ from scripts.sample_represent import mortality_experience, sample_representative
 
 
 def get_money_left(
-    current_vbt: str = "VBT15",
+    issue_vbt: str = "VBT01",
     lapse_assumption: bool = True,
     current_mort: float = 1,
     premium_hike: float = 0,
@@ -20,7 +19,7 @@ def get_money_left(
         sum(
             w
             for w in mortality_experience[
-                f"Excess_Policy_PV_{current_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
+                f"Excess_Policy_PV_{issue_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
             ]
             * mortality_experience["Amount Exposed"]
         )
@@ -28,7 +27,7 @@ def get_money_left(
     )
 
 
-money_left_15_T = get_money_left(current_vbt="VBT15", lapse_assumption=True)
+money_left_15_T = get_money_left(issue_vbt="VBT01", lapse_assumption=True)
 
 if __name__ == "__main__":
     # money_left_01_T = get_money_left(current_vbt="VBT01", lapse_assumption=True)

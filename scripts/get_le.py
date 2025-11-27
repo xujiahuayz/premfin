@@ -1,9 +1,7 @@
 import pandas as pd
 
+from premiumFinance.constants import MORTALITY_TABLE_CLEANED_PATH
 from premiumFinance.mortality import Mortality
-from premiumFinance.constants import (
-    MORTALITY_TABLE_CLEANED_PATH,
-)
 
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
 
