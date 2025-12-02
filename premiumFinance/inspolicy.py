@@ -474,7 +474,7 @@ class InsurancePolicy:
         )
 
         fv_nav = [
-            -c * (1 + discount_rate[i]) ** i / unconditional_pers[i]
+            c * (1 + discount_rate[i]) ** i / unconditional_pers[i]
             for i, c in enumerate(probabilistic_PV_of_FV[:sum_until])
         ]
 

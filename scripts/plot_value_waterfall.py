@@ -4,7 +4,7 @@ Plot value lost waterfall
 
 import plotly.graph_objects as go
 
-from premiumFinance.constants import FIGURE_FOLDER
+from premiumFinance.constants import FIGURE_FOLDER, DATA_FOLDER
 from premiumFinance.financing import yield_curve
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
@@ -56,9 +56,9 @@ def policy_fund_fees(
     )
     expected_management_fee = (
         sum(
-            max(0, -w)
+            max(0, w)
             for w in this_policy.policy_value_future_list(
-                at_issue=False, discount_rate=policyholder_rate
+                at_issue=False, discount_rate=policyholder_rate, issuer_perspective=False
             )
         )
         * annual_management_fee
@@ -77,6 +77,7 @@ def policy_fund_fees(
 
 
 if "__main__" == __name__:
+
     # mortgage fund fees - from scottish mortgage investment trust
     # https://www.hl.co.uk/shares/shares-search-results/s/scottish-mortgage-it-plc-ordinary-shares-5p
     # https://www.investopedia.com/terms/b/brokerage-fee.asp#:~:text=The%20fees%20range%20from%200.25,to%201.5%25%20of%20the%20assets.
@@ -87,6 +88,7 @@ if "__main__" == __name__:
     # https://www.investopedia.com/terms/s/servicing_fee.asp
 
     # https://www.investopedia.com/terms/p/performance-fee.asp#:~:text=A%20performance%20fee%20is%20a,often%20both%20realized%20and%20unrealized.
+    EEV = "Excess_Policy_PV_VBT01_lapseTrue_mort1_coihike_0"
 
     fees = {
         "life_settlement": {
@@ -106,12 +108,18 @@ if "__main__" == __name__:
         MANAGEMENT_FEE = value["management_fee"]
         PERFORMANCE_FEE = value["performance_fee"]
 
+        mortality_experience["buyer_pay"] = [
+            max(min(w,0.18),0) for w in mortality_experience[EEV]
+        ]
+
+        mortality_experience["value_at_settlement"] = mortality_experience[EEV] - mortality_experience["buyer_pay"]
+
         mortality_experience["broker_fee_rate"] = [
             max(min(w * 0.3, BROKER_FEE), 0)
-            for w in mortality_experience[
-                "Excess_Policy_PV_VBT01_lapseTrue_mort1_coihike_0"
-            ]
+            for w in mortality_experience["buyer_pay"]
         ]
+
+        mortality_experience["policyholder_lump_sum"] = mortality_experience["buyer_pay"] - mortality_experience["broker_fee_rate"]
 
         mortality_experience[["management_fee_rate", "performance_fee_rate"]] = (
             mortality_experience.apply(
@@ -120,10 +128,15 @@ if "__main__" == __name__:
                     is_male=row["isMale"],
                     is_smoker=row["isSmoker"],
                     current_age=row["currentage"],
-                ),
+                ) if row["value_at_settlement"] > 0 else (0,0),
                 axis=1,
                 result_type="expand",
             )
+        )
+
+        # save mortality_experience to excel
+        mortality_experience.to_excel(
+            DATA_FOLDER / f"mortality_experience_{key}.xlsx", index=False
         )
 
         broker_fee = (
@@ -150,20 +163,12 @@ if "__main__" == __name__:
             * sample_representativeness
         )
 
-        buyer_pay = (
-            0.18
-            * sum(mortality_experience["Amount Exposed"])
-            * sample_representativeness
-        )
-
-        broker_fee = min(buyer_pay * 0.3, broker_fee)
-
-        policyholder_lump_sum = buyer_pay - broker_fee
+        policyholder_lump_sum = sum(mortality_experience["policyholder_lump_sum"]*mortality_experience["Amount Exposed"])*sample_representativeness
 
         fig = go.Figure(
             go.Waterfall(
                 name="20",
-                orientation="v",
+                orientation="h",  # <--- 1. Set orientation to Horizontal
                 measure=[
                     "relative",
                     "relative",
@@ -173,8 +178,9 @@ if "__main__" == __name__:
                     "relative",
                     "total",
                 ],
-                x=[
-                    "Life insurance value to policyholders",
+                # <--- 2. Labels now go on the Y axis
+                y=[
+                    "Life insurance value<br>to policyholders",
                     "Policyholder lump sum",
                     "Broker fee",
                     "Value at settlement",
@@ -182,9 +188,22 @@ if "__main__" == __name__:
                     "Performance fee",
                     "Investor profit",
                 ],
+                # <--- 3. Numerical values now go on the X axis
+                x=[
+                    round(w / 1e9, 2)
+                    for w in [
+                        money_left_15_T,
+                        -policyholder_lump_sum,
+                        -broker_fee,
+                        0,
+                        -management_fee,
+                        -performance_fee,
+                        0,
+                    ]
+                ],
                 textposition="outside",
                 text=[
-                    round(w / 1e12, 2)
+                    round(w / 1e9, 2)
                     for w in [
                         money_left_15_T,
                         policyholder_lump_sum,
@@ -201,26 +220,19 @@ if "__main__" == __name__:
                         ),
                     ]
                 ],
-                y=[
-                    round(w / 1e12, 2)
-                    for w in [
-                        money_left_15_T,
-                        -policyholder_lump_sum,
-                        -broker_fee,
-                        0,
-                        -management_fee,
-                        -performance_fee,
-                        0,
-                    ]
-                ],
                 connector={"line": {"color": "rgb(63, 63, 63)"}},
             ),
-            layout_yaxis_range=[-1, 2],
+            # <--- 4. Update X-axis range instead of Y-axis
+            layout_xaxis_range=[-100, 1_500], 
         )
 
+        # <--- 5. Title applies to X-axis now
         fig.update_layout(
-            yaxis_title="trillion USD",
+            xaxis_title="billion USD",
         )
+
+        # <--- 6. Optional: Reverse Y-axis so the chart reads Top-to-Bottom
+        fig.update_yaxes(autorange="reversed")
 
         # add title
         fig.update_layout(

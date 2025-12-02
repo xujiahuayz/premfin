@@ -69,10 +69,10 @@ HOUSEHOLD_MISTAKES_DICT = {
         median_value_lapsed,
     ],
     "labelname": [
-        "Failure to \n refinance mortgage",
-        "Unnecessary \n credit card debt",
-        "Underdiversification \n of stock market",
-        "Lapsation of \n life insurance",
+        "Failure to\n refinance mortgage",
+        "Unnecessary\n credit card debt",
+        "Underdiversification\n of stock market",
+        "Lapsation of\n life insurance",
     ],
 }
 

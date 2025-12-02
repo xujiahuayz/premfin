@@ -18,10 +18,10 @@ WEALTHTRANSFER_PROGRAMS_DICT = {
         lapsed_value_all / 1e9,
     ],
     "labelname": [
-        "Supplemental Nutrition \n Assistance Program",
+        "Supplemental Nutrition\n Assistance Program",
         # "Supplemental Security Income",
-        "Medicaid prescription \n drug spending",
-        "Unemployment Insurance \nexpenditures",
+        "Medicaid prescription\n drug spending",
+        "Unemployment Insurance\nexpenditures",
         # "Temporary Assistance\nfor Needy Families",
         "Lapsed life insurance\n economic value",
     ],
