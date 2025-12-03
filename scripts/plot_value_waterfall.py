@@ -2,12 +2,11 @@
 Plot value lost waterfall
 """
 
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
-from premiumFinance.constants import FIGURE_FOLDER, DATA_FOLDER
-from premiumFinance.financing import yield_curve
-from premiumFinance.inspolicy import InsurancePolicy
-from premiumFinance.insured import Insured
+from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
 from scripts.plot_moneyleft import (
     money_left_15_T,
     mortality_experience,
@@ -15,236 +14,175 @@ from scripts.plot_moneyleft import (
 )
 
 
-def policy_fund_fees(
-    issue_age: float,
-    is_male: bool,
-    is_smoker: bool,
-    current_age: float,
-    current_vbt: str = "VBT15",
-    current_mort: float = 1.0,
-    is_level_premium: bool = True,
-    lapse_assumption: bool = True,
-    policyholder_rate=yield_curve,
-    statutory_interest: float = 0.035,
-    premium_markup: float = 0.0,
-    cash_interest: float = 0.03,
-    annual_management_fee: float = 0.015,
-    annual_performance_fee: float = 0.1,
-) -> tuple[float, float]:
-    """
-    calculate the sum of all future probabilistic pv-discounted navs
-    """
+EEV = "Excess_Policy_PV_VBT01_lapseTrue_mort1_coihike_0"
 
-    this_insured = Insured(
-        issue_age=issue_age,
-        is_male=is_male,
-        is_smoker=is_smoker,
-        current_age=current_age,
-        issue_vbt="VBT01",
-        current_vbt=current_vbt,
-        current_mortality_factor=current_mort,
-    )
+fees = {
+    "life_settlement": {
+        "broker_fee": 0.08,
+        "management_fee": 0.015,
+        "performance_fee": 0.1,
+    },
+}
 
-    this_policy = InsurancePolicy(
-        insured=this_insured,
-        is_level_premium=is_level_premium,
-        lapse_assumption=lapse_assumption,
-        statutory_interest=statutory_interest,
-        premium_markup=premium_markup,
-        policyholder_rate=policyholder_rate,
-        cash_interest=cash_interest,
-    )
-    expected_management_fee = (
+for key, value in fees.items():
+    BROKER_FEE = value["broker_fee"]
+    MANAGEMENT_FEE = value["management_fee"]
+    PERFORMANCE_FEE = value["performance_fee"]
+    PROVIDER_FEE = 0.005
+
+
+    mortality_experience = pd.read_excel(DATA_FOLDER / f"mortality_experience_{key}.xlsx")
+
+    broker_fee = (
         sum(
-            max(0, w)
-            for w in this_policy.policy_value_future_list(
-                at_issue=False, discount_rate=policyholder_rate, issuer_perspective=False
-            )
+            mortality_experience["broker_fee_rate"]
+            * mortality_experience["Amount Exposed"]
         )
-        * annual_management_fee
+        * sample_representativeness
     )
 
-    expected_performance_fee = (
+    provider_fee = (
         sum(
-            max(0, w)
-            for w in this_policy.nav_gain(
-                at_issue=False, discount_rate=policyholder_rate
-            )
+            mortality_experience["provider_fee_rate"]
+            * mortality_experience["Amount Exposed"]
         )
-        * annual_performance_fee
+        * sample_representativeness
     )
-    return expected_management_fee, expected_performance_fee
 
-
-if "__main__" == __name__:
-
-    # mortgage fund fees - from scottish mortgage investment trust
-    # https://www.hl.co.uk/shares/shares-search-results/s/scottish-mortgage-it-plc-ordinary-shares-5p
-    # https://www.investopedia.com/terms/b/brokerage-fee.asp#:~:text=The%20fees%20range%20from%200.25,to%201.5%25%20of%20the%20assets.
-    # https://www.unbiased.co.uk/discover/mortgages-property/buying-a-home/mortgage-broker-fees
-    # PE fee - broker fee!!
-
-    # https://www.investopedia.com/articles/investing/062113/mutual-funds-management-fees-vs-mer.asp#:~:text=The%20management%20fee%20encompasses%20all,assets%20under%20management%20(AUM).
-    # https://www.investopedia.com/terms/s/servicing_fee.asp
-
-    # https://www.investopedia.com/terms/p/performance-fee.asp#:~:text=A%20performance%20fee%20is%20a,often%20both%20realized%20and%20unrealized.
-    EEV = "Excess_Policy_PV_VBT01_lapseTrue_mort1_coihike_0"
-
-    fees = {
-        "life_settlement": {
-            "broker_fee": 0.08,
-            "management_fee": 0.015,
-            "performance_fee": 0.1,
-        },
-        # "benchmark_scheme": {
-        #     "broker_fee": 0.05,
-        #     "management_fee": 0.01,
-        #     "performance_fee": 0.1,
-        # },
-    }
-
-    for key, value in fees.items():
-        BROKER_FEE = value["broker_fee"]
-        MANAGEMENT_FEE = value["management_fee"]
-        PERFORMANCE_FEE = value["performance_fee"]
-
-        mortality_experience["buyer_pay"] = [
-            max(min(w,0.18),0) for w in mortality_experience[EEV]
-        ]
-
-        mortality_experience["value_at_settlement"] = mortality_experience[EEV] - mortality_experience["buyer_pay"]
-
-        mortality_experience["broker_fee_rate"] = [
-            max(min(w * 0.3, BROKER_FEE), 0)
-            for w in mortality_experience["buyer_pay"]
-        ]
-
-        mortality_experience["policyholder_lump_sum"] = mortality_experience["buyer_pay"] - mortality_experience["broker_fee_rate"]
-
-        mortality_experience[["management_fee_rate", "performance_fee_rate"]] = (
-            mortality_experience.apply(
-                lambda row: policy_fund_fees(
-                    issue_age=row["issueage"],
-                    is_male=row["isMale"],
-                    is_smoker=row["isSmoker"],
-                    current_age=row["currentage"],
-                ) if row["value_at_settlement"] > 0 else (0,0),
-                axis=1,
-                result_type="expand",
-            )
+    management_fee = (
+        sum(
+            mortality_experience["management_fee_rate"]
+            * mortality_experience["Amount Exposed"]
         )
+        * sample_representativeness
+    )
 
-        # save mortality_experience to excel
-        mortality_experience.to_excel(
-            DATA_FOLDER / f"mortality_experience_{key}.xlsx", index=False
+    performance_fee = (
+        sum(
+            mortality_experience["performance_fee_rate"]
+            * mortality_experience["Amount Exposed"]
         )
+        * sample_representativeness
+    )
 
-        broker_fee = (
-            sum(
-                mortality_experience["broker_fee_rate"]
-                * mortality_experience["Amount Exposed"]
-            )
-            * sample_representativeness
-        )
+    policyholder_lump_sum = sum(mortality_experience["policyholder_lump_sum"]*mortality_experience["Amount Exposed"])*sample_representativeness
 
-        management_fee = (
-            sum(
-                mortality_experience["management_fee_rate"]
-                * mortality_experience["Amount Exposed"]
-            )
-            * sample_representativeness
-        )
+    SCALE = 1e9  # <--- Factored out order of magnitude
 
-        performance_fee = (
-            sum(
-                mortality_experience["performance_fee_rate"]
-                * mortality_experience["Amount Exposed"]
-            )
-            * sample_representativeness
-        )
+    # 1. Define Labels and Raw Values
+    y_labels = [
+        "Life insurance value\nto policyholders",
+        "Policyholder lump sum",
+        "Broker fee",
+        "Value at settlement",
+        "Provider fee",
+        "Management fee",
+        "Performance fee",
+        "Investor profit",
+    ]
 
-        policyholder_lump_sum = sum(mortality_experience["policyholder_lump_sum"]*mortality_experience["Amount Exposed"])*sample_representativeness
+    # Use 0 for "Total" rows (Value at settlement, Investor profit)
+    # Use negative numbers for subtractions
+    raw_values = [
+        money_left_15_T,
+        -policyholder_lump_sum,
+        -broker_fee,
+        0,
+        -provider_fee,  # Intermediate total
+        -management_fee,
+        -performance_fee,
+        0,  # Final total
+    ]
 
-        fig = go.Figure(
-            go.Waterfall(
-                name="20",
-                orientation="h",  # <--- 1. Set orientation to Horizontal
-                measure=[
-                    "relative",
-                    "relative",
-                    "relative",
-                    "total",
-                    "relative",
-                    "relative",
-                    "total",
-                ],
-                # <--- 2. Labels now go on the Y axis
-                y=[
-                    "Life insurance value<br>to policyholders",
-                    "Policyholder lump sum",
-                    "Broker fee",
-                    "Value at settlement",
-                    "Management fee",
-                    "Performance fee",
-                    "Investor profit",
-                ],
-                # <--- 3. Numerical values now go on the X axis
-                x=[
-                    round(w / 1e9, 2)
-                    for w in [
-                        money_left_15_T,
-                        -policyholder_lump_sum,
-                        -broker_fee,
-                        0,
-                        -management_fee,
-                        -performance_fee,
-                        0,
-                    ]
-                ],
-                textposition="outside",
-                text=[
-                    round(w / 1e9, 2)
-                    for w in [
-                        money_left_15_T,
-                        policyholder_lump_sum,
-                        broker_fee,
-                        money_left_15_T - policyholder_lump_sum - broker_fee,
-                        management_fee,
-                        performance_fee,
-                        (
-                            money_left_15_T
-                            - policyholder_lump_sum
-                            - broker_fee
-                            - management_fee
-                            - performance_fee
-                        ),
-                    ]
-                ],
-                connector={"line": {"color": "rgb(63, 63, 63)"}},
-            ),
-            # <--- 4. Update X-axis range instead of Y-axis
-            layout_xaxis_range=[-100, 1_500], 
-        )
+    # Define which rows are "Totals" (resets base to 0) vs "Relative" (adjusts previous base)
+    # True = Total/Absolute, False = Relative/Subtraction
+    is_total = [True, False, False, True, False, False, False, True]
 
-        # <--- 5. Title applies to X-axis now
-        fig.update_layout(
-            xaxis_title="billion USD",
-        )
+    # 2. Calculate Plotting Coordinates
+    scaled_values = [x / SCALE for x in raw_values]
+    
+    # Lists to hold bar parameters
+    lefts = []
+    widths = []
+    colors = []
+    text_labels = []
+    
+    current_sum = 0.0
+    
+    # Using standard Matplotlib colors here:
+    C_TOTAL = 'green'  # Blue
+    C_NEG = 'red'    # Red
+    
+    for val, total_flag in zip(scaled_values, is_total):
+        if total_flag:
+            # Calculate the implied value for the Total bars
+            if val == 0: 
+                val = current_sum
+            
+            lefts.append(0)
+            widths.append(val)
+            colors.append(C_TOTAL)
+            current_sum = val # Reset current sum reference to this total
+        else:
+            # For relative bars (subtractions in this context)
+            # Since val is negative, we add it to current_sum to find the new floor
+            # The bar starts at the new floor and goes up by abs(val)
+            lefts.append(current_sum + val) 
+            widths.append(abs(val))
+            colors.append(C_NEG)
+            current_sum += val
+        
+        text_labels.append(f"{val if total_flag else abs(val):.2f}")
 
-        # <--- 6. Optional: Reverse Y-axis so the chart reads Top-to-Bottom
-        fig.update_yaxes(autorange="reversed")
+    # 3. Create Plot
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-        # add title
-        fig.update_layout(
-            title={
-                "text": "With {} fee scheme".format(key),
-                "y": 0.9,
-                "x": 0.5,
-                "xanchor": "center",
-                "yanchor": "top",
-            }
-        )
+    # Indices for bars (reversed logic not strictly needed if we invert axis later, 
+    # but 0-index usually at bottom in MPL)
+    y_pos = np.arange(len(y_labels))
 
-        fig.show()
+    bars = ax.barh(y_pos, widths, left=lefts, color=colors, height=0.6, edgecolor='black', alpha=0.8)
 
-        fig.write_image(FIGURE_FOLDER / "waterfall4-mortgage.pdf")
+    # 4. Add Connectors and Text
+    for i in range(len(y_labels)):
+        # Add Text Value
+        # Position text slightly right of the bar
+        val_x = lefts[i] + widths[i] + (1500 * 0.01) # small offset
+        ax.text(val_x, i, text_labels[i], va='center', fontweight='bold')
+
+        # Add Connector Lines (between this bar and the next)
+        if i < len(y_labels) - 1:
+            # Determining the "step" edge. 
+            # If current is Total, step is at width.
+            # If current is Relative (subtraction), step is at left edge (the new lower value).
+            if is_total[i]:
+                step_x = widths[i]
+            else:
+                step_x = lefts[i]
+            
+            # Draw vertical line to the next bar
+            ax.plot([step_x, step_x], [i, i + 1], color='grey', linestyle='--', linewidth=1)
+
+    # 5. Formatting
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(y_labels)
+    ax.invert_yaxis() # Put the first entry at the top
+
+    ax.set_xlabel("billion USD")
+    # ax.set_title("With {} fee scheme".format(key))
+    
+    # Mimic the layout_xaxis_range=[-100, 1500]
+    # Scaled by 1e9 already, so just use raw numbers
+    ax.set_xlim(0, 1500) 
+
+    # Remove top/right spines for cleaner look
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    plt.tight_layout()
+    
+    plt.show() # Optional: Uncomment to view interactively
+    
+    # Save figure
+    fig.savefig(FIGURE_FOLDER / "waterfall4-mortgage.pdf")
+    plt.close(fig) # Close to free memory
