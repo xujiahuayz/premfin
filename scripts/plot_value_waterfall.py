@@ -184,5 +184,5 @@ for key, value in fees.items():
     plt.show() # Optional: Uncomment to view interactively
     
     # Save figure
-    fig.savefig(FIGURE_FOLDER / "waterfall4-mortgage.pdf")
+    fig.savefig(FIGURE_FOLDER / "waterfall.pdf")
     plt.close(fig) # Close to free memory
