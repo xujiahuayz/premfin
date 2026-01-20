@@ -2,9 +2,7 @@ from premiumFinance.constants import DATA_FOLDER
 from premiumFinance.financing import yield_curve
 from premiumFinance.inspolicy import InsurancePolicy
 from premiumFinance.insured import Insured
-from scripts.plot_moneyleft import (
-    mortality_experience,
-)
+from process_mortality_table import mortality_experience
 
 
 def policy_fund_fees(
@@ -70,7 +68,7 @@ def policy_fund_fees(
 
 if "__main__" == __name__:
 
-    EEV = "Excess_Policy_PV_VBT01_lapseTrue_mort1_coihike_0"
+    EV = "Policy_EV_VBT01_lapseTrue_mort1_coihike_0"
 
     fees = {
         "life_settlement": {
@@ -84,27 +82,30 @@ if "__main__" == __name__:
         BROKER_FEE = value["broker_fee"]
         MANAGEMENT_FEE = value["management_fee"]
         PERFORMANCE_FEE = value["performance_fee"]
-        PROVIDER_FEE = 0.005
+        PROVIDER_FEE = 0.05
 
-
+        mortality_experience['excess_TP']= [
+            max(min(w,0.2),0) for w in (mortality_experience[EV] - mortality_experience["csv_rate"])
+        ] 
         mortality_experience["buyer_pay"] = [
-            max(min(w - PROVIDER_FEE,0.2),0) for w in mortality_experience[EEV]
+            max(w,0) for w in (mortality_experience["excess_TP"] + mortality_experience["csv_rate"])
         ] # if eev cant cover provider fee then probably not economic to sell
+        #  0.2 is average settlement rate
 
 # https://www.lisa.org/article_content.asp?edition=1&section=2&article=23
 # 20% face value - policyholder gets
-        mortality_experience["value_at_settlement"] = mortality_experience[EEV] - mortality_experience["buyer_pay"]
+        mortality_experience["value_at_settlement"] = mortality_experience[EV] - mortality_experience["buyer_pay"]
 
         mortality_experience["broker_fee_rate"] = [
             max(min(w * 0.3, BROKER_FEE), 0)
-            for w in mortality_experience["buyer_pay"]
+            for w in (mortality_experience["excess_TP"])
         ]
 
         mortality_experience["policyholder_lump_sum"] = mortality_experience["buyer_pay"] - mortality_experience["broker_fee_rate"]
 
         mortality_experience["provider_fee_rate"] = [
-            max(min(PROVIDER_FEE, w), 0) for w in mortality_experience["value_at_settlement"]
-        ]
+            PROVIDER_FEE * w if w > 1e-6 else 0 for w in mortality_experience["buyer_pay"] 
+        ] 
 
         mortality_experience[["management_fee_rate", "performance_fee_rate"]] = (
             mortality_experience.apply(
@@ -113,14 +114,11 @@ if "__main__" == __name__:
                     is_male=row["isMale"],
                     is_smoker=row["isSmoker"],
                     current_age=row["currentage"],
-                ) if row["value_at_settlement"] > PROVIDER_FEE+1e-6 else (0,0),
+                ) if row["value_at_settlement"] > 1e-6 else (0,0),
                 axis=1,
                 result_type="expand",
             )
         )
-
-        # provider fee 0.5 face https://glenndaily.com/lifesettlementfunds.htm
-
 
         # save mortality_experience to excel
         mortality_experience.to_excel(

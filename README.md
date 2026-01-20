@@ -25,7 +25,7 @@ or follow the step-by-step instructions below
 
 ### Create a python virtual environment
 
-- iOS
+- MacOS
 
 ```zsh
 python3 -m venv venv
@@ -39,7 +39,7 @@ python -m venv venv
 
 ### Activate the virtual environment
 
-- iOS
+- MacOS
 
 ```zsh
 . venv/bin/activate

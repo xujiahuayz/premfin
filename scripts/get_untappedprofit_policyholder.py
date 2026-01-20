@@ -22,7 +22,7 @@ def policyholder_policy_value(
     cash_interest: float = 0.0,
     premium_hike: float = 0.0,
     # on pricing, policyholder rate doesn't matter
-) -> float:
+) -> tuple[float,float]:
     """
     calculate policy economic value in excess of its surrender value
     """
@@ -54,17 +54,16 @@ def policyholder_policy_value(
     ]
 
     return (
+        sv,
         this_policy.policy_value(
             issuer_perspective=False,
             at_issue=False,
             discount_rate=policyholder_rate,
         )
-        - sv
     )
 
 
 mortality_experience = pd.read_excel(MORTALITY_TABLE_CLEANED_PATH)
-
 
 def generate_pv_column(
     issue_vbt: str = "VBT01",
@@ -76,14 +75,14 @@ def generate_pv_column(
     """
     generate columns of excess policy pv in different scenarios
     """
-    col_name = f"Excess_Policy_PV_{issue_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
+    col_name = f"Policy_EV_{issue_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
 
     # if col_name in mortality_experience.columns:
     #     print(col_name + " exists")
     #     return
     # else:
     #     print(col_name + " doesn't exist")
-    mortality_experience[col_name] = mortality_experience.apply(
+    mortality_experience[["csv_rate", col_name]] = mortality_experience.apply(
         lambda row: policyholder_policy_value(
             issue_age=row["issueage"],
             is_male=row["isMale"],

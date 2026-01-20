@@ -5,16 +5,12 @@ Plot value lost waterfall
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from plot_wealthtransferprograms import lapsed_value_all
 
 from premiumFinance.constants import DATA_FOLDER, FIGURE_FOLDER
-from scripts.plot_moneyleft import (
-    money_left_15_T,
-    mortality_experience,
-    sample_representativeness,
-)
+from scripts.plot_moneyleft import sample_representativeness
 
-
-EEV = "Excess_Policy_PV_VBT01_lapseTrue_mort1_coihike_0"
+EEV = "Policy_EV_VBT01_lapseTrue_mort1_coihike_0"
 
 fees = {
     "life_settlement": {
@@ -25,11 +21,6 @@ fees = {
 }
 
 for key, value in fees.items():
-    BROKER_FEE = value["broker_fee"]
-    MANAGEMENT_FEE = value["management_fee"]
-    PERFORMANCE_FEE = value["performance_fee"]
-    PROVIDER_FEE = 0.005
-
 
     mortality_experience = pd.read_excel(DATA_FOLDER / f"mortality_experience_{key}.xlsx")
 
@@ -37,6 +28,7 @@ for key, value in fees.items():
         sum(
             mortality_experience["broker_fee_rate"]
             * mortality_experience["Amount Exposed"]
+            * mortality_experience['lapse_rate']
         )
         * sample_representativeness
     )
@@ -45,6 +37,7 @@ for key, value in fees.items():
         sum(
             mortality_experience["provider_fee_rate"]
             * mortality_experience["Amount Exposed"]
+            * mortality_experience['lapse_rate']
         )
         * sample_representativeness
     )
@@ -53,6 +46,7 @@ for key, value in fees.items():
         sum(
             mortality_experience["management_fee_rate"]
             * mortality_experience["Amount Exposed"]
+            * mortality_experience['lapse_rate']
         )
         * sample_representativeness
     )
@@ -61,11 +55,14 @@ for key, value in fees.items():
         sum(
             mortality_experience["performance_fee_rate"]
             * mortality_experience["Amount Exposed"]
+            * mortality_experience['lapse_rate']
         )
         * sample_representativeness
     )
 
-    policyholder_lump_sum = sum(mortality_experience["policyholder_lump_sum"]*mortality_experience["Amount Exposed"])*sample_representativeness
+    policyholder_lump_sum = sum(
+        mortality_experience["policyholder_lump_sum"]*mortality_experience["Amount Exposed"]*mortality_experience['lapse_rate']
+    ) * sample_representativeness
 
     SCALE = 1e9  # <--- Factored out order of magnitude
 
@@ -84,7 +81,7 @@ for key, value in fees.items():
     # Use 0 for "Total" rows (Value at settlement, Investor profit)
     # Use negative numbers for subtractions
     raw_values = [
-        money_left_15_T,
+        lapsed_value_all,
         -policyholder_lump_sum,
         -broker_fee,
         0,
@@ -147,7 +144,7 @@ for key, value in fees.items():
     for i in range(len(y_labels)):
         # Add Text Value
         # Position text slightly right of the bar
-        val_x = lefts[i] + widths[i] + (1500 * 0.01) # small offset
+        val_x = lefts[i] + widths[i] + (80 * 0.01) # small offset
         ax.text(val_x, i, text_labels[i], va='center', fontweight='bold')
 
         # Add Connector Lines (between this bar and the next)
@@ -173,7 +170,7 @@ for key, value in fees.items():
     
     # Mimic the layout_xaxis_range=[-100, 1500]
     # Scaled by 1e9 already, so just use raw numbers
-    ax.set_xlim(0, 1500) 
+    ax.set_xlim(0, 80) 
 
     # Remove top/right spines for cleaner look
     ax.spines['top'].set_visible(False)

@@ -47,7 +47,7 @@ for lapse_assumption in [True, False]:
         age_values.append(this_insured.current_age)
 
         sv = this_financing.surrender_value()
-        ev = -this_policy.policy_value(
+        ev = this_policy.policy_value(
                     issuer_perspective=False,
                     at_issue=False,
                     discount_rate=policyholder_rate,

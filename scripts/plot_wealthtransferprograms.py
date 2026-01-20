@@ -1,10 +1,7 @@
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
 from premiumFinance.constants import FIGURE_FOLDER
 from scripts.process_mortality_table import mortality_experience
-from scripts.sample_represent import sample_representativeness
 
 lapsed_value_all = mortality_experience["lapsed_economic_value"].sum()
 

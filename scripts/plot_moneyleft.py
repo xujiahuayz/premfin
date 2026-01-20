@@ -19,7 +19,7 @@ def get_money_left(
         sum(
             w
             for w in mortality_experience[
-                f"Excess_Policy_PV_{issue_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
+                f"Policy_EV_{issue_vbt}_lapse{lapse_assumption}_mort{current_mort}_coihike_{premium_hike}"
             ]
             * mortality_experience["Amount Exposed"]
         )

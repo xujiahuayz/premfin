@@ -4,6 +4,8 @@ import pandas as pd
 from process_mortality_table import mortality_experience
 
 from premiumFinance.constants import FIGURE_FOLDER
+from premiumFinance.treasury_yield import yield_curve
+from premiumFinance.util import cash_flow_pv
 
 mortality_experience_sorted = mortality_experience.sort_values(
     by=["average_lapsed_amount"], ignore_index=True
@@ -21,7 +23,7 @@ median_value_lapsed = mortality_experience_sorted.loc[
     "average_lapsed_amount",
 ].iat[0]
 # 46190.03282643981
-WORKING_LIFE_YEARS = 15
+WORKING_LIFE_YEARS = 20
 Underdiversification_LOSS = 0.0204
 
 age_freq = mortality_experience.groupby("currentage")["Policies Exposed"].sum()
@@ -62,17 +64,27 @@ median_stockholding = stock_holding.loc[stock_holding["age_dist_cumsum"] > 0.5][
 HOUSEHOLD_MISTAKES_DICT = {
     "value": [
         11_500,
-        (3_800 * 0.14 - 3_000 * 0.01 - (3_800 - 3_000) * 0.14) * WORKING_LIFE_YEARS,
+        # 200 * WORKING_LIFE_YEARS,
+        sum(cash_flow_pv(
+            cashflow=3_000 * (0.14 - 0.01),
+            probabilities=1,
+            discounters=yield_curve
+        )[:WORKING_LIFE_YEARS]),
+        # (3_800 * 0.14 - 3_000 * 0.01 - (3_800 - 3_000) * 0.14) * WORKING_LIFE_YEARS,
         # https://www.pewresearch.org/fact-tank/2020/03/25/more-than-half-of-u-s-households-have-some-investment-in-the-stock-market/ft_20-03-23_stocksimportance/
-        40_000 * Underdiversification_LOSS * WORKING_LIFE_YEARS,
+        sum(cash_flow_pv(
+            cashflow=40_000 * Underdiversification_LOSS,
+            probabilities=1,
+            discounters=yield_curve
+        )[:WORKING_LIFE_YEARS]),
         # median_stockholding * Underdiversification_LOSS * 5,
         median_value_lapsed,
     ],
     "labelname": [
         "Failure to\n refinance mortgage",
-        "Unnecessary\n credit card debt",
+        "Overborrowing in\n credit card debt",
         "Underdiversification\n of stock market",
-        "Lapsation of\n life insurance",
+        "Lapsation of life insurance\n per household",
     ],
 }
 
