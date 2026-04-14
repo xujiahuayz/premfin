@@ -129,8 +129,10 @@ for key, value in fees.items():
             colors.append(C_NEG)
             current_sum += val
         
-        text_labels.append(f"{val if total_flag else abs(val):.2f}")
+        text_labels.append(f"{abs(val):.2f}" + " (" + f"{abs(val) * SCALE / lapsed_value_all * 100:.1f}%" + ")" ) # Format text label with 'B' for billion
 
+    # change the second color to blue
+    colors[1] = 'blue'  # First bar (Life insurance value to policyholders) in blue
     # 3. Create Plot
     fig, ax = plt.subplots(figsize=(10, 6))
 
